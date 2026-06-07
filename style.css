@@ -545,6 +545,14 @@ body {
   cursor: default;
 }
 
+.btn-delete {
+  background: rgba(239,68,68,0.08);
+  color: var(--accent-curse);
+  border: 1px solid rgba(239,68,68,0.2);
+  margin-top: 6px;
+}
+.btn-delete:hover { background: rgba(239,68,68,0.18); }
+
 /* Status label a kártyán */
 .status-label {
   display: inline-block;
