@@ -159,7 +159,9 @@ function drawTreasure() {
   });
   saveState();
 
-  showResult("treasure", item.name, "Egy titokzatos kincs a mélyből.", "💰 Érték: " + item.value);
+  const extraHtml = (item.effect ? `<div style="margin-bottom:6px">✨ <b>Hatás:</b> ${item.effect}</div>` : "") +
+                    `💰 <b>Érték:</b> ${item.value}`;
+  showResult("treasure", item.name, "Egy titokzatos kincs a mélyből.", extraHtml);
 }
 
 // ── KÉP HÚZÁSA ───────────────────────────────────────────────
@@ -298,22 +300,22 @@ function renderTreasures() {
 
   container.innerHTML = "";
 
-  state.collectedTreasures.forEach((inst) => {
+  state.collectedTreasures.forEach((inst, idx) => {
     const data = treasures.find(t => t.id === inst.id);
     if (!data) return;
 
     const card = document.createElement("div");
     card.className = "item-card";
 
-    const tIdx = idx;
     card.innerHTML = `
       <div class="card-header">
         <div class="card-title">${data.name}</div>
         <div class="card-status-icon">💎</div>
       </div>
+      ${data.effect ? `<div class="card-extra-label">Hatás</div><div class="card-extra-value">${data.effect}</div>` : ""}
       <div class="card-extra-label">Érték</div>
       <div class="card-extra-value">${data.value}</div>
-      <button class="card-action-btn btn-delete" onclick="deleteTreasure(${tIdx})">🗑️ Törlés</button>
+      <button class="card-action-btn btn-delete" onclick="deleteTreasure(${idx})">🗑️ Törlés</button>
     `;
 
     container.appendChild(card);
@@ -483,7 +485,7 @@ function deactivateCurse(idx) {
 function deleteMission(idx) {
   const data = missions.find(m => m.id === state.missions[idx]?.id);
   const nev = data ? data.title : "ezt a küldetést";
-  if (!confirm("Biztosan törlöd?\n\n" + nev)) return;
+  if (!confirm("Biztosan törölni szeretnéd?\n\n" + nev)) return;
   state.missions.splice(idx, 1);
   saveState();
   renderMissions();
@@ -495,7 +497,7 @@ function deleteMission(idx) {
 function deleteCurse(idx) {
   const data = curses.find(c => c.id === state.curses[idx]?.id);
   const nev = data ? data.title : "ezt az átkot";
-  if (!confirm("Biztosan törlöd?\n\n" + nev)) return;
+  if (!confirm("Biztosan törölni szeretnéd?\n\n" + nev)) return;
   state.curses.splice(idx, 1);
   saveState();
   renderCurses();
@@ -506,7 +508,7 @@ function deleteCurse(idx) {
 function deleteTreasure(idx) {
   const data = treasures.find(t => t.id === state.collectedTreasures[idx]?.id);
   const nev = data ? data.name : "ezt a kincset";
-  if (!confirm("Biztosan törlöd?\n\n" + nev)) return;
+  if (!confirm("Biztosan törölni szeretnéd?\n\n" + nev)) return;
   state.collectedTreasures.splice(idx, 1);
   saveState();
   renderTreasures();

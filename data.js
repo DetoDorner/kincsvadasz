@@ -108,42 +108,50 @@ const treasures = [
   {
     id: "treasure_001",
     name: "🪙 Rozsdás zseton",
+    effect: "Nincs különleges hatás, de megtaláltad – ez is számít.",
     value: "1 zseton"
   },
   {
     id: "treasure_002",
     name: "💎 Kristályszilánk",
+    effect: "Csillog a holdfényben. A csapat büszkén mutogathatja.",
     value: "3 zseton"
   },
   {
     id: "treasure_003",
     name: "🗝️ Titokzatos kulcs",
-    value: "Felold egy véletlenszerű átkot"
+    effect: "Felold egy véletlenszerű aktív átkot azonnal.",
+    value: "3 zseton"
   },
   {
     id: "treasure_004",
     name: "📜 Ősrégi térkép",
-    value: "Következő húzásnál 2 lehetőséget láthatsz, te választasz"
+    effect: "Következő húzásnál 2 lapot húzhatsz, és te választod melyiket tartod meg.",
+    value: "2 zseton"
   },
   {
     id: "treasure_005",
     name: "🌟 Hulló csillag cserepje",
+    effect: "Egy kívánságot teljesíthet a játékvezető – ha elég merész.",
     value: "5 zseton"
   },
   {
     id: "treasure_006",
     name: "🍀 Négylevelű lóhere",
-    value: "Következő küldetésed automatikusan sikeresnek számít"
+    effect: "A következő küldetésed automatikusan teljesítettnek számít.",
+    value: "4 zseton"
   },
   {
     id: "treasure_007",
     name: "🧿 Kék szem amulett",
-    value: "Megvéd a következő átok hatásától"
+    effect: "Megvéd a következő átok hatásától – az átok kártya visszakerül a pakliба.",
+    value: "3 zseton"
   },
   {
     id: "treasure_008",
     name: "🔮 Homályos kristálygömb",
-    value: "2 zseton + extra kérdés a játékvezetőnek"
+    effect: "Feltehetsz egy igen/nem kérdést a játékvezetőnek, aki köteles őszintén válaszolni.",
+    value: "2 zseton"
   }
 ];
 
