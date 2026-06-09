@@ -54,6 +54,12 @@ const missions = [
     title: "⭐ Csillagász",
     description: "Mutassatok rá legalább 3 csillagra és adjatok nekik saját nevet. A nevek maradnak a csoport mitológiájában.",
     reward: "3 zseton + legendás húzás"
+  },
+  {
+    id: "mission_009",
+    title: "👑 A Farkas-domb szelleme",
+    description: "Valaki a csapatból egyedül megy fel a Farkas-domb csúcsára, hangosan kiáltja a nevét háromszor, majd visszatér és elmond valamit, amit csak ott fent látott vagy érzett. Ha a többiek elhiszik, hogy tényleg fent volt és átélte – a jutalom jár.",
+    reward: "100000 zseton"
   }
 ];
 

@@ -29,10 +29,10 @@ let kedvencFilter  = false;   // kedvencek-először nézet
 // ── BOLT TERMÉKEK ────────────────────────────────────────────
 
 const shopItems = [
-  { id: "extra_life",      name: "❤️ +1 Élet",                    desc: "Egy extra élettel rendelkezel a játékban.",         price: 250 },
-  { id: "remove_curse",    name: "🔓 Átok levétele",               desc: "Egy aktív átkod azonnal deaktiválódik.",            price: 180 },
-  { id: "extra_photo",     name: "📸 +1 Fotó húzása",              desc: "Egy extra képet húzhatsz a galériádba.",            price: 30 },
-  { id: "impostor_change", name: "🕵️ Imposztorjelölés módosítása", desc: "Egyszer megváltoztathatod a gyanúsítottadat.",      price: 65 },
+  { id: "extra_life",      name: "❤️ +1 Élet",                    desc: "Egy extra élettel rendelkezel a játékban.",         price: 25000 },
+  { id: "remove_curse",    name: "🔓 Átok levétele",               desc: "Egy aktív átkod azonnal deaktiválódik.",            price: 18500 },
+  { id: "extra_photo",     name: "📸 +1 Fotó húzása",              desc: "Egy extra képet húzhatsz a galériádba.",            price: 320 },
+  { id: "impostor_change", name: "🕵️ Imposztorjelölés módosítása", desc: "Egyszer megváltoztathatod a gyanúsítottadat.",      price: 650 },
 ];
 
 // ── INICIALIZÁLÁS ────────────────────────────────────────────
@@ -556,13 +556,33 @@ function sellTreasure(idx) {
   const data = treasures.find(t => t.id === inst?.id);
   if (!data) return;
   const val = parseTokenValue(data.value);
-  if (!confirm("Biztosan eladod?\n\n" + data.name + "\n\n+  " + val + " 🪙 zsetont kapsz.")) return;
+  if (!confirm("Biztosan eladod?\n\n" + data.name + "\n\n+ " + formatNum(val) + " 🪙 zsetont kapsz.")) return;
   state.tokens += val;
   state.collectedTreasures.splice(idx, 1);
   saveState();
   renderTreasures();
   updateTokenDisplay();
   updateStats();
+}
+
+function sellAllTreasures() {
+  const sellable = state.collectedTreasures
+    .map((inst, idx) => ({ inst, idx, data: treasures.find(t => t.id === inst.id) }))
+    .filter(({ inst, data }) => !inst.used && data);
+  if (sellable.length === 0) return;
+  const total = sellable.reduce((s, { data }) => s + parseTokenValue(data.value), 0);
+  if (!confirm("Biztosan eladod az összes kincset?\n\n" + sellable.length + " db kincs\n\nÖsszesen: +" + formatNum(total) + " 🪙")) return;
+  // Törlés legnagyobb indextől, hogy az indexek ne csússzanak el
+  sellable.map(x => x.idx).sort((a, b) => b - a).forEach(i => {
+    state.collectedTreasures.splice(i, 1);
+  });
+  state.tokens += total;
+  saveState();
+  alert("✅ Összes kincs eladva!\n\n+" + formatNum(total) + " 🪙 zseton jóváírva.");
+  renderTreasures();
+  updateTokenDisplay();
+  updateStats();
+  renderBolt();
 }
 
 function deletePhoto(e, photoId) {
@@ -606,9 +626,9 @@ function updateSipDisplay() {
 function updateTokenDisplay() {
   const v = state.tokens;
   const h = document.getElementById("headerTokens");
-  if (h) h.textContent = "🪙 " + v;
+  if (h) h.textContent = "🪙 " + formatNum(v);
   const s = document.getElementById("shopTokenCount");
-  if (s) s.textContent = v;
+  if (s) s.textContent = formatNum(v);
 }
 
 function renderSettings() {
@@ -762,22 +782,36 @@ function renderBolt() {
     </div>
   ` : "";
 
+  const sellableTreasures = state.collectedTreasures
+    .map((inst, idx) => ({ inst, idx }))
+    .filter(({ inst }) => !inst.used);
+  const sellAllTotal = sellableTreasures.reduce((sum, { inst }) => {
+    const d = treasures.find(t => t.id === inst.id);
+    return sum + (d ? parseTokenValue(d.value) : 0);
+  }, 0);
+
   const sellSection = state.collectedTreasures.length > 0 ? `
     <div class="shop-section">
       <div class="shop-section-header">
         <h2 class="shop-section-title">💰 Kincsek eladása</h2>
-        <button class="shop-refresh-btn" onclick="renderBolt()" title="Frissítés">🔄</button>
+        <div class="shop-section-header-btns">
+          ${sellableTreasures.length > 1
+            ? `<button class="btn-sell-all" onclick="sellAllTreasures()" title="Mindet eladja">Mindet eladja</button>`
+            : ""}
+          <button class="shop-refresh-btn" onclick="renderBolt()" title="Frissítés">🔄</button>
+        </div>
       </div>
       ${state.collectedTreasures.map((inst, idx) => {
         const data = treasures.find(t => t.id === inst.id);
         if (!data) return "";
+        const isUsed = !!inst.used;
         return `
-          <div class="shop-sell-row">
+          <div class="shop-sell-row${isUsed ? " shop-sell-used" : ""}">
             <div class="shop-sell-info">
               <div class="shop-sell-name">${data.name}</div>
-              <div class="shop-sell-val">+${parseTokenValue(data.value)} 🪙</div>
+              <div class="shop-sell-val">${isUsed ? "✅ Felhasználva" : `+${formatNum(parseTokenValue(data.value))} 🪙`}</div>
             </div>
-            <button class="btn-sell-sm" onclick="sellTreasure(${idx})">Eladás</button>
+            ${isUsed ? "" : `<button class="btn-sell-sm" onclick="sellTreasure(${idx})">Eladás</button>`}
           </div>
         `;
       }).join("")}
@@ -793,7 +827,7 @@ function renderBolt() {
             <div class="shop-buy-name">${item.name}</div>
             <div class="shop-buy-desc">${item.desc}</div>
           </div>
-          <button class="btn-buy" onclick="buyItem('${item.id}')">${item.price} 🪙</button>
+          <button class="btn-buy" onclick="buyItem('${item.id}')">${formatNum(item.price)} 🪙</button>
         </div>
       `).join("")}
     </div>
@@ -803,7 +837,7 @@ function renderBolt() {
     <div class="token-hero">
       <div class="token-hero-label">Zseton egyenleg</div>
       <div class="token-hero-row">
-        <span class="token-hero-num" id="shopTokenCount">${state.tokens}</span>
+        <span class="token-hero-num" id="shopTokenCount">${formatNum(state.tokens)}</span>
       </div>
     </div>
     <div class="lives-bar">
@@ -1148,6 +1182,10 @@ function resetGame() {
 
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function formatNum(n) {
+  return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 function rarityLabel(rarity) {

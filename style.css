@@ -809,6 +809,16 @@ body.lightbox-open { overflow: hidden; }
   display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
 }
 .shop-section-header .shop-section-title { margin-bottom: 0; }
+.shop-section-header-btns { display: flex; align-items: center; gap: 6px; }
+
+.btn-sell-all {
+  padding: 5px 12px; border: 1px solid var(--accent-treasure);
+  border-radius: 10px; background: rgba(245,158,11,0.12);
+  color: var(--accent-treasure); font-size: 0.78rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.btn-sell-all:hover { background: rgba(245,158,11,0.25); }
+.shop-sell-used { opacity: 0.45; }
 
 .shop-refresh-btn {
   background: transparent; border: 1px solid var(--border-color);
