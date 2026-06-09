@@ -29,10 +29,10 @@ let kedvencFilter  = false;   // kedvencek-először nézet
 // ── BOLT TERMÉKEK ────────────────────────────────────────────
 
 const shopItems = [
-  { id: "extra_life",      name: "❤️ +1 Élet",                    desc: "Egy extra élettel rendelkezel a játékban.",         price: 3 },
-  { id: "remove_curse",    name: "🔓 Átok levétele",               desc: "Egy aktív átkod azonnal deaktiválódik.",            price: 2 },
-  { id: "extra_photo",     name: "📸 +1 Fotó húzása",              desc: "Egy extra képet húzhatsz a galériádba.",            price: 4 },
-  { id: "impostor_change", name: "🕵️ Imposztorjelölés módosítása", desc: "Egyszer megváltoztathatod a gyanúsítottadat.",      price: 2 },
+  { id: "extra_life",      name: "❤️ +1 Élet",                    desc: "Egy extra élettel rendelkezel a játékban.",         price: 250 },
+  { id: "remove_curse",    name: "🔓 Átok levétele",               desc: "Egy aktív átkod azonnal deaktiválódik.",            price: 180 },
+  { id: "extra_photo",     name: "📸 +1 Fotó húzása",              desc: "Egy extra képet húzhatsz a galériádba.",            price: 30 },
+  { id: "impostor_change", name: "🕵️ Imposztorjelölés módosítása", desc: "Egyszer megváltoztathatod a gyanúsítottadat.",      price: 65 },
 ];
 
 // ── INICIALIZÁLÁS ────────────────────────────────────────────

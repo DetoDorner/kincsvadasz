@@ -7,7 +7,7 @@
 
 // Cache neve – ha megváltoztatod, az összes régi cache törlődik
 // és újra letöltődik minden. Akkor változtasd, ha frissíted az appot.
-const CACHE_NAME = "kincsvadasz-v19";
+const CACHE_NAME = "kincsvadasz-v20";
 
 // ── CACHE-ELENDŐ FÁJLOK LISTÁJA ─────────────────────────────
 // Ide kerül MINDEN fájl amit az app használ.
