@@ -36,6 +36,89 @@
   --badge-text:     #60a5fa;
 }
 
+.theme-krokodildo {
+  --bg-primary:    #060f06;
+  --bg-secondary:  #0c1f0c;
+  --bg-card:       #112011;
+  --bg-card-hover: #172917;
+  --bg-nav:        #080f08;
+  --bg-header:     #080f08;
+  --text-primary:   #a8c8a0;
+  --text-secondary: #5e8a56;
+  --text-muted:     #2e4e2a;
+  --accent-mission:  #4caf50;
+  --accent-curse:    #7b3a00;
+  --accent-treasure: #7a6e00;
+  --accent-photo:    #2e7d32;
+  --accent-legendary:#00695c;
+  --border-color:   #1a3a1a;
+  --border-accent:  #2e5c2e;
+  --shadow:         0 4px 20px rgba(0,0,0,0.7);
+  --shadow-card:    0 2px 12px rgba(0,40,0,0.5);
+  --completed-bg:   #071a07;
+  --completed-text: #66bb6a;
+  --deactivated-bg: #1a0d00;
+  --deactivated-text:#a0522d;
+  --btn-primary-bg: #2e5c2e;
+  --btn-primary-text:#a8c8a0;
+  --common-color:   #4a6e46;
+  --rare-color:     #4caf50;
+  --legendary-color:#00897b;
+  --badge-bg:       #1a3a1a;
+  --badge-text:     #66bb6a;
+}
+
+.theme-krokodildo .app-header {
+  background: linear-gradient(90deg, #060f06 0%, #1a3a1a 100%);
+}
+.theme-krokodildo .app-title { color: #7cb97a; }
+.theme-krokodildo .token-display { background: #0c1f0c; border-color: #2e5c2e; color: #7cb97a; }
+
+.theme-felsoszank {
+  --bg-primary:    #1a0e00;
+  --bg-secondary:  #2a1800;
+  --bg-card:       #261400;
+  --bg-card-hover: #321c00;
+  --bg-nav:        #180c00;
+  --bg-header:     #180c00;
+  --text-primary:   #f5d78e;
+  --text-secondary: #c4974a;
+  --text-muted:     #7a5820;
+  --accent-mission:  #d4af37;
+  --accent-curse:    #c0392b;
+  --accent-treasure: #ffd700;
+  --accent-photo:    #b8860b;
+  --accent-legendary:#ff8c00;
+  --border-color:   #5c3d0a;
+  --border-accent:  #c9a227;
+  --shadow:         0 4px 20px rgba(0,0,0,0.7);
+  --shadow-card:    0 2px 12px rgba(180,120,0,0.2);
+  --completed-bg:   #1a1400;
+  --completed-text: #ffd700;
+  --deactivated-bg: #1a0500;
+  --deactivated-text:#e07b39;
+  --btn-primary-bg: #8b6914;
+  --btn-primary-text:#f5d78e;
+  --common-color:   #a0783a;
+  --rare-color:     #d4af37;
+  --legendary-color:#ff8c00;
+  --badge-bg:       #3d2200;
+  --badge-text:     #ffd700;
+}
+
+.theme-felsoszank .app-header {
+  background: linear-gradient(90deg, #3d1f00 0%, #c9a227 40%, #ffd700 60%, #c9a227 80%, #3d1f00 100%);
+  border-bottom-color: #c9a227;
+}
+.theme-felsoszank .app-title { color: #1a0e00; font-weight: 900; text-shadow: 0 1px 0 rgba(255,215,0,0.5); }
+.theme-felsoszank .token-display { background: rgba(0,0,0,0.4); border-color: #c9a227; color: #ffd700; }
+.theme-felsoszank .item-card { border-color: #5c3d0a; box-shadow: 0 2px 8px rgba(180,120,0,0.3); }
+.theme-felsoszank .settings-group { border-color: #5c3d0a; }
+.theme-felsoszank .stats-bar { border-color: #5c3d0a; }
+.theme-felsoszank .photo-card { border-color: #8b6914; }
+.theme-felsoszank .photo-card.rarity-rare { border-color: #d4af37; box-shadow: 0 0 10px rgba(212,175,55,0.4); }
+.theme-felsoszank .photo-card.rarity-legendary { border-color: #ffd700; box-shadow: 0 0 18px rgba(255,215,0,0.6); }
+
 .theme-punikornis {
   --bg-primary:    #ffffff;
   --bg-secondary:  #fdf0ff;
@@ -359,6 +442,11 @@ body {
 }
 .btn-sell-icon:hover { background: rgba(245,158,11,0.25); }
 
+.btn-use-treasure-icon {
+  background: rgba(59,130,246,0.12); color: var(--accent-mission);
+}
+.btn-use-treasure-icon:hover { background: rgba(59,130,246,0.25); }
+
 .sell-hint { font-size: 0.72rem; color: var(--text-muted); font-weight: 400; }
 
 /* Status labelek */
@@ -521,15 +609,25 @@ body {
   box-shadow: 0 4px 20px rgba(168,85,247,0.35);
 }
 .token-hero-label { font-size: 0.8rem; color: rgba(255,255,255,0.75); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.token-hero-row   { display: flex; align-items: baseline; justify-content: center; gap: 6px; }
 .token-hero-num   { font-size: 3rem; font-weight: 900; color: #fff; line-height: 1; }
-.token-hero-icon  { font-size: 1.5rem; margin-top: 4px; }
+.token-hero-icon  { font-size: 1.8rem; line-height: 1; }
 
 .lives-bar {
   background: var(--bg-card); border: 1px solid var(--border-color);
-  border-radius: 12px; padding: 12px 16px; margin-bottom: 16px;
+  border-radius: 12px; padding: 10px 16px; margin-bottom: 16px;
   font-size: 0.9rem; color: var(--text-secondary);
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
 }
 .lives-bar strong { color: var(--text-primary); }
+
+.life-adj-btn {
+  width: 34px; height: 34px; border: 1px solid var(--border-color);
+  border-radius: 8px; background: var(--bg-secondary); cursor: pointer;
+  font-size: 0.9rem; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; flex-shrink: 0;
+}
+.life-adj-btn:hover { background: var(--border-color); }
 
 .shop-section {
   background: var(--bg-card); border: 1px solid var(--border-color);
@@ -603,12 +701,13 @@ body {
 .settings-desc { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 14px; line-height: 1.5; }
 .settings-danger { border-color: rgba(239,68,68,0.3); }
 
-.theme-buttons { display: flex; gap: 10px; }
+.theme-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
 .theme-btn {
-  flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 12px;
+  flex: 1; min-width: calc(50% - 4px);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 11px 12px; border: 2px solid var(--border-color); border-radius: 12px;
   background: var(--bg-secondary); color: var(--text-secondary);
-  font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
 }
 .theme-btn.active { border-color: var(--accent-mission); color: var(--accent-mission); background: rgba(59,130,246,0.1); }
 .theme-icon { font-size: 1.2rem; }

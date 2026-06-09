@@ -17,7 +17,7 @@ let state = {
   impostorName:         "",
   impostorChangePurchased: false,
   returnMode:           false,
-  lives:                1,
+  lives:                3,
 };
 
 let currentFilter = "all";
@@ -64,7 +64,7 @@ function loadState() {
     state.impostorName          = p.impostorName          || "";
     state.impostorChangePurchased = p.impostorChangePurchased || false;
     state.returnMode            = p.returnMode            || false;
-    state.lives                 = p.lives                 || 1;
+    state.lives                 = (p.lives !== undefined) ? p.lives : 3;
   } catch (e) {
     console.warn("Betöltési hiba:", e);
   }
@@ -335,18 +335,24 @@ function renderTreasures() {
     const data = treasures.find(t => t.id === inst.id);
     if (!data) return;
     const sellVal = parseTokenValue(data.value);
+    const isUsed = !!inst.used;
     const card = document.createElement("div");
-    card.className = "item-card";
+    card.className = "item-card" + (isUsed ? " status-deactivated" : "");
     card.innerHTML = `
       <div class="card-header">
         <div class="card-title">${data.name}</div>
         <div class="card-actions-row">
-          <button class="icon-btn btn-sell-icon" onclick="sellTreasure(${idx})" title="Eladás">💰</button>
+          ${isUsed
+            ? '<span class="card-status-icon">✅</span>'
+            : `<button class="icon-btn btn-use-treasure-icon" onclick="useTreasure(${idx})" title="Felhasználás">✔️</button>
+               <button class="icon-btn btn-sell-icon" onclick="sellTreasure(${idx})" title="Eladás">💰</button>`
+          }
         </div>
       </div>
+      ${isUsed ? '<div class="status-label status-deactivated-label">Felhasználva</div>' : ""}
       ${data.effect ? `<div class="card-extra-label">Hatás</div><div class="card-extra-value">${data.effect}</div>` : ""}
       <div class="card-extra-label">Érték</div>
-      <div class="card-extra-value">${data.value} <span class="sell-hint">(eladva: +${sellVal} 🪙)</span></div>
+      <div class="card-extra-value">${data.value}${!isUsed ? ` <span class="sell-hint">(eladva: +${sellVal} 🪙)</span>` : ""}</div>
     `;
     container.appendChild(card);
   });
@@ -433,6 +439,31 @@ function confirmDelete(type, idx) {
     state.curses.splice(idx, 1);
     saveState(); renderCurses(); updateStats();
   }
+}
+
+function useTreasure(idx) {
+  const inst = state.collectedTreasures[idx];
+  const data = treasures.find(t => t.id === inst?.id);
+  if (!data) return;
+  if (!confirm("Felhasználtad ezt a kincset?\n\n" + data.name + "\n\nNem kapsz érte zsetont – a kincs deaktiválódik.")) return;
+  state.collectedTreasures[idx].used = true;
+  saveState();
+  renderTreasures();
+}
+
+function addLife() {
+  if (!confirm("Biztosan hozzáadsz 1 életet?")) return;
+  state.lives++;
+  saveState();
+  renderBolt();
+}
+
+function removeLife() {
+  if (state.lives <= 0) { alert("Nincs több élet!"); return; }
+  if (!confirm("Biztosan levonasz 1 életet?")) return;
+  state.lives--;
+  saveState();
+  renderBolt();
 }
 
 function sellTreasure(idx) {
@@ -653,10 +684,16 @@ function renderBolt() {
   container.innerHTML = `
     <div class="token-hero">
       <div class="token-hero-label">Zseton egyenleg</div>
-      <div class="token-hero-num" id="shopTokenCount">${state.tokens}</div>
-      <div class="token-hero-icon">🪙</div>
+      <div class="token-hero-row">
+        <span class="token-hero-num" id="shopTokenCount">${state.tokens}</span>
+        <span class="token-hero-icon">🪙</span>
+      </div>
     </div>
-    <div class="lives-bar">❤️ Életek: <strong>${state.lives}</strong></div>
+    <div class="lives-bar">
+      <button class="life-adj-btn" onclick="removeLife()">➖</button>
+      <span>❤️ Életek: <strong id="livesCount">${state.lives}</strong></span>
+      <button class="life-adj-btn" onclick="addLife()">➕</button>
+    </div>
     ${startSection}
     ${sellSection}
     ${buySection}
@@ -791,8 +828,11 @@ function updateReturnModeArea() {
 
 function applyTheme(theme) {
   document.body.className = "theme-" + theme;
-  document.getElementById("themeNight")?.classList.toggle("active", theme === "night");
-  document.getElementById("themePunikornis")?.classList.toggle("active", theme === "punikornis");
+  ["themeNight","themePunikornis","themeKrokodildo","themeFelsoszank"].forEach(id => {
+    document.getElementById(id)?.classList.remove("active");
+  });
+  const map = { night:"themeNight", punikornis:"themePunikornis", krokodildo:"themeKrokodildo", felsoszank:"themeFelsoszank" };
+  document.getElementById(map[theme])?.classList.add("active");
 }
 
 function setTheme(theme) {
