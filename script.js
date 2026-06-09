@@ -352,7 +352,7 @@ function renderTreasures() {
       ${isUsed ? '<div class="status-label status-deactivated-label">Felhasználva</div>' : ""}
       ${data.effect ? `<div class="card-extra-label">Hatás</div><div class="card-extra-value">${data.effect}</div>` : ""}
       <div class="card-extra-label">Érték</div>
-      <div class="card-extra-value">${data.value}${!isUsed ? ` <span class="sell-hint">(eladva: +${sellVal} 🪙)</span>` : ""}</div>
+      <div class="card-extra-value">${data.value}</div>
     `;
     container.appendChild(card);
   });
@@ -460,7 +460,7 @@ function addLife() {
 
 function removeLife() {
   if (state.lives <= 0) { alert("Nincs több élet!"); return; }
-  if (!confirm("Biztosan levonasz 1 életet?")) return;
+  if (!confirm("Biztosan levonsz 1 életet?")) return;
   state.lives--;
   saveState();
   renderBolt();
@@ -649,7 +649,10 @@ function renderBolt() {
 
   const sellSection = state.collectedTreasures.length > 0 ? `
     <div class="shop-section">
-      <h2 class="shop-section-title">💰 Kincsek eladása</h2>
+      <div class="shop-section-header">
+        <h2 class="shop-section-title">💰 Kincsek eladása</h2>
+        <button class="shop-refresh-btn" onclick="renderBolt()" title="Frissítés">🔄</button>
+      </div>
       ${state.collectedTreasures.map((inst, idx) => {
         const data = treasures.find(t => t.id === inst.id);
         if (!data) return "";
@@ -686,7 +689,6 @@ function renderBolt() {
       <div class="token-hero-label">Zseton egyenleg</div>
       <div class="token-hero-row">
         <span class="token-hero-num" id="shopTokenCount">${state.tokens}</span>
-        <span class="token-hero-icon">🪙</span>
       </div>
     </div>
     <div class="lives-bar">
@@ -725,13 +727,32 @@ function buyItem(itemId) {
   if (itemId === "extra_life") {
     state.lives++;
   } else if (itemId === "remove_curse") {
-    const active = state.curses.find(c => c.status === "active");
-    if (active) {
-      active.status = "deactivated";
-      renderCurses();
-    } else {
+    const activeCurses = state.curses.map((inst, idx) => ({ inst, idx })).filter(e => e.inst.status === "active");
+    if (activeCurses.length === 0) {
       alert("Nincs aktív átkod jelenleg – zsetonod visszakerül.");
       state.tokens += item.price;
+    } else if (activeCurses.length === 1) {
+      const data = curses.find(c => c.id === activeCurses[0].inst.id);
+      if (!confirm("Deaktiváld ezt az átkot?\n\n" + (data?.title || "Ismeretlen átok"))) {
+        state.tokens += item.price;
+      } else {
+        state.curses[activeCurses[0].idx].status = "deactivated";
+        renderCurses();
+      }
+    } else {
+      const options = activeCurses.map((e, i) => {
+        const data = curses.find(c => c.id === e.inst.id);
+        return (i + 1) + ". " + (data?.title || e.inst.id);
+      }).join("\n");
+      const choice = prompt("Melyik átkot szeretnéd deaktiválni?\n\n" + options + "\n\nÍrd be a sorszámot (1-" + activeCurses.length + "):");
+      const num = parseInt(choice);
+      if (!num || num < 1 || num > activeCurses.length) {
+        alert("Érvénytelen választás – zsetonod visszakerül.");
+        state.tokens += item.price;
+      } else {
+        state.curses[activeCurses[num - 1].idx].status = "deactivated";
+        renderCurses();
+      }
     }
   } else if (itemId === "extra_photo") {
     drawPhoto();

@@ -633,6 +633,18 @@ body {
   background: var(--bg-card); border: 1px solid var(--border-color);
   border-radius: 16px; padding: 16px; margin-bottom: 16px;
 }
+.shop-section-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
+}
+.shop-section-header .shop-section-title { margin-bottom: 0; }
+
+.shop-refresh-btn {
+  background: transparent; border: 1px solid var(--border-color);
+  border-radius: 8px; padding: 4px 8px; font-size: 0.9rem;
+  cursor: pointer; color: var(--text-muted); transition: all 0.2s;
+}
+.shop-refresh-btn:hover { background: var(--bg-secondary); color: var(--text-primary); }
+
 .shop-section-title {
   font-size: 0.85rem; font-weight: 700; color: var(--text-secondary);
   text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px;
