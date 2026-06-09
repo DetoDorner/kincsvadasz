@@ -695,6 +695,44 @@ body.lightbox-open { overflow: hidden; }
 }
 .btn-use-ability:active { transform: scale(0.97); box-shadow: 0 2px 7px rgba(109,40,217,0.4); }
 
+/* Krokodildó téma – képességek: zöld */
+.theme-krokodildo .ability-card {
+  background: linear-gradient(145deg, var(--bg-card) 0%, rgba(76,175,80,0.07) 100%);
+  border-color: rgba(76,175,80,0.35);
+  box-shadow: 0 4px 18px rgba(76,175,80,0.1);
+}
+.theme-krokodildo .ability-card::before {
+  background: linear-gradient(90deg, transparent, rgba(76,175,80,0.5), transparent);
+}
+.theme-krokodildo .ability-num-badge {
+  color: rgba(76,175,80,0.9); background: rgba(76,175,80,0.12); border-color: rgba(76,175,80,0.25);
+}
+.theme-krokodildo .ability-icon-col { filter: drop-shadow(0 0 8px rgba(76,175,80,0.5)); }
+.theme-krokodildo .btn-use-ability {
+  background: linear-gradient(135deg, #2e7d32, #4caf50);
+  box-shadow: 0 4px 14px rgba(46,125,50,0.5);
+}
+.theme-krokodildo .btn-use-ability:active { box-shadow: 0 2px 7px rgba(46,125,50,0.4); }
+
+/* Felsőszank téma – képességek: arany */
+.theme-felsoszank .ability-card {
+  background: linear-gradient(145deg, var(--bg-card) 0%, rgba(201,162,39,0.07) 100%);
+  border-color: rgba(201,162,39,0.4);
+  box-shadow: 0 4px 18px rgba(201,162,39,0.12);
+}
+.theme-felsoszank .ability-card::before {
+  background: linear-gradient(90deg, transparent, rgba(201,162,39,0.55), transparent);
+}
+.theme-felsoszank .ability-num-badge {
+  color: rgba(201,162,39,0.95); background: rgba(201,162,39,0.12); border-color: rgba(201,162,39,0.3);
+}
+.theme-felsoszank .ability-icon-col { filter: drop-shadow(0 0 8px rgba(201,162,39,0.55)); }
+.theme-felsoszank .btn-use-ability {
+  background: linear-gradient(135deg, #92400e, #c9a227);
+  box-shadow: 0 4px 14px rgba(146,64,14,0.5);
+}
+.theme-felsoszank .btn-use-ability:active { box-shadow: 0 2px 7px rgba(146,64,14,0.4); }
+
 /* Imposztor szekció a karakteren */
 .impostor-section {
   background: var(--bg-card); border: 1px solid var(--border-color);
@@ -901,6 +939,8 @@ body.lightbox-open { overflow: hidden; }
   font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
 }
 .btn-toggle-return.active { border-color: #7c3aed; background: rgba(124,58,237,0.12); color: #7c3aed; }
+.theme-krokodildo .btn-toggle-return.active { border-color: #4caf50; background: rgba(76,175,80,0.12); color: #4caf50; }
+.theme-felsoszank .btn-toggle-return.active { border-color: #c9a227; background: rgba(201,162,39,0.12); color: #c9a227; }
 
 .btn-reset-char {
   width: 100%; padding: 13px; border: 1px solid var(--accent-legendary);

@@ -697,7 +697,7 @@ function renderKarakter() {
           <span class="impostor-label">Gyanúsítottad:</span>
           <strong class="impostor-name-display">${state.impostorName}</strong>
         </div>
-        <p class="impostor-change-hint">⚠️ Módosításhoz vásárold meg a Boltban (2 🪙)</p>
+        <p class="impostor-change-hint">⚠️ Módosítási jogot a Boltban vásárolhatsz!</p>
       `}
     </div>
   `;
