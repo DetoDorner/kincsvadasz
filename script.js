@@ -19,7 +19,8 @@ let state = {
   returnMode:           false,
   lives:                3,
   favoritePhotos:       {},     // { photoId: true }
-  notes:                [],     // [{ id, title, text, createdAt }]
+  notes:                [],     // [{ id, title, text, createdAt, modified? }]
+  sips:                 0,
 };
 
 let currentFilter  = "all";
@@ -70,6 +71,7 @@ function loadState() {
     state.lives                 = (p.lives !== undefined) ? p.lives : 3;
     state.favoritePhotos        = p.favoritePhotos        || {};
     state.notes                 = p.notes                 || [];
+    state.sips                  = p.sips                  || 0;
   } catch (e) {
     console.warn("Betöltési hiba:", e);
   }
@@ -215,6 +217,7 @@ function renderAll() {
   updateStats();
   updateTokenDisplay();
   updateReturnModeArea();
+  updateSipDisplay();
 }
 
 // ── SZŰRŐ ────────────────────────────────────────────────────
@@ -579,6 +582,25 @@ function updateStats() {
   document.getElementById("statMissions").textContent = state.missions.length;
   document.getElementById("statCurses").textContent   = state.curses.length;
   document.getElementById("statPhotos").textContent   = Object.keys(state.photos).length;
+}
+
+function adjustSips(delta) {
+  state.sips = Math.max(0, (state.sips || 0) + delta);
+  saveState();
+  const el = document.getElementById("sipCount");
+  if (el) el.textContent = state.sips;
+  // Animáció
+  const wrap = document.querySelector(".sip-value-wrap");
+  if (wrap) {
+    wrap.classList.remove("sip-pop");
+    void wrap.offsetWidth; // reflow
+    wrap.classList.add("sip-pop");
+  }
+}
+
+function updateSipDisplay() {
+  const el = document.getElementById("sipCount");
+  if (el) el.textContent = state.sips || 0;
 }
 
 function updateTokenDisplay() {
@@ -958,38 +980,91 @@ function renderNotes() {
   }
 
   list.innerHTML = "";
-  // Legújabb elől
-  [...state.notes].reverse().forEach(note => {
-    const preview = note.text.length > 90
-      ? note.text.slice(0, 90).trimEnd() + "…"
-      : note.text;
-    const dateStr = new Date(note.createdAt).toLocaleDateString("hu-HU", {
-      month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
-    });
+  [...state.notes].reverse().forEach(note => buildNoteCard(note, list));
+}
 
-    const card = document.createElement("div");
-    card.className = "note-card";
-    card.innerHTML = `
-      <div class="note-card-header">
-        <span class="note-card-title">${escapeHtml(note.title)}</span>
+function buildNoteCard(note, container) {
+  const preview = note.text.length > 90
+    ? note.text.slice(0, 90).trimEnd() + "…"
+    : note.text;
+  const dateStr = new Date(note.createdAt).toLocaleDateString("hu-HU", {
+    month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
+  });
+  const modTag = note.modified
+    ? ' <span class="note-modified-tag">(módosított)</span>' : "";
+
+  const card = document.createElement("div");
+  card.className = "note-card";
+  card.dataset.noteId = note.id;
+  card.innerHTML = `
+    <div class="note-card-header">
+      <span class="note-card-title">${escapeHtml(note.title)}${modTag}</span>
+      <div class="note-card-actions">
+        <button class="note-edit-btn" onclick="openNoteEdit('${note.id}')" title="Szerkesztés">✏️</button>
         <button class="note-delete-btn" onclick="deleteNote('${note.id}')" title="Törlés">🗑️</button>
       </div>
-      <p class="note-card-preview">${escapeHtml(preview)}</p>
-      <span class="note-card-date">${dateStr}</span>
-    `;
-    // Teljes szöveg megjelenítése kattintásra (toggle)
-    card.addEventListener("click", (e) => {
-      if (e.target.classList.contains("note-delete-btn")) return;
-      card.classList.toggle("note-expanded");
-      const prev = card.querySelector(".note-card-preview");
-      if (card.classList.contains("note-expanded")) {
-        prev.textContent = note.text;
-      } else {
-        prev.textContent = preview;
-      }
-    });
-    list.appendChild(card);
+    </div>
+    <p class="note-card-preview">${escapeHtml(preview)}</p>
+    <span class="note-card-date">${dateStr}</span>
+  `;
+  // Teljes szöveg kattintásra
+  card.addEventListener("click", (e) => {
+    if (e.target.closest(".note-card-actions")) return;
+    card.classList.toggle("note-expanded");
+    card.querySelector(".note-card-preview").textContent =
+      card.classList.contains("note-expanded") ? note.text : preview;
   });
+  container.appendChild(card);
+}
+
+function openNoteEdit(id) {
+  const note = state.notes.find(n => n.id === id);
+  if (!note) return;
+  const card = document.querySelector(`.note-card[data-note-id="${id}"]`);
+  if (!card) return;
+
+  card.classList.add("note-editing");
+  card.innerHTML = `
+    <div class="note-edit-form">
+      <input type="text" class="notes-title-input note-edit-title"
+             value="${escapeHtml(note.title)}" maxlength="100" placeholder="Cím"/>
+      <div class="notes-textarea-wrap">
+        <textarea class="notes-textarea note-edit-text"
+                  maxlength="500" rows="4"
+                  oninput="updateEditCounter(this)">${escapeHtml(note.text)}</textarea>
+        <span class="notes-char-counter note-edit-counter">${note.text.length} / 500</span>
+      </div>
+      <div class="note-edit-btns">
+        <button class="btn-note-save" onclick="saveNoteEdit('${id}')">💾 Mentés</button>
+        <button class="btn-note-cancel" onclick="renderNotes()">✕ Mégse</button>
+      </div>
+    </div>
+  `;
+}
+
+function saveNoteEdit(id) {
+  const card     = document.querySelector(`.note-card[data-note-id="${id}"]`);
+  const titleEl  = card?.querySelector(".note-edit-title");
+  const textEl   = card?.querySelector(".note-edit-text");
+  const title    = titleEl?.value.trim();
+  if (!title) { titleEl?.classList.add("input-error"); return; }
+
+  const note = state.notes.find(n => n.id === id);
+  if (!note) return;
+  note.title    = title;
+  note.text     = textEl?.value.trim() || "";
+  note.modified = true;
+  saveState();
+  renderNotes();
+}
+
+function updateEditCounter(textarea) {
+  const counter = textarea.closest(".notes-textarea-wrap")
+                          ?.querySelector(".note-edit-counter");
+  if (counter) {
+    counter.textContent = textarea.value.length + " / 500";
+    counter.classList.toggle("notes-char-warn", textarea.value.length >= 450);
+  }
 }
 
 function addNote() {
@@ -1044,7 +1119,7 @@ function resetGame() {
     missions: [], curses: [], photos: {}, collectedTreasures: [],
     lastMissionId: null, lastCurseId: null,
     tokens: 0, character: null, impostorName: "", impostorChangePurchased: false,
-    returnMode: false, lives: 3, favoritePhotos: {}, notes: [],
+    returnMode: false, lives: 3, favoritePhotos: {}, notes: [], sips: 0,
   });
   localStorage.removeItem(SAVE_KEY);
   document.getElementById("resultCard").classList.add("hidden");
