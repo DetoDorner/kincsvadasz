@@ -27,7 +27,7 @@
         <button class="btn-return-draw" onclick="drawReturnMode()">
           <span class="return-icon">🔄</span>
           <div class="return-texts">
-            <span class="return-label">Visszaút húzás</span>
+            <span class="return-label">Visszaúti húzás</span>
             <span class="return-sub">60% küldetés · 20% átok · 10% kincs · 10% kép</span>
           </div>
         </button>
@@ -253,6 +253,13 @@
       <span class="nav-label">Beáll.</span>
     </button>
   </nav>
+
+  <!-- LIGHTBOX -->
+  <div id="photoLightbox" class="photo-lightbox hidden" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <img id="lightboxImg" class="lightbox-img" src="" alt="" onclick="event.stopPropagation()">
+    <div id="lightboxCaption" class="lightbox-caption"></div>
+  </div>
 
   <script src="data.js"></script>
   <script src="script.js"></script>

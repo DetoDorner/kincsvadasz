@@ -18,9 +18,11 @@ let state = {
   impostorChangePurchased: false,
   returnMode:           false,
   lives:                3,
+  favoritePhotos:       {},     // { photoId: true }
 };
 
-let currentFilter = "all";
+let currentFilter  = "all";
+let kedvencFilter  = false;   // kedvencek-először nézet
 
 // ── BOLT TERMÉKEK ────────────────────────────────────────────
 
@@ -65,6 +67,7 @@ function loadState() {
     state.impostorChangePurchased = p.impostorChangePurchased || false;
     state.returnMode            = p.returnMode            || false;
     state.lives                 = (p.lives !== undefined) ? p.lives : 3;
+    state.favoritePhotos        = p.favoritePhotos        || {};
   } catch (e) {
     console.warn("Betöltési hiba:", e);
   }
@@ -372,6 +375,15 @@ function renderGallery() {
   }
   container.innerHTML = "";
 
+  // Kedvencek szűrő gomb
+  const filterRow = document.createElement("div");
+  filterRow.className = "gallery-filter-row";
+  filterRow.innerHTML = `
+    <button class="gallery-fav-toggle ${kedvencFilter ? 'active' : ''}"
+            onclick="toggleKedvencFilter()">⭐ Kedvencek</button>
+  `;
+  container.appendChild(filterRow);
+
   // Ritkaság szerinti rendezés: legendary → rare → common
   const rarityOrder = { legendary: 0, rare: 1, common: 2 };
   const sorted = Object.entries(state.photos).sort(([aId], [bId]) => {
@@ -380,14 +392,16 @@ function renderGallery() {
     return (rarityOrder[ra] ?? 3) - (rarityOrder[rb] ?? 3);
   });
 
-  sorted.forEach(([photoId, count]) => {
+  function buildCard(photoId, count) {
     const data = photos.find(p => p.id === photoId);
-    if (!data) return;
+    if (!data) return null;
+    const isFav = !!state.favoritePhotos[photoId];
     const card = document.createElement("div");
     card.className = "photo-card rarity-" + data.rarity;
     card.innerHTML = `
       ${count > 1 ? `<div class="photo-count-badge">×${count}</div>` : ""}
-      <button class="photo-delete-btn" onclick="deletePhoto('${data.id}')" title="Törlés">🗑️</button>
+      <button class="photo-fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite(event,'${data.id}')" title="Kedvenc">⭐</button>
+      <button class="photo-delete-btn" onclick="deletePhoto(event,'${data.id}')" title="Törlés">🗑️</button>
       <img class="photo-card-img" src="${data.src}" alt="${data.name}"
            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
       <div class="photo-placeholder" style="display:none;">${rarityEmoji(data.rarity)}</div>
@@ -396,8 +410,73 @@ function renderGallery() {
         <div class="photo-card-rarity rarity-label-${data.rarity}">${rarityLabel(data.rarity)}</div>
       </div>
     `;
-    container.appendChild(card);
-  });
+    card.addEventListener("click", () => openLightbox(data.src, data.name));
+    return card;
+  }
+
+  if (kedvencFilter) {
+    const favs   = sorted.filter(([id]) => state.favoritePhotos[id]);
+    const others = sorted.filter(([id]) => !state.favoritePhotos[id]);
+
+    if (favs.length > 0) {
+      const hdr = document.createElement("div");
+      hdr.className = "gallery-subsection-title";
+      hdr.textContent = "⭐ Kedvencek";
+      container.appendChild(hdr);
+      const grid = document.createElement("div");
+      grid.className = "gallery-sub-grid";
+      favs.forEach(([id, cnt]) => { const c = buildCard(id, cnt); if (c) grid.appendChild(c); });
+      container.appendChild(grid);
+    }
+
+    if (others.length > 0) {
+      const hdr2 = document.createElement("div");
+      hdr2.className = "gallery-subsection-title";
+      hdr2.textContent = favs.length > 0 ? "📷 Többi" : "📷 Képek";
+      container.appendChild(hdr2);
+      const grid2 = document.createElement("div");
+      grid2.className = "gallery-sub-grid";
+      others.forEach(([id, cnt]) => { const c = buildCard(id, cnt); if (c) grid2.appendChild(c); });
+      container.appendChild(grid2);
+    }
+
+    if (favs.length === 0 && others.length === 0) {
+      container.innerHTML = '<p class="empty-state">A galériád üres.</p>';
+    }
+  } else {
+    const grid = document.createElement("div");
+    grid.className = "gallery-sub-grid";
+    sorted.forEach(([id, cnt]) => { const c = buildCard(id, cnt); if (c) grid.appendChild(c); });
+    container.appendChild(grid);
+  }
+}
+
+function toggleKedvencFilter() {
+  kedvencFilter = !kedvencFilter;
+  renderGallery();
+}
+
+function toggleFavorite(e, photoId) {
+  e.stopPropagation();
+  if (state.favoritePhotos[photoId]) {
+    delete state.favoritePhotos[photoId];
+  } else {
+    state.favoritePhotos[photoId] = true;
+  }
+  saveState();
+  renderGallery();
+}
+
+function openLightbox(src, name) {
+  document.getElementById("lightboxImg").src = src;
+  document.getElementById("lightboxCaption").textContent = name;
+  document.getElementById("photoLightbox").classList.remove("hidden");
+  document.body.classList.add("lightbox-open");
+}
+
+function closeLightbox() {
+  document.getElementById("photoLightbox").classList.add("hidden");
+  document.body.classList.remove("lightbox-open");
 }
 
 // ── AKCIÓK ───────────────────────────────────────────────────
@@ -480,10 +559,12 @@ function sellTreasure(idx) {
   updateStats();
 }
 
-function deletePhoto(photoId) {
+function deletePhoto(e, photoId) {
+  e.stopPropagation();
   const data = photos.find(p => p.id === photoId);
   if (!confirm("Biztosan törölni szeretnéd?\n\n" + (data?.name || "ezt a képet"))) return;
   delete state.photos[photoId];
+  delete state.favoritePhotos[photoId];
   saveState();
   renderGallery();
   updateStats();
@@ -870,10 +951,15 @@ function resetGame() {
     missions: [], curses: [], photos: {}, collectedTreasures: [],
     lastMissionId: null, lastCurseId: null,
     tokens: 0, character: null, impostorName: "", impostorChangePurchased: false,
-    returnMode: false, lives: 1,
+    returnMode: false, lives: 3, favoritePhotos: {},
   });
   localStorage.removeItem(SAVE_KEY);
   document.getElementById("resultCard").classList.add("hidden");
+  const endSummary = document.getElementById("endSummary");
+  if (endSummary) { endSummary.innerHTML = ""; endSummary.classList.add("hidden"); }
+  const tri = document.getElementById("trueImpostorInput");
+  if (tri) tri.value = "";
+  kedvencFilter = false;
   currentFilter = "all";
   document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
   document.getElementById("filter-all")?.classList.add("active");
