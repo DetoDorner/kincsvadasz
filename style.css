@@ -1188,6 +1188,12 @@ body.lightbox-open { overflow: hidden; }
 
 /* ── TUTORIAL ────────────────────────────────────────────── */
 .tutorial-body { display: flex; flex-direction: column; gap: 0; }
+.tutorial-title {
+  font-size: 1rem; font-weight: 900; color: var(--text-primary);
+  text-align: center; padding: 4px 0 14px;
+  border-bottom: 1px solid var(--border-color); margin-bottom: 2px;
+  letter-spacing: 0.2px;
+}
 .tutorial-section {
   padding: 12px 0; border-bottom: 1px solid var(--border-color);
 }
