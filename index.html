@@ -2,34 +2,38 @@
 <html lang="hu">
 <head>
   <meta charset="UTF-8" />
-  <!-- Mobilon teljes szélességű megjelenítés -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0a0e1a" />
-  <title>Kincsvadász</title>
-  <!-- PWA manifest – ez adja az app nevet, ikont, háttérszínt -->
+  <title>Kincsvadászat</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="theme-night">
 
-  <!-- ══════════════════════════════════════
-       FEJLÉC
-  ══════════════════════════════════════ -->
+  <!-- FEJLÉC -->
   <header class="app-header">
     <span class="app-logo">⛺</span>
     <h1 class="app-title">Kincsvadászat</h1>
-    <span class="app-subtitle" id="headerSubtitle">Éjszakai kaland</span>
+    <span class="token-display" id="headerTokens">🪙 0</span>
   </header>
 
-  <!-- ══════════════════════════════════════
-       FŐ TARTALOM TERÜLET
-  ══════════════════════════════════════ -->
   <main class="app-main">
 
-    <!-- ── BEGYŰJTÉS FÜL ──────────────────── -->
+    <!-- ── BEGYŰJTÉS FÜL ────────────────────────── -->
     <section id="tab-collect" class="tab-panel active">
 
-      <!-- Aktuális eredménykártya – húzás után jelenik meg -->
+      <!-- Visszaút mód gomb -->
+      <div id="returnModeArea" class="hidden">
+        <button class="btn-return-draw" onclick="drawReturnMode()">
+          <span class="return-icon">🔄</span>
+          <div class="return-texts">
+            <span class="return-label">Visszaút húzás</span>
+            <span class="return-sub">60% küldetés · 20% átok · 10% kincs · 10% kép</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- Eredménykártya -->
       <div id="resultCard" class="result-card hidden">
         <div class="result-card-inner">
           <div class="result-type-badge" id="resultType"></div>
@@ -37,7 +41,7 @@
           <p class="result-description" id="resultDescription"></p>
           <div class="result-extra" id="resultExtra"></div>
         </div>
-        <button class="btn-dismiss" id="btnDismiss" onclick="dismissResult()">✕ Bezárás</button>
+        <button class="btn-dismiss" onclick="dismissResult()">✕ Bezárás</button>
       </div>
 
       <!-- Húzó gombok -->
@@ -47,19 +51,16 @@
           <span class="draw-btn-label">Küldetés húzása</span>
           <span class="draw-btn-sub">véletlenszerű kaland</span>
         </button>
-
         <button class="draw-btn draw-curse" onclick="drawCurse()">
           <span class="draw-btn-icon">💀</span>
           <span class="draw-btn-label">Átok húzása</span>
           <span class="draw-btn-sub">mit hoz a sors?</span>
         </button>
-
         <button class="draw-btn draw-treasure" onclick="drawTreasure()">
           <span class="draw-btn-icon">💎</span>
           <span class="draw-btn-label">Kincs húzása</span>
           <span class="draw-btn-sub">szerencse forgandó</span>
         </button>
-
         <button class="draw-btn draw-photo" onclick="drawPhoto()">
           <span class="draw-btn-icon">📸</span>
           <span class="draw-btn-label">Kép húzása</span>
@@ -67,7 +68,7 @@
         </button>
       </div>
 
-      <!-- Statisztikák – kis összesítő a Begyűjtés alján -->
+      <!-- Statisztika sáv -->
       <div class="stats-bar">
         <div class="stat-item">
           <span class="stat-num" id="statMissions">0</span>
@@ -85,13 +86,20 @@
         </div>
       </div>
 
-    </section><!-- /tab-collect -->
+    </section>
 
-    <!-- ── TÁBOR FÜL ───────────────────────── -->
+    <!-- ── HÁTIZSÁK FÜL ──────────────────────────── -->
     <section id="tab-camp" class="tab-panel">
 
-      <!-- Begyűjtött küldetések -->
-      <div class="camp-section">
+      <div class="filter-bar">
+        <button class="filter-btn active" id="filter-all"       onclick="setFilter('all')">Minden</button>
+        <button class="filter-btn"        id="filter-missions"  onclick="setFilter('missions')">🗺️ Küldetés</button>
+        <button class="filter-btn"        id="filter-curses"    onclick="setFilter('curses')">💀 Átok</button>
+        <button class="filter-btn"        id="filter-treasures" onclick="setFilter('treasures')">💎 Kincs</button>
+        <button class="filter-btn"        id="filter-photos"    onclick="setFilter('photos')">📸 Kép</button>
+      </div>
+
+      <div id="section-missions" class="camp-section">
         <h2 class="section-title">
           <span class="section-icon">🗺️</span> Küldetések
           <span class="badge" id="badgeMissions">0</span>
@@ -101,8 +109,7 @@
         </div>
       </div>
 
-      <!-- Birtokolt átkok -->
-      <div class="camp-section">
+      <div id="section-curses" class="camp-section">
         <h2 class="section-title">
           <span class="section-icon">💀</span> Átkok
           <span class="badge badge-curse" id="badgeCurses">0</span>
@@ -112,8 +119,7 @@
         </div>
       </div>
 
-      <!-- Kihúzott kincsek -->
-      <div class="camp-section">
+      <div id="section-treasures" class="camp-section">
         <h2 class="section-title">
           <span class="section-icon">💎</span> Kincsek
           <span class="badge badge-treasure" id="badgeTreasures">0</span>
@@ -123,8 +129,7 @@
         </div>
       </div>
 
-      <!-- Képgaléria -->
-      <div class="camp-section">
+      <div id="section-photos" class="camp-section">
         <h2 class="section-title">
           <span class="section-icon">📸</span> Képgaléria
           <span class="badge badge-photo" id="badgePhotos">0</span>
@@ -134,9 +139,19 @@
         </div>
       </div>
 
-    </section><!-- /tab-camp -->
+    </section>
 
-    <!-- ── BEÁLLÍTÁSOK FÜL ─────────────────── -->
+    <!-- ── KARAKTER FÜL ──────────────────────────── -->
+    <section id="tab-character" class="tab-panel">
+      <div id="characterContent"></div>
+    </section>
+
+    <!-- ── BOLT FÜL ──────────────────────────────── -->
+    <section id="tab-shop" class="tab-panel">
+      <div id="shopContent"></div>
+    </section>
+
+    <!-- ── BEÁLLÍTÁSOK FÜL ───────────────────────── -->
     <section id="tab-settings" class="tab-panel">
 
       <div class="settings-group">
@@ -151,6 +166,20 @@
             <span>Punikornis</span>
           </button>
         </div>
+      </div>
+
+      <div class="settings-group">
+        <h2 class="settings-title">🔄 Visszaút mód</h2>
+        <p class="settings-desc">Ha aktív, a Begyűjtés fülön megjelenik egy nagy véletlenszerű húzás gomb (60% küldetés · 20% átok · 10% kincs · 10% kép).</p>
+        <button class="btn-toggle-return" id="btnReturnMode" onclick="toggleReturnMode()">
+          Visszaút mód: <span id="returnModeStatus">KI</span>
+        </button>
+      </div>
+
+      <div class="settings-group">
+        <h2 class="settings-title">🎭 Karakter reset</h2>
+        <p class="settings-desc">A karakterválasztás törlésével újra kiválaszthatsz egy szerepet. Az imposztorjelölés is törlődik.</p>
+        <button class="btn-reset-char" onclick="resetCharacter()">🎭 Karakterválasztás újraindítása</button>
       </div>
 
       <div class="settings-group">
@@ -175,47 +204,57 @@
         </div>
       </div>
 
-      <div class="settings-group settings-danger">
-        <h2 class="settings-title">⚠️ Veszélyzóna</h2>
-        <p class="settings-desc">A reset törli az összes mentett adatot: küldetések, átkok, képgaléria, előzmények.</p>
-        <button class="btn-reset" onclick="resetGame()">
-          🗑️ Teljes játék resetelése
-        </button>
+      <div class="settings-group">
+        <h2 class="settings-title">🏆 Játék lezárása – Imposztor kiértékelés</h2>
+        <p class="settings-desc">Add meg a valódi imposztor nevét. A rendszer automatikusan kiértékeli a küldetésenkénti jelöléseidet (+2 helyes / −1 hibás).</p>
+        <input type="text" id="trueImpostorInput" placeholder="Ki volt az imposztor?" class="settings-text-input" />
+        <button class="btn-evaluate" onclick="evaluateImpostor()">🔍 Kiértékelés indítása</button>
+        <div id="endSummary" class="hidden"></div>
       </div>
 
-    </section><!-- /tab-settings -->
+      <div class="settings-group settings-danger">
+        <h2 class="settings-title">⚠️ Veszélyzóna</h2>
+        <p class="settings-desc">A reset törli az összes mentett adatot: küldetések, átkok, képgaléria, zseton, karakter.</p>
+        <button class="btn-reset" onclick="resetGame()">🗑️ Teljes játék resetelése</button>
+      </div>
+
+    </section>
 
   </main>
 
-  <!-- ══════════════════════════════════════
-       ALSÓ NAVIGÁCIÓ
-  ══════════════════════════════════════ -->
+  <!-- ALSÓ NAVIGÁCIÓ -->
   <nav class="bottom-nav">
     <button class="nav-btn active" id="navCollect" onclick="switchTab('collect')">
       <span class="nav-icon">🎲</span>
-      <span class="nav-label">Begyűjtés</span>
+      <span class="nav-label">Húzás</span>
     </button>
     <button class="nav-btn" id="navCamp" onclick="switchTab('camp')">
       <span class="nav-icon">🎒</span>
       <span class="nav-label">Hátizsák</span>
     </button>
+    <button class="nav-btn" id="navCharacter" onclick="switchTab('character')">
+      <span class="nav-icon">🎭</span>
+      <span class="nav-label">Karakter</span>
+    </button>
+    <button class="nav-btn" id="navShop" onclick="switchTab('shop')">
+      <span class="nav-icon">🏪</span>
+      <span class="nav-label">Bolt</span>
+    </button>
     <button class="nav-btn" id="navSettings" onclick="switchTab('settings')">
       <span class="nav-icon">⚙️</span>
-      <span class="nav-label">Beállítások</span>
+      <span class="nav-label">Beáll.</span>
     </button>
   </nav>
 
-  <!-- Adatok és logika -->
   <script src="data.js"></script>
   <script src="script.js"></script>
 
-  <!-- PWA Service Worker regisztráció -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./service-worker.js')
-          .then(() => console.log('[PWA] Service Worker regisztrálva'))
-          .catch(err => console.warn('[PWA] Service Worker hiba:', err));
+          .then(() => console.log('[PWA] SW regisztrálva'))
+          .catch(err => console.warn('[PWA] SW hiba:', err));
       });
     }
   </script>

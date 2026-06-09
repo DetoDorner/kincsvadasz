@@ -155,6 +155,64 @@ const treasures = [
   }
 ];
 
+// ─── KARAKTEREK ─────────────────────────────────────────────
+const characters = [
+  {
+    id: "role_felfedező",
+    name: "🧭 Felfedező",
+    description: "A távolságok nem riasztják, mindig talál új ösvényt.",
+    abilities: [
+      { id: "a1", name: "Dupla lépés",   description: "Egyszer húzhatsz 2 küldetést egyszerre – kiválasztod melyiket tartod meg." },
+      { id: "a2", name: "Rövidített út", description: "Egy aktív küldetésedet automatikusan teljesítettnek nyilváníthatod – jutalom nélkül, de pontszámmal." }
+    ]
+  },
+  {
+    id: "role_kereskedő",
+    name: "💰 Kereskedő",
+    description: "Mindig tud alkudni – számára a zseton a hatalom.",
+    abilities: [
+      { id: "a1", name: "Kincscsere",  description: "Egy kincset visszaadhatod és helyette húzhatsz egy újat." },
+      { id: "a2", name: "Félárú bolt", description: "Egyszer a boltban bármit megvehetsz fél áron (lefelé kerekítve)." }
+    ]
+  },
+  {
+    id: "role_harcos",
+    name: "⚔️ Harcos",
+    description: "Erős és elszánt – az átkok nem félemlítik meg.",
+    abilities: [
+      { id: "a1", name: "Átokpajzs", description: "Egyszer automatikusan semlegesítheted a következő húzott átkot." },
+      { id: "a2", name: "Bosszú",    description: "Minden deaktiválásnál +1 extra zsetont kapsz jutalmul." }
+    ]
+  },
+  {
+    id: "role_kém",
+    name: "🕵️ Kém",
+    description: "Mindenkit megfigyel – tudja, ki kit rejteget.",
+    abilities: [
+      { id: "a1", name: "Leleplezés",  description: "Egyszer ingyen módosíthatod az imposztorjelölésedet (bolt nélkül)." },
+      { id: "a2", name: "Kémjelentés", description: "Ha a játék végén az imposztor-tippjeid legalább 50%-a helyes, +3 bónusz zsetont kapsz." }
+    ]
+  },
+  {
+    id: "role_varázsló",
+    name: "🔮 Varázsló",
+    description: "A véletlent is meg tudja hajlítani akaratával.",
+    abilities: [
+      { id: "a1", name: "Kártyacsere",    description: "Egyszer bármely húzott kártyádat visszadhatod és újrahúzhatsz." },
+      { id: "a2", name: "Szerencsebűbáj", description: "Egyszer húzhatsz 2 képet egyszerre – mindkettőt megtarthatod." }
+    ]
+  },
+  {
+    id: "role_csalivetető",
+    name: "🃏 Csalivetető",
+    description: "Megtéveszt, megzavar – soha nem tudod mit lép következőnek.",
+    abilities: [
+      { id: "a1", name: "Átokvisszadobás", description: "Egyszer egy aktív átkot visszaadhatsz a paklinak – mintha soha nem húztad volna." },
+      { id: "a2", name: "Álca",            description: "Egyszer elrejthetsz egy kincset a táskádban – más játékosok nem láthatják azt az elemet." }
+    ]
+  }
+];
+
 // ─── KÉPEK (FOTÓK) ──────────────────────────────────────────
 // Ritkaság szintek: "common" | "rare" | "legendary"
 // A képfájlokat tedd a megfelelő mappákba:
