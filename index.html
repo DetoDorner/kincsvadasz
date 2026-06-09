@@ -151,6 +151,29 @@
       <div id="shopContent"></div>
     </section>
 
+    <!-- ── JEGYZETEK FÜL ──────────────────────────── -->
+    <section id="tab-notes" class="tab-panel">
+
+      <div class="notes-form-card">
+        <h2 class="notes-form-title">✏️ Új jegyzet</h2>
+        <input  type="text" id="noteTitle"
+                class="notes-title-input" placeholder="Cím" maxlength="100" />
+        <div class="notes-textarea-wrap">
+          <textarea id="noteText"
+                    class="notes-textarea" placeholder="Leírás (max. 500 karakter)…"
+                    maxlength="500" rows="4"
+                    oninput="updateNoteCounter()"></textarea>
+          <span class="notes-char-counter" id="noteCounter">0 / 500</span>
+        </div>
+        <button class="btn-add-note" onclick="addNote()">＋ Hozzáadás</button>
+      </div>
+
+      <div id="notesList" class="notes-list">
+        <p class="empty-state">Még nincs egyetlen jegyzet sem.</p>
+      </div>
+
+    </section>
+
     <!-- ── BEÁLLÍTÁSOK FÜL ───────────────────────── -->
     <section id="tab-settings" class="tab-panel">
 
@@ -234,7 +257,7 @@
   <nav class="bottom-nav">
     <button class="nav-btn active" id="navCollect" onclick="switchTab('collect')">
       <span class="nav-icon">🎲</span>
-      <span class="nav-label">Húzás</span>
+      <span class="nav-label">Begyűjtés</span>
     </button>
     <button class="nav-btn" id="navCamp" onclick="switchTab('camp')">
       <span class="nav-icon">🎒</span>
@@ -247,6 +270,10 @@
     <button class="nav-btn" id="navShop" onclick="switchTab('shop')">
       <span class="nav-icon">🏪</span>
       <span class="nav-label">Bolt</span>
+    </button>
+    <button class="nav-btn" id="navNotes" onclick="switchTab('notes')">
+      <span class="nav-icon">📝</span>
+      <span class="nav-label">Jegyzetek</span>
     </button>
     <button class="nav-btn" id="navSettings" onclick="switchTab('settings')">
       <span class="nav-icon">⚙️</span>

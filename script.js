@@ -19,6 +19,7 @@ let state = {
   returnMode:           false,
   lives:                3,
   favoritePhotos:       {},     // { photoId: true }
+  notes:                [],     // [{ id, title, text, createdAt }]
 };
 
 let currentFilter  = "all";
@@ -68,6 +69,7 @@ function loadState() {
     state.returnMode            = p.returnMode            || false;
     state.lives                 = (p.lives !== undefined) ? p.lives : 3;
     state.favoritePhotos        = p.favoritePhotos        || {};
+    state.notes                 = p.notes                 || [];
   } catch (e) {
     console.warn("Betöltési hiba:", e);
   }
@@ -85,6 +87,7 @@ function switchTab(tabName) {
   if (tabName === "character") renderKarakter();
   if (tabName === "shop")      renderBolt();
   if (tabName === "camp")      renderHatizsak();
+  if (tabName === "notes")     renderNotes();
 }
 
 // ── HÚZÁS LOGIKA ─────────────────────────────────────────────
@@ -943,6 +946,96 @@ function setTheme(theme) {
   saveState();
 }
 
+// ── JEGYZETEK ────────────────────────────────────────────────
+
+function renderNotes() {
+  const list = document.getElementById("notesList");
+  if (!list) return;
+
+  if (state.notes.length === 0) {
+    list.innerHTML = '<p class="empty-state">Még nincs egyetlen jegyzet sem.</p>';
+    return;
+  }
+
+  list.innerHTML = "";
+  // Legújabb elől
+  [...state.notes].reverse().forEach(note => {
+    const preview = note.text.length > 90
+      ? note.text.slice(0, 90).trimEnd() + "…"
+      : note.text;
+    const dateStr = new Date(note.createdAt).toLocaleDateString("hu-HU", {
+      month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
+    });
+
+    const card = document.createElement("div");
+    card.className = "note-card";
+    card.innerHTML = `
+      <div class="note-card-header">
+        <span class="note-card-title">${escapeHtml(note.title)}</span>
+        <button class="note-delete-btn" onclick="deleteNote('${note.id}')" title="Törlés">🗑️</button>
+      </div>
+      <p class="note-card-preview">${escapeHtml(preview)}</p>
+      <span class="note-card-date">${dateStr}</span>
+    `;
+    // Teljes szöveg megjelenítése kattintásra (toggle)
+    card.addEventListener("click", (e) => {
+      if (e.target.classList.contains("note-delete-btn")) return;
+      card.classList.toggle("note-expanded");
+      const prev = card.querySelector(".note-card-preview");
+      if (card.classList.contains("note-expanded")) {
+        prev.textContent = note.text;
+      } else {
+        prev.textContent = preview;
+      }
+    });
+    list.appendChild(card);
+  });
+}
+
+function addNote() {
+  const titleEl = document.getElementById("noteTitle");
+  const textEl  = document.getElementById("noteText");
+  const title   = titleEl.value.trim();
+  const text    = textEl.value.trim();
+
+  if (!title) { titleEl.focus(); titleEl.classList.add("input-error"); return; }
+  titleEl.classList.remove("input-error");
+
+  state.notes.push({
+    id:        "note_" + Date.now(),
+    title,
+    text,
+    createdAt: Date.now(),
+  });
+  saveState();
+
+  titleEl.value = "";
+  textEl.value  = "";
+  document.getElementById("noteCounter").textContent = "0 / 500";
+  renderNotes();
+}
+
+function deleteNote(id) {
+  const note = state.notes.find(n => n.id === id);
+  if (!confirm("Biztosan törölni szeretnéd?\n\n" + (note?.title || "ezt a jegyzetet"))) return;
+  state.notes = state.notes.filter(n => n.id !== id);
+  saveState();
+  renderNotes();
+}
+
+function updateNoteCounter() {
+  const len = document.getElementById("noteText").value.length;
+  const el  = document.getElementById("noteCounter");
+  if (el) {
+    el.textContent = len + " / 500";
+    el.classList.toggle("notes-char-warn", len >= 450);
+  }
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
 // ── RESET ────────────────────────────────────────────────────
 
 function resetGame() {
@@ -951,7 +1044,7 @@ function resetGame() {
     missions: [], curses: [], photos: {}, collectedTreasures: [],
     lastMissionId: null, lastCurseId: null,
     tokens: 0, character: null, impostorName: "", impostorChangePurchased: false,
-    returnMode: false, lives: 3, favoritePhotos: {},
+    returnMode: false, lives: 3, favoritePhotos: {}, notes: [],
   });
   localStorage.removeItem(SAVE_KEY);
   document.getElementById("resultCard").classList.add("hidden");
