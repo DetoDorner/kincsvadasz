@@ -193,6 +193,7 @@
     <!-- ── BEÁLLÍTÁSOK FÜL ───────────────────────── -->
     <section id="tab-settings" class="tab-panel">
 
+      <!-- 1. Téma – mindig látható -->
       <div class="settings-group">
         <h2 class="settings-title">🎨 Téma</h2>
         <div class="theme-buttons">
@@ -215,20 +216,7 @@
         </div>
       </div>
 
-      <div class="settings-group">
-        <h2 class="settings-title">🔄 Visszaút mód</h2>
-        <p class="settings-desc">Ha aktív, a Begyűjtés fülön megjelenik egy nagy véletlenszerű húzás gomb (60% küldetés · 20% átok · 10% kincs · 10% kép).</p>
-        <button class="btn-toggle-return" id="btnReturnMode" onclick="toggleReturnMode()">
-          Visszaút mód: <span id="returnModeStatus">KI</span>
-        </button>
-      </div>
-
-      <div class="settings-group">
-        <h2 class="settings-title">🎭 Karakter reset</h2>
-        <p class="settings-desc">A karakterválasztás törlésével újra kiválaszthatsz egy szerepet. Az imposztorjelölés is törlődik.</p>
-        <button class="btn-reset-char" onclick="resetCharacter()">🎭 Karakterválasztás újraindítása</button>
-      </div>
-
+      <!-- 2. Összesítő – mindig látható -->
       <div class="settings-group">
         <h2 class="settings-title">ℹ️ Összesítő</h2>
         <div class="summary-grid">
@@ -251,19 +239,57 @@
         </div>
       </div>
 
-      <div class="settings-group">
-        <h2 class="settings-title">🏆 Játék lezárása – Imposztor kiértékelés</h2>
-        <p class="settings-desc">Add meg a valódi imposztor nevét. A rendszer automatikusan kiértékeli a küldetésenkénti jelöléseidet (+2 helyes / −1 hibás).</p>
-        <input type="text" id="trueImpostorInput" placeholder="Ki volt az imposztor?" class="settings-text-input" />
-        <button class="btn-evaluate" onclick="evaluateImpostor()">🔍 Kiértékelés indítása</button>
-        <div id="endSummary" class="hidden"></div>
-      </div>
+      <!-- 3. Visszaút mód – lenyíló -->
+      <details class="settings-group settings-collapsible">
+        <summary class="settings-summary">
+          <span class="settings-summary-label">🔄 Visszaút mód</span>
+          <span class="settings-chevron">›</span>
+        </summary>
+        <div class="settings-collapsible-body">
+          <p class="settings-desc">Ha aktív, a Begyűjtés fülön megjelenik egy nagy véletlenszerű húzás gomb (60% küldetés · 20% átok · 10% kincs · 10% kép).</p>
+          <button class="btn-toggle-return" id="btnReturnMode" onclick="toggleReturnMode()">
+            Visszaút mód: <span id="returnModeStatus">KI</span>
+          </button>
+        </div>
+      </details>
 
-      <div class="settings-group settings-danger">
-        <h2 class="settings-title">⚠️ Veszélyzóna</h2>
-        <p class="settings-desc">A reset törli az összes mentett adatot: küldetések, átkok, képgaléria, zseton, karakter.</p>
-        <button class="btn-reset" onclick="resetGame()">🗑️ Teljes játék resetelése</button>
-      </div>
+      <!-- 4. Karakter reset – lenyíló -->
+      <details class="settings-group settings-collapsible">
+        <summary class="settings-summary">
+          <span class="settings-summary-label">🎭 Karakter reset</span>
+          <span class="settings-chevron">›</span>
+        </summary>
+        <div class="settings-collapsible-body">
+          <p class="settings-desc">A karakterválasztás törlésével újra kiválaszthatsz egy szerepet. Az imposztorjelölés is törlődik.</p>
+          <button class="btn-reset-char" onclick="resetCharacter()">🎭 Karakterválasztás újraindítása</button>
+        </div>
+      </details>
+
+      <!-- 5. Játék lezárása – lenyíló -->
+      <details class="settings-group settings-collapsible">
+        <summary class="settings-summary">
+          <span class="settings-summary-label">🏆 Játék lezárása</span>
+          <span class="settings-chevron">›</span>
+        </summary>
+        <div class="settings-collapsible-body">
+          <p class="settings-desc">Add meg a valódi imposztor nevét. A rendszer automatikusan kiértékeli a küldetésenkénti jelöléseidet (+2 helyes / −1 hibás).</p>
+          <input type="text" id="trueImpostorInput" placeholder="Ki volt az imposztor?" class="settings-text-input" />
+          <button class="btn-evaluate" onclick="evaluateImpostor()">🔍 Kiértékelés indítása</button>
+          <div id="endSummary" class="hidden"></div>
+        </div>
+      </details>
+
+      <!-- 6. Veszélyzóna – lenyíló -->
+      <details class="settings-group settings-collapsible settings-danger">
+        <summary class="settings-summary">
+          <span class="settings-summary-label">⚠️ Veszélyzóna</span>
+          <span class="settings-chevron">›</span>
+        </summary>
+        <div class="settings-collapsible-body">
+          <p class="settings-desc">A reset törli az összes mentett adatot: küldetések, átkok, képgaléria, zseton, karakter.</p>
+          <button class="btn-reset" onclick="resetGame()">🗑️ Teljes játék resetelése</button>
+        </div>
+      </details>
 
     </section>
 
