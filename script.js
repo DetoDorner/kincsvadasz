@@ -665,11 +665,20 @@ function renderKarakter() {
     <div class="abilities-list">
       ${role.abilities.map((ab, i) => `
         <div class="ability-card${used[i] ? " ability-used" : ""}">
-          <div class="ability-name">⚡ ${ab.name}</div>
-          <div class="ability-desc">${ab.description}</div>
+          <div class="ability-card-top">
+            <div class="ability-num-badge">${i + 1}. képesség</div>
+            ${used[i] ? '<div class="ability-used-badge">✅ Felhasználva</div>' : ""}
+          </div>
+          <div class="ability-body">
+            <div class="ability-icon-col">⚡</div>
+            <div class="ability-text-col">
+              <div class="ability-name">${ab.name}</div>
+              <div class="ability-desc">${ab.description}</div>
+            </div>
+          </div>
           ${used[i]
-            ? '<div class="ability-status-tag">✅ Felhasználva</div>'
-            : `<button class="btn-use-ability" onclick="useAbility(${i})">Jelölés felhasználtként</button>`
+            ? ""
+            : `<button class="btn-use-ability" onclick="useAbility(${i})">⚡ Képesség aktiválása</button>`
           }
         </div>
       `).join("")}
