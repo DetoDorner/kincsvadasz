@@ -261,7 +261,7 @@ function renderMissions() {
   }
   container.innerHTML = "";
 
-  state.missions.forEach((inst, idx) => {
+  state.missions.map((inst, idx) => ({ inst, idx })).reverse().forEach(({ inst, idx }) => {
     const data = missions.find(m => m.id === inst.id);
     if (!data) return;
     const done = inst.status === "completed";
@@ -301,7 +301,7 @@ function renderCurses() {
   }
   container.innerHTML = "";
 
-  state.curses.forEach((inst, idx) => {
+  state.curses.map((inst, idx) => ({ inst, idx })).reverse().forEach(({ inst, idx }) => {
     const data = curses.find(c => c.id === inst.id);
     if (!data) return;
     const off = inst.status === "deactivated";
@@ -340,7 +340,7 @@ function renderTreasures() {
   }
   container.innerHTML = "";
 
-  state.collectedTreasures.forEach((inst, idx) => {
+  state.collectedTreasures.map((inst, idx) => ({ inst, idx })).reverse().forEach(({ inst, idx }) => {
     const data = treasures.find(t => t.id === inst.id);
     if (!data) return;
     const sellVal = parseTokenValue(data.value);

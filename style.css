@@ -1185,3 +1185,28 @@ body.lightbox-open { overflow: hidden; }
   100% { transform: scale(1); }
 }
 .sip-pop { animation: sipPop 0.25s ease-out; }
+
+/* ── TUTORIAL ────────────────────────────────────────────── */
+.tutorial-body { display: flex; flex-direction: column; gap: 0; }
+.tutorial-section {
+  padding: 12px 0; border-bottom: 1px solid var(--border-color);
+}
+.tutorial-section:last-child { border-bottom: none; padding-bottom: 0; }
+.tutorial-heading {
+  font-size: 0.82rem; font-weight: 800; color: var(--text-primary);
+  text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;
+}
+.tutorial-body p {
+  font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6;
+  margin: 0 0 7px;
+}
+.tutorial-body p:last-child { margin-bottom: 0; }
+.tutorial-body ul {
+  margin: 0 0 7px; padding-left: 16px; list-style: disc;
+}
+.tutorial-body ul li {
+  font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6;
+  margin-bottom: 4px;
+}
+.tutorial-body strong { color: var(--text-primary); }
+.tutorial-body em { color: var(--accent-treasure); font-style: normal; font-weight: 600; }
