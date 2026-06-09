@@ -326,21 +326,48 @@ body {
 
 .draw-btn {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 6px; padding: 22px 12px; border: none; border-radius: 16px;
+  gap: 8px; padding: 26px 12px 20px; border-radius: 22px;
   cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; text-align: center;
+  position: relative; overflow: hidden;
 }
-.draw-btn:active { transform: scale(0.96); }
-.draw-btn-icon  { font-size: 2rem; line-height: 1; }
-.draw-btn-label { font-size: 0.9rem; font-weight: 700; color: #fff; }
-.draw-btn-sub   { font-size: 0.7rem; color: rgba(255,255,255,0.7); }
+/* fényes belső csík felül */
+.draw-btn::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 45%;
+  background: rgba(255,255,255,0.08); pointer-events: none; border-radius: 22px 22px 0 0;
+}
+.draw-btn:active { transform: scale(0.95); }
+.draw-btn-icon  { font-size: 2.4rem; line-height: 1; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.35)); position: relative; }
+.draw-btn-label {
+  font-size: 0.88rem; font-weight: 800; color: #fff; letter-spacing: 0.2px;
+  position: relative; text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.draw-btn-sub   {
+  font-size: 0.67rem; color: rgba(255,255,255,0.65); letter-spacing: 0.2px;
+  position: relative;
+}
 
-.draw-mission  { background: linear-gradient(135deg, #1e3a6e 0%, #1d4ed8 100%); box-shadow: 0 4px 15px rgba(59,130,246,0.3); }
-.draw-curse    { background: linear-gradient(135deg, #4a0f0f 0%, #b91c1c 100%); box-shadow: 0 4px 15px rgba(239,68,68,0.3); }
-.draw-photo    { background: linear-gradient(135deg, #064e3b 0%, #059669 100%); box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
-
-.draw-treasure { background: linear-gradient(135deg, #e6c200 0%, #ffe033 100%); box-shadow: 0 4px 15px rgba(255,224,51,0.4); }
+.draw-mission {
+  background: linear-gradient(150deg, #1e3d8f 0%, #2563eb 55%, #1a4fd6 100%);
+  box-shadow: 0 6px 22px rgba(37,99,235,0.5), inset 0 1px 0 rgba(255,255,255,0.12);
+  border: 1px solid rgba(96,165,250,0.3);
+}
+.draw-curse {
+  background: linear-gradient(150deg, #5c1010 0%, #dc2626 55%, #b91c1c 100%);
+  box-shadow: 0 6px 22px rgba(220,38,38,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+  border: 1px solid rgba(248,113,113,0.3);
+}
+.draw-treasure {
+  background: linear-gradient(150deg, #92400e 0%, #d97706 55%, #b45309 100%);
+  box-shadow: 0 6px 22px rgba(217,119,6,0.5), inset 0 1px 0 rgba(255,255,255,0.15);
+  border: 1px solid rgba(252,211,77,0.3);
+}
 .draw-treasure .draw-btn-label,
-.draw-treasure .draw-btn-sub { color: #3b2a00; }
+.draw-treasure .draw-btn-sub { color: #fff; }
+.draw-photo {
+  background: linear-gradient(150deg, #065f46 0%, #059669 55%, #047857 100%);
+  box-shadow: 0 6px 22px rgba(5,150,105,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+  border: 1px solid rgba(52,211,153,0.3);
+}
 
 /* ── STATISZTIKA SÁV ─────────────────────────────────────── */
 
@@ -496,14 +523,14 @@ body {
   border-radius: 20px; backdrop-filter: blur(4px);
 }
 .photo-fav-btn {
-  position: absolute; top: 38px; right: 6px; width: 28px; height: 28px;
+  position: absolute; bottom: 36px; right: 6px; width: 28px; height: 28px;
   background: rgba(0,0,0,0.55); border: none; border-radius: 8px;
-  color: rgba(255,255,255,0.35); font-size: 0.8rem; cursor: pointer; display: flex;
+  opacity: 0.35; font-size: 0.85rem; cursor: pointer; display: flex;
   align-items: center; justify-content: center; backdrop-filter: blur(4px);
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, opacity 0.2s;
 }
-.photo-fav-btn.active { color: #fbbf24; background: rgba(0,0,0,0.7); }
-.photo-fav-btn:hover  { background: rgba(251,191,36,0.25); color: #fbbf24; }
+.photo-fav-btn.active { opacity: 1; background: rgba(0,0,0,0.7); }
+.photo-fav-btn:hover  { opacity: 0.85; background: rgba(220,38,38,0.25); }
 .photo-delete-btn {
   position: absolute; top: 6px; right: 6px; width: 28px; height: 28px;
   background: rgba(0,0,0,0.6); border: none; border-radius: 8px;
@@ -523,7 +550,7 @@ body {
   padding: 5px 14px; border-radius: 20px; cursor: pointer; transition: all 0.2s;
 }
 .gallery-fav-toggle.active {
-  background: rgba(251,191,36,0.15); border-color: #fbbf24; color: #fbbf24;
+  background: rgba(220,38,38,0.12); border-color: #ef4444; color: #f87171;
 }
 .gallery-subsection-title {
   grid-column: 1 / -1; font-size: 0.75rem; font-weight: 800;

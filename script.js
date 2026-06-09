@@ -380,7 +380,7 @@ function renderGallery() {
   filterRow.className = "gallery-filter-row";
   filterRow.innerHTML = `
     <button class="gallery-fav-toggle ${kedvencFilter ? 'active' : ''}"
-            onclick="toggleKedvencFilter()">⭐ Kedvencek</button>
+            onclick="toggleKedvencFilter()">❤️ Kedvencek</button>
   `;
   container.appendChild(filterRow);
 
@@ -400,7 +400,7 @@ function renderGallery() {
     card.className = "photo-card rarity-" + data.rarity;
     card.innerHTML = `
       ${count > 1 ? `<div class="photo-count-badge">×${count}</div>` : ""}
-      <button class="photo-fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite(event,'${data.id}')" title="Kedvenc">⭐</button>
+      <button class="photo-fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite(event,'${data.id}')" title="Kedvenc">❤️</button>
       <button class="photo-delete-btn" onclick="deletePhoto(event,'${data.id}')" title="Törlés">🗑️</button>
       <img class="photo-card-img" src="${data.src}" alt="${data.name}"
            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
@@ -421,7 +421,7 @@ function renderGallery() {
     if (favs.length > 0) {
       const hdr = document.createElement("div");
       hdr.className = "gallery-subsection-title";
-      hdr.textContent = "⭐ Kedvencek";
+      hdr.textContent = "❤️ Kedvencek";
       container.appendChild(hdr);
       const grid = document.createElement("div");
       grid.className = "gallery-sub-grid";
