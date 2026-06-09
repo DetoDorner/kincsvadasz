@@ -698,6 +698,14 @@ body.lightbox-open { overflow: hidden; }
   background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
   box-shadow: 0 4px 20px rgba(168,85,247,0.35);
 }
+.theme-krokodildo .token-hero {
+  background: linear-gradient(135deg, #0a2e0a 0%, #1a5c1a 100%);
+  box-shadow: 0 4px 20px rgba(34,120,34,0.4);
+}
+.theme-felsoszank .token-hero {
+  background: linear-gradient(135deg, #3b1f00 0%, #92400e 100%);
+  box-shadow: 0 4px 20px rgba(146,64,14,0.45);
+}
 .token-hero-label { font-size: 0.8rem; color: rgba(255,255,255,0.75); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
 .token-hero-row   { display: flex; align-items: baseline; justify-content: center; gap: 6px; }
 .token-hero-num   { font-size: 3rem; font-weight: 900; color: #fff; line-height: 1; }
