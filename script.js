@@ -36,8 +36,8 @@ const shopItems = [
   { id: "remove_curse",    name: "🔓 Átok levétele",               desc: "Egy aktív átkod azonnal deaktiválódik.",                             price: 18500 },
   { id: "extra_photo",     name: "📸 +1 Fotó húzása",              desc: "Egy extra képet húzhatsz a galériádba.",                             price: 320 },
   { id: "impostor_change", name: "🕵️ Imposztorjelölés módosítása", desc: "Egyszer megváltoztathatod a gyanúsítottadat.",                       price: 650 },
-  { id: "sejtés",          name: "🔍 Sejtés",                      desc: "Tétpróba megkezdése előtt felfedi a kérdés témáját.",                price: 500 },
-  { id: "tudasszomj",      name: "💡 Tudásszomj",                  desc: "Tétpróba közben kizár 1 rossz választ. Kérdésenként max. 2×.",       price: 800 },
+  { id: "sejtés",          name: "🔍 Sejtés",                      desc: "Tétpróba megkezdése előtt felfedi a kérdés témáját.",                price: 1800 },
+  { id: "tudasszomj",      name: "🍺 Tudásszomj",                  desc: "Tétpróba közben kizár 1 rossz választ. Kérdésenként max. 1×.",       price: 4100 },
 ];
 
 // ── INICIALIZÁLÁS ────────────────────────────────────────────
@@ -658,6 +658,7 @@ let tpHintShown      = false;
 let tpEliminated     = [];     // kizárt opcióindexek
 let tpEliminationsUsed = 0;
 let tpWon            = null;   // true | false | null
+let tpOpen           = false;  // lenyitható panel állapota
 
 function showTpToast(msg) {
   const t = document.getElementById("tpToast");
@@ -672,63 +673,102 @@ function showTpToast(msg) {
   }, 2200);
 }
 
+function toggleTetprobaSec() {
+  if (tpPhase !== null) return;
+  tpOpen = !tpOpen;
+  renderTetprobaSection();
+}
+
 function renderTetprobaSection() {
   const el = document.getElementById("tetprobaSection");
   if (!el) return;
 
-  const tp   = state.tetprobas   || 0;
-  const sej  = state.sejtesCount || 0;
-  const tud  = state.tudasszomjCount || 0;
-  const sips = state.sips || 0;
+  const tp     = state.tetprobas      || 0;
+  const sej    = state.sejtesCount    || 0;
+  const tud    = state.tudasszomjCount || 0;
+  const sips   = state.sips           || 0;
   const nextIn = tp < 5 ? (10 - (sips % 10)) : 0;
 
+  // 5 slot-indikátor pont
+  const dots = Array.from({length: 5}, (_, i) =>
+    `<span class="tp-slot ${i < tp ? "tp-slot-filled" : "tp-slot-empty"}"></span>`
+  ).join("");
+
+  const isActive  = tpPhase !== null;
+  const showBody  = tpOpen || isActive;
+
+  // ── Fejléc (mindig látható) ──
+  const header = `
+    <div class="tetproba-header-row ${isActive ? "" : "tp-header-clickable"}"
+         ${isActive ? "" : 'onclick="toggleTetprobaSec()"'}>
+      <div class="tp-title-wrap">
+        <span class="tp-icon-big">🎲</span>
+        <span class="tetproba-title">Tétpróba</span>
+      </div>
+      <div class="tp-header-right">
+        <div class="tp-slots">${dots}</div>
+        ${!isActive ? `<span class="tp-chevron">${showBody ? "▲" : "▼"}</span>` : ""}
+      </div>
+    </div>`;
+
+  if (!showBody) {
+    el.innerHTML = `<div class="tetproba-card">${header}</div>`;
+    return;
+  }
+
+  // ── Alap nézet (nyitott, nincs aktív játék) ──
   if (tpPhase === null) {
-    // ── Alap nézet ──
     const canStart = tp > 0 && state.tokens > 0;
     el.innerHTML = `
       <div class="tetproba-card">
-        <div class="tetproba-header-row">
-          <span class="tetproba-title">🎲 Tétpróba</span>
-          <span class="tetproba-badge ${tp > 0 ? "tp-badge-active" : ""}">${tp} / 5</span>
+        ${header}
+        <div class="tp-body">
+          <div class="tetproba-helpers-row">
+            <span class="tp-helper-chip">🔍 Sejtés: <b>${sej}</b></span>
+            <span class="tp-helper-chip">🍺 Tudásszomj: <b>${tud}</b></span>
+          </div>
+          <div class="tp-info-row">
+            <span class="tetproba-info">Minden 10. kortyért 1 Tétpróbát kapsz.</span>
+            ${tp < 5
+              ? `<span class="tetproba-next">Következő: <b>${nextIn}</b> korty múlva</span>`
+              : `<span class="tetproba-next tp-full">✨ Tele!</span>`}
+          </div>
+          ${canStart
+            ? `<button class="btn-start-tetproba" onclick="startTetproba()">🎲 Tétpróba indítása</button>`
+            : tp === 0
+              ? `<p class="tetproba-warn">Nincs Tétpróbád – igyál többet! 🍺</p>`
+              : `<p class="tetproba-warn">Nincs zsetonod – nem tehetsz tétet.</p>`
+          }
         </div>
-        <div class="tetproba-helpers-row">
-          <span class="tp-helper-chip">🔍 Sejtés: <b>${sej}</b></span>
-          <span class="tp-helper-chip">💡 Tudásszomj: <b>${tud}</b></span>
-        </div>
-        <p class="tetproba-info">Minden 10. kortyért 1 Tétpróbát kapsz.</p>
-        ${tp < 5 ? `<p class="tetproba-next">Következő: még <b>${nextIn}</b> korty</p>` : `<p class="tetproba-next tp-full">Tele van a Tétpróba-készleted!</p>`}
-        ${canStart
-          ? `<button class="btn-start-tetproba" onclick="startTetproba()">🎲 Tétpróba indítása</button>`
-          : tp === 0
-            ? `<p class="tetproba-warn">Nincs Tétpróbád – igyál többet! 🍺</p>`
-            : `<p class="tetproba-warn">Nincs zsetonod – nem tehetsz tétet.</p>`
-        }
       </div>`;
 
+  // ── Tét-megadás fázis ──
   } else if (tpPhase === "bet") {
-    // ── Tét-megadás fázis ──
     el.innerHTML = `
       <div class="tetproba-card tetproba-active">
-        <div class="tetproba-phase-label">💰 Tét megadása</div>
-        <p class="tp-token-info">Egyenleged: <b>${formatNum(state.tokens)} 🪙</b></p>
-        <input type="number" id="tpBetInput" class="tetproba-input"
-               min="1" max="${state.tokens}" placeholder="Tét összege (max ${formatNum(state.tokens)})">
-        ${sej > 0 && !tpHintShown
-          ? `<button class="btn-tp-helper" onclick="useSejtesHint()">🔍 Sejtés használata (<b>${sej}</b> db)</button>`
-          : ""
-        }
-        ${tpHintShown
-          ? `<div class="tp-hint-box">💡 Téma: <strong>${tpQuestion ? tpQuestion.topic : ""}</strong></div>`
-          : ""
-        }
-        <div class="tp-action-row">
-          <button class="btn-tp-confirm" onclick="confirmBet()">Tovább →</button>
-          <button class="btn-tp-cancel"  onclick="closeTetproba()">Mégsem</button>
+        ${header}
+        <div class="tp-body">
+          <div class="tetproba-phase-label">💰 Tét megadása</div>
+          <p class="tp-token-info">Egyenleged: <b>${formatNum(state.tokens)} 🪙</b></p>
+          <input type="number" id="tpBetInput" class="tetproba-input"
+                 min="1" max="${state.tokens}" placeholder="Tét összege (max ${formatNum(state.tokens)})">
+          ${sej > 0 && !tpHintShown
+            ? `<button class="btn-tp-helper" onclick="useSejtesHint()">🔍 Sejtés használata (${sej} db maradt)</button>`
+            : ""
+          }
+          ${tpHintShown
+            ? `<div class="tp-hint-box">🔍 Téma: <strong>${tpQuestion ? tpQuestion.topic : ""}</strong></div>`
+            : ""
+          }
+          <div class="tp-action-row">
+            <button class="btn-tp-confirm" onclick="confirmBet()">Tovább →</button>
+            <button class="btn-tp-cancel"  onclick="closeTetproba()">Mégsem</button>
+          </div>
         </div>
       </div>`;
 
+  // ── Kérdés fázis ──
   } else if (tpPhase === "question") {
-    // ── Kérdés fázis ──
     const opts = tpQuestion.options.map((opt, i) => {
       const elim = tpEliminated.includes(i);
       return `<button class="btn-tp-option ${elim ? "tp-option-elim" : ""}"
@@ -736,35 +776,41 @@ function renderTetprobaSection() {
                 ${elim ? "disabled" : ""}>${opt}</button>`;
     }).join("");
 
-    const canTudasszomj = tud > 0 && tpEliminationsUsed < 2 &&
+    const canTudasszomj = tud > 0 && tpEliminationsUsed < 1 &&
       (tpQuestion.options.length - tpEliminated.length) > 2;
 
     el.innerHTML = `
       <div class="tetproba-card tetproba-active">
-        <div class="tetproba-phase-label">❓ Kérdés</div>
-        <p class="tp-bet-info">Tét: <b>${formatNum(tpBet)} 🪙</b></p>
-        <p class="tetproba-question">${tpQuestion.question}</p>
-        <div class="tp-options-grid">${opts}</div>
-        ${canTudasszomj
-          ? `<button class="btn-tp-helper" onclick="useTudasszomj()">💡 Tudásszomj – rossz válasz kizárása (<b>${tud}</b> db, ${2 - tpEliminationsUsed} maradt)</button>`
-          : ""
-        }
+        ${header}
+        <div class="tp-body">
+          <div class="tetproba-phase-label">❓ Kérdés</div>
+          <p class="tp-bet-info">Tét: <b>${formatNum(tpBet)} 🪙</b></p>
+          <p class="tetproba-question">${tpQuestion.question}</p>
+          <div class="tp-options-grid">${opts}</div>
+          ${canTudasszomj
+            ? `<button class="btn-tp-helper" onclick="useTudasszomj()">🍺 Tudásszomj – rossz válasz kizárása (${tud} db)</button>`
+            : ""
+          }
+        </div>
       </div>`;
 
+  // ── Eredmény fázis ──
   } else if (tpPhase === "result") {
-    // ── Eredmény fázis ──
-    const bonus = Math.floor(tpBet * 0.5);
+    const bonus    = Math.floor(tpBet * 0.5);
     const winnings = tpBet + bonus;
     el.innerHTML = `
       <div class="tetproba-card tetproba-result ${tpWon ? "tp-result-win" : "tp-result-lose"}">
-        <div class="tp-result-icon">${tpWon ? "✅" : "❌"}</div>
-        <p class="tp-result-title">${tpWon ? "Helyes válasz!" : "Helytelen válasz!"}</p>
-        <p class="tp-result-detail">${tpWon
-          ? `<b>+${formatNum(winnings)} 🪙</b> (tét vissza + 50% bónusz)`
-          : `<b>−${formatNum(tpBet)} 🪙</b> és igyál egyet! 🍺`
-        }</p>
-        <p class="tp-result-correct">Helyes válasz: <b>${tpQuestion.options[tpQuestion.correct]}</b></p>
-        <button class="btn-start-tetproba" onclick="closeTetproba()">Bezárás</button>
+        ${header}
+        <div class="tp-body">
+          <div class="tp-result-icon">${tpWon ? "✅" : "❌"}</div>
+          <p class="tp-result-title">${tpWon ? "Helyes válasz!" : "Helytelen válasz!"}</p>
+          <p class="tp-result-detail">${tpWon
+            ? `<b>+${formatNum(winnings)} 🪙</b> (tét vissza + 50% bónusz)`
+            : `<b>−${formatNum(tpBet)} 🪙</b> és igyál egyet! 🍺`
+          }</p>
+          <p class="tp-result-correct">Helyes válasz: <b>${tpQuestion.options[tpQuestion.correct]}</b></p>
+          <button class="btn-start-tetproba" onclick="closeTetproba()">Bezárás</button>
+        </div>
       </div>`;
   }
 }
@@ -772,7 +818,6 @@ function renderTetprobaSection() {
 function startTetproba() {
   if ((state.tetprobas || 0) < 1) { alert("Nincs Tétpróbád!"); return; }
   if (state.tokens < 1) { alert("Nincs zsetonod!"); return; }
-  // Véletlenszerű kérdés kiválasztása
   tpQuestion       = tetprobaKerdesek[Math.floor(Math.random() * tetprobaKerdesek.length)];
   tpPhase          = "bet";
   tpBet            = 0;
@@ -780,6 +825,7 @@ function startTetproba() {
   tpEliminated     = [];
   tpEliminationsUsed = 0;
   tpWon            = null;
+  tpOpen           = true;
   renderTetprobaSection();
   // Görgetés a kártyára
   setTimeout(() => {
@@ -808,7 +854,7 @@ function confirmBet() {
 
 function useTudasszomj() {
   if ((state.tudasszomjCount || 0) < 1) return;
-  if (tpEliminationsUsed >= 2) return;
+  if (tpEliminationsUsed >= 1) return;
   // Egy véletlenszerű, ki nem zárott helytelen opcióindex törlése
   const wrongIndices = tpQuestion.options
     .map((_, i) => i)
@@ -847,6 +893,7 @@ function closeTetproba() {
   tpEliminated     = [];
   tpEliminationsUsed = 0;
   tpWon            = null;
+  tpOpen           = false;
   renderTetprobaSection();
 }
 
@@ -1470,7 +1517,7 @@ function resetGame() {
   });
   // Tétpróba UI visszaállítása
   tpPhase = null; tpBet = 0; tpQuestion = null;
-  tpHintShown = false; tpEliminated = []; tpEliminationsUsed = 0; tpWon = null;
+  tpHintShown = false; tpEliminated = []; tpEliminationsUsed = 0; tpWon = null; tpOpen = false;
   localStorage.removeItem(SAVE_KEY);
   document.getElementById("resultCard").classList.add("hidden");
   const endSummary = document.getElementById("endSummary");
