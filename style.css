@@ -1336,6 +1336,152 @@ body.lightbox-open { overflow: hidden; }
 .tutorial-body strong { color: var(--text-primary); }
 .tutorial-body em { color: var(--accent-treasure); font-style: normal; font-weight: 600; }
 
+/* ── KARAKTER ALFÜL-VÁLTÓ ──────────────────────────────────── */
+.char-subtab-switcher {
+  display: flex; gap: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 14px; overflow: hidden;
+  margin-bottom: 18px;
+}
+.char-subtab-btn {
+  flex: 1; border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.84rem; font-weight: 700;
+  padding: 11px 8px;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+  letter-spacing: 0.2px;
+}
+.char-subtab-btn:first-child { border-right: 1px solid var(--border-color); }
+.char-subtab-btn.active {
+  background: linear-gradient(135deg, #6d28d9, #a855f7);
+  color: #fff;
+}
+.char-subtab-btn:not(.active):hover { background: var(--bg-card-hover); color: var(--text-primary); }
+
+.theme-krokodildo .char-subtab-btn.active { background: linear-gradient(135deg, #15803d, #4ade80); color: #071a0c; }
+.theme-felsoszank .char-subtab-btn.active { background: linear-gradient(135deg, #92400e, #fbbf24); color: #1a0e00; }
+
+/* ── MEGBÍZÁSOK ────────────────────────────────────────────── */
+.commissions-list {
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+.commission-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 14px 14px 12px;
+  display: flex; flex-direction: column; gap: 9px;
+  position: relative; overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+/* Bal oldali nehézségi sáv */
+.commission-card::before {
+  content: ""; position: absolute;
+  left: 0; top: 0; bottom: 0; width: 4px;
+  border-radius: 16px 0 0 16px;
+}
+.comm-diff-easy::before   { background: #4ade80; }
+.comm-diff-medium::before { background: #fbbf24; }
+.comm-diff-hard::before   { background: #f87171; }
+
+.comm-diff-easy   { border-color: rgba(74,222,128,0.25);  box-shadow: 0 2px 12px rgba(74,222,128,0.08); }
+.comm-diff-medium { border-color: rgba(251,191,36,0.25);  box-shadow: 0 2px 12px rgba(251,191,36,0.08); }
+.comm-diff-hard   { border-color: rgba(248,113,113,0.25); box-shadow: 0 2px 12px rgba(248,113,113,0.08); }
+
+.comm-completed.comm-diff-easy   { border-color: rgba(74,222,128,0.55);  box-shadow: 0 4px 16px rgba(74,222,128,0.18); }
+.comm-completed.comm-diff-medium { border-color: rgba(251,191,36,0.55);  box-shadow: 0 4px 16px rgba(251,191,36,0.18); }
+.comm-completed.comm-diff-hard   { border-color: rgba(248,113,113,0.55); box-shadow: 0 4px 16px rgba(248,113,113,0.18); }
+
+.comm-card-top {
+  display: flex; align-items: center; gap: 8px;
+  padding-left: 6px;
+}
+.comm-icon { font-size: 1.1rem; line-height: 1; }
+
+.comm-diff-badge {
+  font-size: 0.68rem; font-weight: 800; border-radius: 20px;
+  padding: 2px 9px; letter-spacing: 0.3px;
+}
+.comm-badge-easy   { background: rgba(74,222,128,0.15);  color: #4ade80;  border: 1px solid rgba(74,222,128,0.3); }
+.comm-badge-medium { background: rgba(251,191,36,0.15);  color: #fbbf24;  border: 1px solid rgba(251,191,36,0.3); }
+.comm-badge-hard   { background: rgba(248,113,113,0.15); color: #f87171;  border: 1px solid rgba(248,113,113,0.3); }
+
+.comm-done-badge {
+  font-size: 0.68rem; font-weight: 800;
+  background: rgba(74,222,128,0.15); color: #4ade80;
+  border: 1px solid rgba(74,222,128,0.3);
+  border-radius: 20px; padding: 2px 9px;
+  margin-left: auto;
+  animation: commDonePulse 1.6s ease-in-out infinite;
+}
+@keyframes commDonePulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.55; }
+}
+
+.comm-title {
+  font-size: 0.88rem; font-weight: 700; color: var(--text-primary);
+  margin: 0; line-height: 1.45; padding-left: 6px;
+}
+
+.comm-progress-wrap {
+  display: flex; align-items: center; gap: 10px; padding-left: 6px;
+}
+.comm-progress-track {
+  flex: 1; height: 7px;
+  background: var(--bg-secondary);
+  border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+.comm-progress-fill {
+  height: 100%; border-radius: 10px;
+  transition: width 0.4s ease;
+}
+.comm-fill-easy   { background: linear-gradient(90deg, #16a34a, #4ade80); }
+.comm-fill-medium { background: linear-gradient(90deg, #b45309, #fbbf24); }
+.comm-fill-hard   { background: linear-gradient(90deg, #b91c1c, #f87171); }
+
+.comm-progress-label {
+  font-size: 0.72rem; font-weight: 700;
+  color: var(--text-secondary);
+  white-space: nowrap; min-width: 36px; text-align: right;
+}
+
+.comm-reward {
+  font-size: 0.78rem; color: var(--text-secondary);
+  padding-left: 6px;
+}
+.comm-reward strong { color: var(--accent-treasure); }
+
+.btn-claim-commission {
+  width: 100%; border: none; border-radius: 11px;
+  padding: 10px 14px;
+  font-size: 0.86rem; font-weight: 800;
+  cursor: pointer;
+  background: linear-gradient(135deg, #15803d, #4ade80);
+  color: #071a0c;
+  box-shadow: 0 3px 12px rgba(21,128,61,0.4);
+  transition: opacity 0.15s, transform 0.1s;
+  position: relative; overflow: hidden;
+}
+.btn-claim-commission::before {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 55%);
+  pointer-events: none;
+}
+.btn-claim-commission:active { opacity: 0.85; transform: scale(0.98); }
+
+/* Slide-in animáció (jobbról) */
+@keyframes commSlideIn {
+  from { opacity: 0; transform: translateX(60px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.comm-slide-in { animation: commSlideIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
 /* ── TÉTPRÓBA RENDSZER ──────────────────────────────────── */
 #tetprobaSection { margin-top: 10px; }
 

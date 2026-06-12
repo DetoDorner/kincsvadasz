@@ -24,6 +24,11 @@ let state = {
   tetprobas:            0,      // elérhető Tétpróbák száma (max 5)
   sejtesCount:          0,      // Sejtés segédeszköz darabszám
   tudasszomjCount:      0,      // Tudásszomj segédeszköz darabszám
+  commissions:          [],     // 3 aktív megbízás [{type,variant,reward,difficulty,baseline,completed}]
+  soldTreasuresTotal:   0,      // eladott kincsek számlálója (kumulatív)
+  usedTreasuresTotal:   0,      // felhasznált kincsek számlálója (kumulatív)
+  deactivatedCursesTotal: 0,    // deaktivált átkok számlálója (kumulatív)
+  wonTetprobaTotal:     0,      // nyert tétpróbák számlálója (kumulatív)
 };
 
 let currentFilter  = "all";
@@ -77,9 +82,14 @@ function loadState() {
     state.favoritePhotos        = p.favoritePhotos        || {};
     state.notes                 = p.notes                 || [];
     state.sips                  = p.sips                  || 0;
-    state.tetprobas             = p.tetprobas             || 0;
-    state.sejtesCount           = p.sejtesCount           || 0;
-    state.tudasszomjCount       = p.tudasszomjCount       || 0;
+    state.tetprobas               = p.tetprobas               || 0;
+    state.sejtesCount             = p.sejtesCount             || 0;
+    state.tudasszomjCount         = p.tudasszomjCount         || 0;
+    state.commissions             = p.commissions             || [];
+    state.soldTreasuresTotal      = p.soldTreasuresTotal      || 0;
+    state.usedTreasuresTotal      = p.usedTreasuresTotal      || 0;
+    state.deactivatedCursesTotal  = p.deactivatedCursesTotal  || 0;
+    state.wonTetprobaTotal        = p.wonTetprobaTotal        || 0;
   } catch (e) {
     console.warn("Betöltési hiba:", e);
   }
@@ -141,6 +151,7 @@ function drawTreasure() {
   const extra = (item.effect ? "✨ Hatás: " + item.effect + "<br>" : "") + "💰 Érték: " + item.value;
   showResult("treasure", item.name, "Egy titokzatos kincs a mélyből.", extra);
   updateStats();
+  checkCommissions();
 }
 
 function drawPhoto() {
@@ -150,6 +161,7 @@ function drawPhoto() {
   saveState();
   showPhotoResult(item);
   updateStats();
+  checkCommissions();
 }
 
 // ── VISSZAÚT MÓD HÚZÁS ───────────────────────────────────────
@@ -510,11 +522,13 @@ function completeMission(idx) {
   renderMissions();
   updateStats();
   renderSettings();
+  checkCommissions();
 }
 
 function deactivateCurse(idx) {
   if (!state.curses[idx]) return;
   state.curses[idx].status = "deactivated";
+  state.deactivatedCursesTotal = (state.deactivatedCursesTotal || 0) + 1;
   // Harcos bónusz: +1 zseton deaktiválásonként
   if (state.character?.roleId === "role_harcos") {
     state.tokens += 1;
@@ -522,6 +536,7 @@ function deactivateCurse(idx) {
   }
   saveState();
   renderCurses();
+  checkCommissions();
 }
 
 function confirmDelete(type, idx) {
@@ -542,8 +557,10 @@ function useTreasure(idx) {
   if (!data) return;
   if (!confirm("Felhasználtad ezt a kincset?\n\n" + data.name + "\n\nNem kapsz érte zsetont – a kincs deaktiválódik.")) return;
   state.collectedTreasures[idx].used = true;
+  state.usedTreasuresTotal = (state.usedTreasuresTotal || 0) + 1;
   saveState();
   renderTreasures();
+  checkCommissions();
 }
 
 function addLife() {
@@ -569,10 +586,12 @@ function sellTreasure(idx) {
   if (!confirm("Biztosan eladod?\n\n" + data.name + "\n\n+ " + formatNum(val) + " 🪙 zsetont kapsz.")) return;
   state.tokens += val;
   state.collectedTreasures.splice(idx, 1);
+  state.soldTreasuresTotal = (state.soldTreasuresTotal || 0) + 1;
   saveState();
   renderTreasures();
   updateTokenDisplay();
   updateStats();
+  checkCommissions();
 }
 
 function sellAllTreasures() {
@@ -587,12 +606,14 @@ function sellAllTreasures() {
     state.collectedTreasures.splice(i, 1);
   });
   state.tokens += total;
+  state.soldTreasuresTotal = (state.soldTreasuresTotal || 0) + sellable.length;
   saveState();
   alert("✅ Összes kincs eladva!\n\n+" + formatNum(total) + " 🪙 zseton jóváírva.");
   renderTreasures();
   updateTokenDisplay();
   updateStats();
   renderBolt();
+  checkCommissions();
 }
 
 function deletePhoto(e, photoId) {
@@ -642,6 +663,7 @@ function adjustSips(delta) {
     wrap.classList.add("sip-pop");
   }
   renderTetprobaSection();
+  checkCommissions();
 }
 
 function updateSipDisplay() {
@@ -876,6 +898,7 @@ function answerTetproba(idx) {
   if (tpWon) {
     const bonus = Math.floor(tpBet * 0.5);
     state.tokens += tpBet + bonus;
+    state.wonTetprobaTotal = (state.wonTetprobaTotal || 0) + 1;
   } else {
     state.tokens = Math.max(0, state.tokens - tpBet);
   }
@@ -917,12 +940,194 @@ function renderSettings() {
   if (btn) btn.classList.toggle("active", state.returnMode);
 }
 
+// ── MEGBÍZÁSOK RENDSZER ───────────────────────────────────────
+
+const commissionDefs = {
+  complete_missions: {
+    difficulty: "easy", icon: "🗺️",
+    title:      (n) => `Teljesíts további ${n} küldetést!`,
+    variants:   [1, 2, 3],
+    getCurrent: () => state.missions.filter(m => m.status === "completed").length,
+  },
+  collect_photos: {
+    difficulty: "easy", icon: "📸",
+    title:      (n) => `Gyűjts be további ${n} képet!`,
+    variants:   [1, 2, 3, 4, 5],
+    getCurrent: () => Object.keys(state.photos).length,
+  },
+  drink_sips: {
+    difficulty: "easy", icon: "🍺",
+    title:      (n) => `Igyál további ${n} kortyot!`,
+    variants:   [5, 6, 7, 8, 9, 10, 11, 12],
+    getCurrent: () => state.sips || 0,
+  },
+  acquire_treasures: {
+    difficulty: "medium", icon: "💎",
+    title:      (n) => `Szerezz további ${n} kincset!`,
+    variants:   [1, 2, 3],
+    getCurrent: () => state.collectedTreasures.length,
+  },
+  sell_treasures: {
+    difficulty: "medium", icon: "💰",
+    title:      (n) => `Adj el ${n} kincset!`,
+    variants:   [3, 4, 5],
+    getCurrent: () => state.soldTreasuresTotal || 0,
+  },
+  use_treasures: {
+    difficulty: "medium", icon: "✨",
+    title:      (n) => `Használj fel ${n} kincset!`,
+    variants:   [1, 2, 3],
+    getCurrent: () => state.usedTreasuresTotal || 0,
+  },
+  collect_rare_photos: {
+    difficulty: "hard", icon: "🌟",
+    title:      (n) => `Gyűjts be további ${n} ritka vagy legendás képet!`,
+    variants:   [1, 2, 3, 4, 5],
+    getCurrent: () => Object.keys(state.photos).filter(id => {
+      const p = photos.find(x => x.id === id);
+      return p && (p.rarity === "rare" || p.rarity === "legendary");
+    }).length,
+  },
+  deactivate_curses: {
+    difficulty: "hard", icon: "🔓",
+    title:      (n) => `Deaktiválj ${n} átkot!`,
+    variants:   [1, 2, 3],
+    getCurrent: () => state.deactivatedCursesTotal || 0,
+  },
+  win_tetproba: {
+    difficulty: "hard", icon: "🎲",
+    title:      (n) => `Nyerj ${n} tétpróbát!`,
+    variants:   [1, 2, 3],
+    getCurrent: () => state.wonTetprobaTotal || 0,
+  },
+};
+
+function randReward(difficulty) {
+  if (difficulty === "easy")   return 50  + Math.floor(Math.random() * 15) * 25;
+  if (difficulty === "medium") return 400 + Math.floor(Math.random() * 15) * 25;
+  /* hard */                   return 750 + Math.floor(Math.random() * 19) * 25;
+}
+
+function generateCommission(slotIdx, prevType = null) {
+  const activeTypes = (state.commissions || [])
+    .filter((c, i) => i !== slotIdx && c)
+    .map(c => c.type);
+
+  const allTypes = Object.keys(commissionDefs);
+  let available = allTypes.filter(t => !activeTypes.includes(t) && t !== prevType);
+  if (available.length === 0) available = allTypes.filter(t => !activeTypes.includes(t));
+  if (available.length === 0) available = allTypes;
+
+  const type    = available[Math.floor(Math.random() * available.length)];
+  const def     = commissionDefs[type];
+  const variant = def.variants[Math.floor(Math.random() * def.variants.length)];
+
+  return { type, variant, reward: randReward(def.difficulty), difficulty: def.difficulty, baseline: def.getCurrent(), completed: false };
+}
+
+function initCommissions() {
+  state.commissions = [];
+  for (let i = 0; i < 3; i++) state.commissions.push(generateCommission(i));
+  saveState();
+}
+
+function checkCommissions() {
+  if (!state.commissions || state.commissions.length < 3) {
+    if (state.character) { initCommissions(); renderKarakter(); }
+    return;
+  }
+  let changed = false;
+  state.commissions.forEach((comm, i) => {
+    if (!comm || comm.completed) return;
+    const def = commissionDefs[comm.type];
+    if (!def) return;
+    const prog = def.getCurrent() - comm.baseline;
+    if (prog >= comm.variant) {
+      state.commissions[i] = { ...comm, completed: true };
+      changed = true;
+    }
+  });
+  if (changed) { saveState(); renderKarakter(); }
+}
+
+let pendingSlideIn = new Set();
+
+function claimCommission(slotIdx) {
+  const comm = state.commissions?.[slotIdx];
+  if (!comm?.completed) return;
+  state.tokens += comm.reward;
+  updateTokenDisplay();
+  const prevType = comm.type;
+  state.commissions[slotIdx] = null;
+  state.commissions[slotIdx] = generateCommission(slotIdx, prevType);
+  pendingSlideIn.add(slotIdx);
+  saveState();
+  renderMegbizasok();
+}
+
+let charSubTab = "megbizasok";
+
+function switchCharTab(tab) {
+  charSubTab = tab;
+  renderKarakter();
+}
+
+function renderMegbizasok() {
+  checkCommissions();
+  const el = document.getElementById("commissionsContent");
+  if (!el) return;
+
+  const diffLabels = { easy: "🟢 Könnyű", medium: "🟡 Közepes", hard: "🔴 Nehéz" };
+
+  const cards = (state.commissions || []).map((comm, i) => {
+    if (!comm) return `<div class="commission-card">⏳</div>`;
+    const def  = commissionDefs[comm.type];
+    if (!def)  return "";
+    const raw  = def.getCurrent() - comm.baseline;
+    const prog = Math.min(comm.variant, Math.max(0, raw));
+    const pct  = Math.round(prog / comm.variant * 100);
+
+    return `
+      <div class="commission-card comm-diff-${comm.difficulty}${comm.completed ? " comm-completed" : ""}" data-slot="${i}">
+        <div class="comm-card-top">
+          <span class="comm-icon">${def.icon}</span>
+          <span class="comm-diff-badge comm-badge-${comm.difficulty}">${diffLabels[comm.difficulty]}</span>
+          ${comm.completed ? `<span class="comm-done-badge">✅ Kész!</span>` : ""}
+        </div>
+        <p class="comm-title">${def.title(comm.variant)}</p>
+        <div class="comm-progress-wrap">
+          <div class="comm-progress-track">
+            <div class="comm-progress-fill comm-fill-${comm.difficulty}" style="width:${pct}%"></div>
+          </div>
+          <span class="comm-progress-label">${prog} / ${comm.variant}</span>
+        </div>
+        <div class="comm-reward">Jutalom: <strong>${formatNum(comm.reward)} 🪙</strong></div>
+        ${comm.completed
+          ? `<button class="btn-claim-commission" onclick="claimCommission(${i})">🎁 Jutalom begyűjtése</button>`
+          : ""}
+      </div>`;
+  }).join("");
+
+  el.innerHTML = `<div class="commissions-list">${cards}</div>`;
+
+  // Slide-in animáció az új megbízásokhoz
+  pendingSlideIn.forEach(i => {
+    const card = el.querySelector(`[data-slot="${i}"]`);
+    if (card) {
+      card.classList.add("comm-slide-in");
+      setTimeout(() => card.classList.remove("comm-slide-in"), 550);
+    }
+  });
+  pendingSlideIn.clear();
+}
+
 // ── KARAKTER ─────────────────────────────────────────────────
 
 function renderKarakter() {
   const container = document.getElementById("characterContent");
   if (!container) return;
 
+  // ── Karakterválasztás képernyő ──
   if (!state.character) {
     container.innerHTML = `
       <div class="char-intro">
@@ -945,24 +1150,40 @@ function renderKarakter() {
     return;
   }
 
-  const role = characters.find(r => r.id === state.character.roleId);
-  if (!role) return;
-  const used = [state.character.ability1Used, state.character.ability2Used];
-  const canEdit = !state.impostorName || state.impostorChangePurchased;
+  // Megbízások inicializálása ha szükséges
+  if (!state.commissions || state.commissions.length < 3) initCommissions();
 
-  // Képesség-feloldási követelmények
+  const role    = characters.find(r => r.id === state.character.roleId);
+  if (!role) return;
+
+  // ── Alfül-váltó ──
+  const tabSwitcher = `
+    <div class="char-subtab-switcher">
+      <button class="char-subtab-btn ${charSubTab === "megbizasok" ? "active" : ""}"
+              onclick="switchCharTab('megbizasok')">📋 Megbízások</button>
+      <button class="char-subtab-btn ${charSubTab === "kepessegek" ? "active" : ""}"
+              onclick="switchCharTab('kepessegek')">⚡ Képességek</button>
+    </div>`;
+
+  // ── Megbízások fül ──
+  if (charSubTab === "megbizasok") {
+    container.innerHTML = tabSwitcher + `<div id="commissionsContent"></div>`;
+    renderMegbizasok();
+    return;
+  }
+
+  // ── Képességek fül ──
+  const used    = [state.character.ability1Used, state.character.ability2Used];
+  const canEdit = !state.impostorName || state.impostorChangePurchased;
   const completedMissions = state.missions.filter(m => m.status === "completed").length;
   const totalPhotos        = Object.keys(state.photos).length;
   const abilityReqs = [
-    { current: completedMissions, max: 5,  goal: "Teljesíts 5 küldetést!",   unit: "teljesített küldetés" },
-    { current: totalPhotos,       max: 20, goal: "Gyűjts össze 20 képet!",   unit: "összegyűjtött kép"    }
+    { current: completedMissions, max: 5,  goal: "Teljesíts 5 küldetést!",  unit: "teljesített küldetés" },
+    { current: totalPhotos,       max: 20, goal: "Gyűjts össze 20 képet!", unit: "összegyűjtött kép"     }
   ];
-  const unlocked = [
-    completedMissions >= 5,
-    totalPhotos       >= 20
-  ];
+  const unlocked = [completedMissions >= 5, totalPhotos >= 20];
 
-  container.innerHTML = `
+  container.innerHTML = tabSwitcher + `
     <div class="active-role-header">
       <div class="active-role-name">${role.name}</div>
       <div class="active-role-desc">${role.description}</div>
@@ -975,48 +1196,43 @@ function renderKarakter() {
         const req        = abilityReqs[i];
         const pct        = Math.min(100, Math.round(req.current / req.max * 100));
 
-        if (isUsed) {
-          return `
-            <div class="ability-card ability-used">
-              <div class="ability-card-top">
-                <div class="ability-num-badge">${i + 1}. képesség</div>
-                <div class="ability-used-badge">✅ Felhasználva</div>
+        if (isUsed) return `
+          <div class="ability-card ability-used">
+            <div class="ability-card-top">
+              <div class="ability-num-badge">${i + 1}. képesség</div>
+              <div class="ability-used-badge">✅ Felhasználva</div>
+            </div>
+            <div class="ability-body">
+              <div class="ability-icon-col">⚡</div>
+              <div class="ability-text-col">
+                <div class="ability-name">${ab.name}</div>
+                <div class="ability-desc">${ab.description}</div>
               </div>
-              <div class="ability-body">
-                <div class="ability-icon-col">⚡</div>
-                <div class="ability-text-col">
-                  <div class="ability-name">${ab.name}</div>
-                  <div class="ability-desc">${ab.description}</div>
-                </div>
-              </div>
-            </div>`;
-        }
+            </div>
+          </div>`;
 
-        if (!isUnlocked) {
-          return `
-            <div class="ability-card ability-locked">
-              <div class="ability-card-top">
-                <div class="ability-num-badge">${i + 1}. képesség</div>
-                <div class="ability-lock-badge">🔒 Zárolt</div>
+        if (!isUnlocked) return `
+          <div class="ability-card ability-locked">
+            <div class="ability-card-top">
+              <div class="ability-num-badge">${i + 1}. képesség</div>
+              <div class="ability-lock-badge">🔒 Zárolt</div>
+            </div>
+            <div class="ability-body">
+              <div class="ability-icon-col ability-icon-locked">⚡</div>
+              <div class="ability-text-col">
+                <div class="ability-name ability-name-locked">${ab.name}</div>
+                <div class="ability-desc">${ab.description}</div>
               </div>
-              <div class="ability-body">
-                <div class="ability-icon-col ability-icon-locked">⚡</div>
-                <div class="ability-text-col">
-                  <div class="ability-name ability-name-locked">${ab.name}</div>
-                  <div class="ability-desc">${ab.description}</div>
-                </div>
+            </div>
+            <div class="ability-unlock-goal">🎯 ${req.goal}</div>
+            <div class="ability-progress-wrap">
+              <div class="ability-progress-bar-track">
+                <div class="ability-progress-bar-fill" style="width:${pct}%"></div>
               </div>
-              <div class="ability-unlock-goal">🎯 ${req.goal}</div>
-              <div class="ability-progress-wrap">
-                <div class="ability-progress-bar-track">
-                  <div class="ability-progress-bar-fill" style="width:${pct}%"></div>
-                </div>
-                <div class="ability-progress-label">${req.current} / ${req.max} ${req.unit}</div>
-              </div>
-            </div>`;
-        }
+              <div class="ability-progress-label">${req.current} / ${req.max} ${req.unit}</div>
+            </div>
+          </div>`;
 
-        // Feloldva, még nem használt
         return `
           <div class="ability-card ability-ready">
             <div class="ability-card-top">
@@ -1064,6 +1280,9 @@ function selectRole(roleId) {
   const role = characters.find(r => r.id === roleId);
   if (!confirm("Biztosan ezt a karaktert választod?\n\n" + (role?.name || "") + "\n\nA döntés beállításokban resetelhető.")) return;
   state.character = { roleId, ability1Used: false, ability2Used: false };
+  state.commissions = [];
+  charSubTab = "megbizasok";
+  initCommissions();
   saveState();
   renderKarakter();
 }
@@ -1092,6 +1311,8 @@ function resetCharacter() {
   state.character              = null;
   state.impostorName           = "";
   state.impostorChangePurchased = false;
+  state.commissions            = [];
+  charSubTab = "megbizasok";
   saveState();
   renderKarakter();
 }
@@ -1231,6 +1452,7 @@ function buyItem(itemId) {
         state.tokens += item.price;
       } else {
         state.curses[activeCurses[0].idx].status = "deactivated";
+        state.deactivatedCursesTotal = (state.deactivatedCursesTotal || 0) + 1;
         renderCurses();
       }
     } else {
@@ -1245,6 +1467,7 @@ function buyItem(itemId) {
         state.tokens += item.price;
       } else {
         state.curses[activeCurses[num - 1].idx].status = "deactivated";
+        state.deactivatedCursesTotal = (state.deactivatedCursesTotal || 0) + 1;
         renderCurses();
       }
     }
@@ -1514,6 +1737,8 @@ function resetGame() {
     tokens: 0, character: null, impostorName: "", impostorChangePurchased: false,
     returnMode: false, lives: 3, favoritePhotos: {}, notes: [], sips: 0,
     tetprobas: 0, sejtesCount: 0, tudasszomjCount: 0,
+    commissions: [], soldTreasuresTotal: 0, usedTreasuresTotal: 0,
+    deactivatedCursesTotal: 0, wonTetprobaTotal: 0,
   });
   // Tétpróba UI visszaállítása
   tpPhase = null; tpBet = 0; tpQuestion = null;
