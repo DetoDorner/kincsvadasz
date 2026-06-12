@@ -2518,43 +2518,69 @@ body.lightbox-open { overflow: hidden; }
    HÁTTÉR ANIMÁCIÓK – pseudo-element overlay (mix-blend-mode:screen)
    ═══════════════════════════════════════════════════════════════ */
 
-/* ── Kincsvadászat I. – Vándorló zseblámpa fény ── */
+/* ── Kincsvadászat I. – Zseblámpa jobbról/balról söpör ── */
 body.theme-kincsvadaszat1::before {
   content:""; position:fixed;
-  width:260px; height:260px; border-radius:50%;
-  background:radial-gradient(circle,rgba(255,255,220,0.13) 0%,rgba(255,255,180,0.05) 35%,transparent 70%);
+  width:280px; height:280px; border-radius:50%;
+  left:-140px; top:10vh;
+  background:radial-gradient(circle,rgba(255,255,220,0.14) 0%,rgba(255,255,180,0.06) 38%,transparent 70%);
   pointer-events:none; z-index:9999;
   mix-blend-mode:screen;
-  animation:flashlightWander 11s ease-in-out infinite;
+  animation:flashlightFromLeft 15s ease-in-out infinite;
 }
-@keyframes flashlightWander {
-  0%          { transform:translate(18vw,22vh); opacity:.8; }
-  11%,13%     { transform:translate(72vw,12vh); opacity:0; }
-  14%         { transform:translate(72vw,12vh); opacity:0; }
-  25%         { transform:translate(48vw,58vh); opacity:.9; }
-  36%,38%     { transform:translate(82vw,42vh); opacity:0; }
-  39%         { transform:translate(82vw,42vh); opacity:0; }
-  50%         { transform:translate(22vw,74vh); opacity:.75; }
-  61%,63%     { transform:translate(58vw,18vh); opacity:0; }
-  64%         { transform:translate(58vw,18vh); opacity:0; }
-  75%         { transform:translate(12vw,48vh); opacity:.85; }
-  86%,88%     { transform:translate(65vw,82vh); opacity:0; }
-  89%         { transform:translate(65vw,82vh); opacity:0; }
-  100%        { transform:translate(18vw,22vh); opacity:.8; }
+body.theme-kincsvadaszat1::after {
+  content:""; position:fixed;
+  width:240px; height:240px; border-radius:50%;
+  right:-120px; top:30vh;
+  background:radial-gradient(circle,rgba(255,255,210,0.12) 0%,rgba(255,255,170,0.05) 38%,transparent 70%);
+  pointer-events:none; z-index:9999;
+  mix-blend-mode:screen;
+  animation:flashlightFromRight 15s ease-in-out infinite 7.5s;
+}
+@keyframes flashlightFromLeft {
+  0%,4%   { left:-140px; top:10vh; opacity:0; }
+  5%      { opacity:1; }
+  20%     { left:30vw; top:40vh; opacity:.9; }
+  38%     { left:80vw; top:22vh; opacity:.8; }
+  48%,52% { left:100vw; top:60vh; opacity:0; }
+  52.1%   { left:-140px; top:10vh; opacity:0; }
+  100%    { left:-140px; top:10vh; opacity:0; }
+}
+@keyframes flashlightFromRight {
+  0%,4%   { right:-120px; top:30vh; opacity:0; }
+  5%      { opacity:1; }
+  20%     { right:25vw; top:55vh; opacity:.85; }
+  38%     { right:70vw; top:18vh; opacity:.8; }
+  48%,52% { right:105vw; top:70vh; opacity:0; }
+  52.1%   { right:-120px; top:30vh; opacity:0; }
+  100%    { right:-120px; top:30vh; opacity:0; }
 }
 
-/* ── Stickletti – Felfelé haladó fénysáv ── */
+/* ── Stickletti – Apró fehér csíkok felvillannak ── */
 body.theme-stickletti::before {
-  content:""; position:fixed;
-  left:0; right:0; top:-3px; height:3px;
-  background:linear-gradient(90deg,transparent 0%,rgba(245,208,192,0.5) 30%,rgba(255,255,255,0.7) 50%,rgba(245,208,192,0.5) 70%,transparent 100%);
+  content:""; position:fixed; inset:0;
   pointer-events:none; z-index:9999;
   mix-blend-mode:screen;
-  animation:sticklettiStripe 3.8s linear infinite;
+  background:
+    linear-gradient(90deg,transparent 10%,rgba(255,255,255,.65) 50%,transparent 90%)  7% 13% / 22px 1.5px no-repeat,
+    linear-gradient(90deg,transparent 10%,rgba(255,255,255,.55) 50%,transparent 90%) 74% 28% / 16px 1px  no-repeat,
+    linear-gradient(90deg,transparent 10%,rgba(255,255,255,.6)  50%,transparent 90%) 40% 52% / 20px 1.5px no-repeat,
+    linear-gradient(90deg,transparent 10%,rgba(255,255,255,.5)  50%,transparent 90%) 88% 67% / 13px 1px  no-repeat,
+    linear-gradient(90deg,transparent 10%,rgba(255,255,255,.65) 50%,transparent 90%) 25% 79% / 18px 1px  no-repeat,
+    linear-gradient(90deg,transparent 10%,rgba(255,255,255,.5)  50%,transparent 90%) 58% 7%  / 15px 1px  no-repeat,
+    linear-gradient(90deg,transparent 10%,rgba(255,255,255,.6)  50%,transparent 90%) 51% 42% / 24px 1.5px no-repeat,
+    linear-gradient(90deg,transparent 10%,rgba(255,255,255,.55) 50%,transparent 90%) 16% 63% / 11px 1px  no-repeat,
+    linear-gradient(90deg,transparent 10%,rgba(255,255,255,.5)  50%,transparent 90%) 93% 44% / 19px 1px  no-repeat,
+    linear-gradient(90deg,transparent 10%,rgba(255,255,255,.6)  50%,transparent 90%) 34% 88% / 14px 1.5px no-repeat,
+    linear-gradient(90deg,transparent 10%,rgba(255,255,255,.65) 50%,transparent 90%) 65% 22% / 21px 1px  no-repeat,
+    linear-gradient(90deg,transparent 10%,rgba(255,255,255,.5)  50%,transparent 90%) 80% 58% / 17px 1px  no-repeat;
+  animation:sticklettiDashFlash 4.5s ease-in-out infinite;
 }
-@keyframes sticklettiStripe {
-  0%   { transform:translateY(100vh); }
-  100% { transform:translateY(-3px); }
+@keyframes sticklettiDashFlash {
+  0%,100% { opacity:.1; }
+  25%     { opacity:1; }
+  50%     { opacity:.35; }
+  75%     { opacity:.95; }
 }
 
 /* ── Pinás Colada – Sárga gradient foltok ── */
@@ -2643,3 +2669,513 @@ body.theme-biliard::before {
   48%,52%         { opacity:1; }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   HÁTIZSÁK SZŰRŐ – 2×2 RÁCS
+   ═══════════════════════════════════════════════════════════════ */
+
+.camp-filter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-bottom: 18px;
+}
+.camp-filter-btn {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 5px;
+  padding: 14px 8px 11px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-top-width: 3px;
+  border-radius: 14px;
+  cursor: pointer; transition: all 0.2s;
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+#filter-missions  { border-top-color: var(--accent-mission); }
+#filter-curses    { border-top-color: var(--accent-curse); }
+#filter-treasures { border-top-color: var(--accent-treasure); }
+#filter-photos    { border-top-color: var(--accent-photo); }
+.camp-filter-btn:not(.active):hover { background: var(--bg-card-hover); }
+.camp-filter-btn.active {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  box-shadow: inset 0 1px 7px rgba(0,0,0,0.22), var(--shadow-card);
+  transform: translateY(1px);
+}
+#filter-missions.active  { color: var(--accent-mission); }
+#filter-curses.active    { color: var(--accent-curse); }
+#filter-treasures.active { color: var(--accent-treasure); }
+#filter-photos.active    { color: var(--accent-photo); }
+.camp-filter-icon  { font-size: 1.6rem; line-height: 1; }
+.camp-filter-label { font-size: 0.73rem; font-weight: 700; letter-spacing: 0.1px; white-space: nowrap; }
+
+/* ═══════════════════════════════════════════════════════════════
+   TÉTPRÓBA PANEL – ÚJ TÉMÁK
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Punikornis ── */
+.theme-punikornis .tetproba-card        { border-color:rgba(236,72,153,.22); background:linear-gradient(160deg,#1a0a12 0%,var(--bg-card) 100%); }
+.theme-punikornis .tetproba-header-row  { background:rgba(236,72,153,.07); border-bottom-color:rgba(236,72,153,.14); }
+.theme-punikornis .tp-header-clickable:hover { background:rgba(236,72,153,.12); }
+.theme-punikornis .tetproba-active      { border-color:rgba(236,72,153,.55); box-shadow:0 0 0 1px rgba(236,72,153,.15),0 6px 28px rgba(236,72,153,.18); }
+.theme-punikornis .tp-slot-filled       { background:#ec4899; box-shadow:0 0 6px rgba(236,72,153,.75); }
+.theme-punikornis .tp-slot-empty        { border-color:rgba(236,72,153,.3); }
+.theme-punikornis .tp-chevron           { color:rgba(236,72,153,.7); }
+.theme-punikornis .tetproba-phase-label { color:#ec4899; border-bottom-color:rgba(236,72,153,.2); }
+.theme-punikornis .tp-helper-chip,.theme-punikornis .btn-tp-helper,.theme-punikornis .tp-hint-box { background:rgba(236,72,153,.08); border-color:rgba(236,72,153,.2); color:#ec4899; }
+.theme-punikornis .btn-start-tetproba,.theme-punikornis .btn-tp-confirm { background:linear-gradient(135deg,#831843,#ec4899); color:#fff; box-shadow:0 4px 16px rgba(131,24,67,.4); }
+.theme-punikornis .tetproba-question    { background:rgba(236,72,153,.06); border-left-color:rgba(236,72,153,.5); }
+.theme-punikornis .btn-tp-option:active { background:rgba(236,72,153,.18); border-color:#ec4899; }
+.theme-punikornis .tp-toast             { background:rgba(131,24,67,.96); box-shadow:0 4px 18px rgba(131,24,67,.5); }
+
+/* ── Kincsvadászat I. ── */
+.theme-kincsvadaszat1 .tetproba-card        { border-color:rgba(232,208,0,.22); background:linear-gradient(160deg,#1a1600 0%,var(--bg-card) 100%); }
+.theme-kincsvadaszat1 .tetproba-header-row  { background:rgba(232,208,0,.07); border-bottom-color:rgba(232,208,0,.14); }
+.theme-kincsvadaszat1 .tp-header-clickable:hover { background:rgba(232,208,0,.12); }
+.theme-kincsvadaszat1 .tetproba-active      { border-color:rgba(232,208,0,.55); box-shadow:0 0 0 1px rgba(232,208,0,.15),0 6px 28px rgba(232,208,0,.18); }
+.theme-kincsvadaszat1 .tp-slot-filled       { background:#e8d000; box-shadow:0 0 6px rgba(232,208,0,.75); }
+.theme-kincsvadaszat1 .tp-slot-empty        { border-color:rgba(232,208,0,.3); }
+.theme-kincsvadaszat1 .tp-chevron           { color:rgba(232,208,0,.7); }
+.theme-kincsvadaszat1 .tetproba-phase-label { color:#e8d000; border-bottom-color:rgba(232,208,0,.2); }
+.theme-kincsvadaszat1 .tp-helper-chip,.theme-kincsvadaszat1 .btn-tp-helper,.theme-kincsvadaszat1 .tp-hint-box { background:rgba(232,208,0,.08); border-color:rgba(232,208,0,.2); color:#e8d000; }
+.theme-kincsvadaszat1 .btn-start-tetproba,.theme-kincsvadaszat1 .btn-tp-confirm { background:linear-gradient(135deg,#2a2000,#e8d000); color:#060500; box-shadow:0 4px 16px rgba(42,32,0,.5); }
+.theme-kincsvadaszat1 .tetproba-question    { background:rgba(232,208,0,.06); border-left-color:rgba(232,208,0,.5); }
+.theme-kincsvadaszat1 .btn-tp-option:active { background:rgba(232,208,0,.18); border-color:#e8d000; }
+.theme-kincsvadaszat1 .tp-toast             { background:rgba(42,32,0,.96); box-shadow:0 4px 18px rgba(42,32,0,.5); }
+
+/* ── Endzsó ── */
+.theme-endzso .tetproba-card        { border-color:rgba(124,58,237,.22); background:linear-gradient(160deg,#1e0a3c 0%,var(--bg-card) 100%); }
+.theme-endzso .tetproba-header-row  { background:rgba(124,58,237,.07); border-bottom-color:rgba(124,58,237,.14); }
+.theme-endzso .tp-header-clickable:hover { background:rgba(124,58,237,.12); }
+.theme-endzso .tetproba-active      { border-color:rgba(124,58,237,.55); box-shadow:0 0 0 1px rgba(124,58,237,.15),0 6px 28px rgba(124,58,237,.18); }
+.theme-endzso .tp-slot-filled       { background:#7c3aed; box-shadow:0 0 6px rgba(124,58,237,.75); }
+.theme-endzso .tp-slot-empty        { border-color:rgba(124,58,237,.3); }
+.theme-endzso .tp-chevron           { color:rgba(124,58,237,.7); }
+.theme-endzso .tetproba-phase-label { color:#7c3aed; border-bottom-color:rgba(124,58,237,.2); }
+.theme-endzso .tp-helper-chip,.theme-endzso .btn-tp-helper,.theme-endzso .tp-hint-box { background:rgba(124,58,237,.08); border-color:rgba(124,58,237,.2); color:#7c3aed; }
+.theme-endzso .btn-start-tetproba,.theme-endzso .btn-tp-confirm { background:linear-gradient(135deg,#2e1065,#7c3aed); color:#fff; box-shadow:0 4px 16px rgba(46,16,101,.5); }
+.theme-endzso .tetproba-question    { background:rgba(124,58,237,.06); border-left-color:rgba(124,58,237,.5); }
+.theme-endzso .btn-tp-option:active { background:rgba(124,58,237,.18); border-color:#7c3aed; }
+.theme-endzso .tp-toast             { background:rgba(46,16,101,.96); box-shadow:0 4px 18px rgba(46,16,101,.5); }
+
+/* ── Körbányai ── */
+.theme-korbanyai .tetproba-card        { border-color:rgba(192,35,26,.22); background:linear-gradient(160deg,#200400 0%,var(--bg-card) 100%); }
+.theme-korbanyai .tetproba-header-row  { background:rgba(192,35,26,.07); border-bottom-color:rgba(192,35,26,.14); }
+.theme-korbanyai .tp-header-clickable:hover { background:rgba(192,35,26,.12); }
+.theme-korbanyai .tetproba-active      { border-color:rgba(192,35,26,.55); box-shadow:0 0 0 1px rgba(192,35,26,.15),0 6px 28px rgba(192,35,26,.18); }
+.theme-korbanyai .tp-slot-filled       { background:#c0231a; box-shadow:0 0 6px rgba(192,35,26,.75); }
+.theme-korbanyai .tp-slot-empty        { border-color:rgba(192,35,26,.3); }
+.theme-korbanyai .tp-chevron           { color:rgba(192,35,26,.7); }
+.theme-korbanyai .tetproba-phase-label { color:#e05050; border-bottom-color:rgba(192,35,26,.2); }
+.theme-korbanyai .tp-helper-chip,.theme-korbanyai .btn-tp-helper,.theme-korbanyai .tp-hint-box { background:rgba(192,35,26,.08); border-color:rgba(192,35,26,.2); color:#e05050; }
+.theme-korbanyai .btn-start-tetproba,.theme-korbanyai .btn-tp-confirm { background:linear-gradient(135deg,#5a0a00,#c0231a); color:#fff; box-shadow:0 4px 16px rgba(90,10,0,.5); }
+.theme-korbanyai .tetproba-question    { background:rgba(192,35,26,.06); border-left-color:rgba(192,35,26,.5); }
+.theme-korbanyai .btn-tp-option:active { background:rgba(192,35,26,.18); border-color:#c0231a; }
+.theme-korbanyai .tp-toast             { background:rgba(90,10,0,.96); box-shadow:0 4px 18px rgba(90,10,0,.5); }
+
+/* ── Stickletti ── */
+.theme-stickletti .tetproba-card        { border-color:rgba(220,38,38,.22); background:linear-gradient(160deg,#200000 0%,var(--bg-card) 100%); }
+.theme-stickletti .tetproba-header-row  { background:rgba(220,38,38,.07); border-bottom-color:rgba(220,38,38,.14); }
+.theme-stickletti .tp-header-clickable:hover { background:rgba(220,38,38,.12); }
+.theme-stickletti .tetproba-active      { border-color:rgba(220,38,38,.55); box-shadow:0 0 0 1px rgba(220,38,38,.15),0 6px 28px rgba(220,38,38,.18); }
+.theme-stickletti .tp-slot-filled       { background:#dc2626; box-shadow:0 0 6px rgba(220,38,38,.75); }
+.theme-stickletti .tp-slot-empty        { border-color:rgba(220,38,38,.3); }
+.theme-stickletti .tp-chevron           { color:rgba(220,38,38,.7); }
+.theme-stickletti .tetproba-phase-label { color:#dc2626; border-bottom-color:rgba(220,38,38,.2); }
+.theme-stickletti .tp-helper-chip,.theme-stickletti .btn-tp-helper,.theme-stickletti .tp-hint-box { background:rgba(220,38,38,.08); border-color:rgba(220,38,38,.2); color:#dc2626; }
+.theme-stickletti .btn-start-tetproba,.theme-stickletti .btn-tp-confirm { background:linear-gradient(135deg,#7f1d1d,#dc2626); color:#fff; box-shadow:0 4px 16px rgba(127,29,29,.5); }
+.theme-stickletti .tetproba-question    { background:rgba(220,38,38,.06); border-left-color:rgba(220,38,38,.5); }
+.theme-stickletti .btn-tp-option:active { background:rgba(220,38,38,.18); border-color:#dc2626; }
+.theme-stickletti .tp-toast             { background:rgba(127,29,29,.96); box-shadow:0 4px 18px rgba(127,29,29,.5); }
+
+/* ── Máguskula ── */
+.theme-maguskula .tetproba-card        { border-color:rgba(192,38,211,.22); background:linear-gradient(160deg,#1a0022 0%,var(--bg-card) 100%); }
+.theme-maguskula .tetproba-header-row  { background:rgba(192,38,211,.07); border-bottom-color:rgba(192,38,211,.14); }
+.theme-maguskula .tp-header-clickable:hover { background:rgba(192,38,211,.12); }
+.theme-maguskula .tetproba-active      { border-color:rgba(192,38,211,.55); box-shadow:0 0 0 1px rgba(192,38,211,.15),0 6px 28px rgba(192,38,211,.18); }
+.theme-maguskula .tp-slot-filled       { background:#c026d3; box-shadow:0 0 6px rgba(192,38,211,.75); }
+.theme-maguskula .tp-slot-empty        { border-color:rgba(192,38,211,.3); }
+.theme-maguskula .tp-chevron           { color:rgba(192,38,211,.7); }
+.theme-maguskula .tetproba-phase-label { color:#c026d3; border-bottom-color:rgba(192,38,211,.2); }
+.theme-maguskula .tp-helper-chip,.theme-maguskula .btn-tp-helper,.theme-maguskula .tp-hint-box { background:rgba(192,38,211,.08); border-color:rgba(192,38,211,.2); color:#c026d3; }
+.theme-maguskula .btn-start-tetproba,.theme-maguskula .btn-tp-confirm { background:linear-gradient(135deg,#4a0070,#c026d3); color:#fff; box-shadow:0 4px 16px rgba(74,0,112,.5); }
+.theme-maguskula .tetproba-question    { background:rgba(192,38,211,.06); border-left-color:rgba(192,38,211,.5); }
+.theme-maguskula .btn-tp-option:active { background:rgba(192,38,211,.18); border-color:#c026d3; }
+.theme-maguskula .tp-toast             { background:rgba(74,0,112,.96); box-shadow:0 4px 18px rgba(74,0,112,.5); }
+
+/* ── Zákánycsákány ── */
+.theme-zakanycsakany .tetproba-card        { border-color:rgba(192,112,64,.22); background:linear-gradient(160deg,#1a0e06 0%,var(--bg-card) 100%); }
+.theme-zakanycsakany .tetproba-header-row  { background:rgba(192,112,64,.07); border-bottom-color:rgba(192,112,64,.14); }
+.theme-zakanycsakany .tp-header-clickable:hover { background:rgba(192,112,64,.12); }
+.theme-zakanycsakany .tetproba-active      { border-color:rgba(192,112,64,.55); box-shadow:0 0 0 1px rgba(192,112,64,.15),0 6px 28px rgba(192,112,64,.18); }
+.theme-zakanycsakany .tp-slot-filled       { background:#c07040; box-shadow:0 0 6px rgba(192,112,64,.75); }
+.theme-zakanycsakany .tp-slot-empty        { border-color:rgba(192,112,64,.3); }
+.theme-zakanycsakany .tp-chevron           { color:rgba(192,112,64,.7); }
+.theme-zakanycsakany .tetproba-phase-label { color:#c07040; border-bottom-color:rgba(192,112,64,.2); }
+.theme-zakanycsakany .tp-helper-chip,.theme-zakanycsakany .btn-tp-helper,.theme-zakanycsakany .tp-hint-box { background:rgba(192,112,64,.08); border-color:rgba(192,112,64,.2); color:#c07040; }
+.theme-zakanycsakany .btn-start-tetproba,.theme-zakanycsakany .btn-tp-confirm { background:linear-gradient(135deg,#5a2a00,#c07040); color:#fff; box-shadow:0 4px 16px rgba(90,42,0,.5); }
+.theme-zakanycsakany .tetproba-question    { background:rgba(192,112,64,.06); border-left-color:rgba(192,112,64,.5); }
+.theme-zakanycsakany .btn-tp-option:active { background:rgba(192,112,64,.18); border-color:#c07040; }
+.theme-zakanycsakany .tp-toast             { background:rgba(90,42,0,.96); box-shadow:0 4px 18px rgba(90,42,0,.5); }
+
+/* ── Pinás Colada ── */
+.theme-pinascolada .tetproba-card        { border-color:rgba(249,168,0,.22); background:linear-gradient(160deg,#1a1000 0%,var(--bg-card) 100%); }
+.theme-pinascolada .tetproba-header-row  { background:rgba(249,168,0,.07); border-bottom-color:rgba(249,168,0,.14); }
+.theme-pinascolada .tp-header-clickable:hover { background:rgba(249,168,0,.12); }
+.theme-pinascolada .tetproba-active      { border-color:rgba(249,168,0,.55); box-shadow:0 0 0 1px rgba(249,168,0,.15),0 6px 28px rgba(249,168,0,.18); }
+.theme-pinascolada .tp-slot-filled       { background:#f9a800; box-shadow:0 0 6px rgba(249,168,0,.75); }
+.theme-pinascolada .tp-slot-empty        { border-color:rgba(249,168,0,.3); }
+.theme-pinascolada .tp-chevron           { color:rgba(249,168,0,.7); }
+.theme-pinascolada .tetproba-phase-label { color:#f9a800; border-bottom-color:rgba(249,168,0,.2); }
+.theme-pinascolada .tp-helper-chip,.theme-pinascolada .btn-tp-helper,.theme-pinascolada .tp-hint-box { background:rgba(249,168,0,.08); border-color:rgba(249,168,0,.2); color:#f9a800; }
+.theme-pinascolada .btn-start-tetproba,.theme-pinascolada .btn-tp-confirm { background:linear-gradient(135deg,#7a3800,#f9a800); color:#1a0800; box-shadow:0 4px 16px rgba(122,56,0,.5); }
+.theme-pinascolada .tetproba-question    { background:rgba(249,168,0,.06); border-left-color:rgba(249,168,0,.5); }
+.theme-pinascolada .btn-tp-option:active { background:rgba(249,168,0,.18); border-color:#f9a800; }
+.theme-pinascolada .tp-toast             { background:rgba(122,56,0,.96); box-shadow:0 4px 18px rgba(122,56,0,.5); }
+
+/* ── Spermium ── */
+.theme-spermium .tetproba-card        { border-color:rgba(180,180,180,.22); background:linear-gradient(160deg,#111 0%,var(--bg-card) 100%); }
+.theme-spermium .tetproba-header-row  { background:rgba(200,200,200,.06); border-bottom-color:rgba(200,200,200,.12); }
+.theme-spermium .tp-header-clickable:hover { background:rgba(200,200,200,.1); }
+.theme-spermium .tetproba-active      { border-color:rgba(200,200,200,.5); box-shadow:0 0 0 1px rgba(200,200,200,.12),0 6px 28px rgba(200,200,200,.14); }
+.theme-spermium .tp-slot-filled       { background:#c8c8c8; box-shadow:0 0 6px rgba(200,200,200,.6); }
+.theme-spermium .tp-slot-empty        { border-color:rgba(200,200,200,.28); }
+.theme-spermium .tp-chevron           { color:rgba(200,200,200,.65); }
+.theme-spermium .tetproba-phase-label { color:#c8c8c8; border-bottom-color:rgba(200,200,200,.18); }
+.theme-spermium .tp-helper-chip,.theme-spermium .btn-tp-helper,.theme-spermium .tp-hint-box { background:rgba(200,200,200,.07); border-color:rgba(200,200,200,.18); color:#c8c8c8; }
+.theme-spermium .btn-start-tetproba,.theme-spermium .btn-tp-confirm { background:linear-gradient(135deg,#333,#888); color:#fff; box-shadow:0 4px 16px rgba(0,0,0,.5); }
+.theme-spermium .tetproba-question    { background:rgba(200,200,200,.05); border-left-color:rgba(200,200,200,.4); }
+.theme-spermium .btn-tp-option:active { background:rgba(200,200,200,.15); border-color:#c8c8c8; }
+.theme-spermium .tp-toast             { background:rgba(30,30,30,.97); box-shadow:0 4px 18px rgba(0,0,0,.6); }
+
+/* ── Pride ── */
+.theme-pride .tetproba-card        { border-color:rgba(59,130,246,.22); background:linear-gradient(160deg,#000830 0%,var(--bg-card) 100%); }
+.theme-pride .tetproba-header-row  { background:rgba(59,130,246,.07); border-bottom-color:rgba(59,130,246,.14); }
+.theme-pride .tp-header-clickable:hover { background:rgba(59,130,246,.12); }
+.theme-pride .tetproba-active      { border-color:rgba(59,130,246,.55); box-shadow:0 0 0 1px rgba(59,130,246,.15),0 6px 28px rgba(59,130,246,.18); }
+.theme-pride .tp-slot-filled       { background:linear-gradient(90deg,#e40303,#ff8c00,#ffed00,#008026,#004dff,#750787); box-shadow:0 0 6px rgba(59,130,246,.6); }
+.theme-pride .tp-slot-empty        { border-color:rgba(59,130,246,.3); }
+.theme-pride .tp-chevron           { color:rgba(59,130,246,.7); }
+.theme-pride .tetproba-phase-label { color:#3b82f6; border-bottom-color:rgba(59,130,246,.2); }
+.theme-pride .tp-helper-chip,.theme-pride .btn-tp-helper,.theme-pride .tp-hint-box { background:rgba(59,130,246,.08); border-color:rgba(59,130,246,.2); color:#3b82f6; }
+.theme-pride .btn-start-tetproba,.theme-pride .btn-tp-confirm { background:linear-gradient(135deg,#e40303,#ff8c00,#ffed00,#008026,#004dff,#750787); color:#fff; box-shadow:0 4px 16px rgba(117,7,135,.4); }
+.theme-pride .tetproba-question    { background:rgba(59,130,246,.06); border-left-color:rgba(59,130,246,.5); }
+.theme-pride .btn-tp-option:active { background:rgba(59,130,246,.18); border-color:#3b82f6; }
+.theme-pride .tp-toast             { background:rgba(0,8,48,.97); box-shadow:0 4px 18px rgba(117,7,135,.4); }
+
+/* ── Bimbózás ── */
+.theme-bimbozas .tetproba-card        { border-color:rgba(255,20,147,.22); background:linear-gradient(160deg,#1a0010 0%,var(--bg-card) 100%); }
+.theme-bimbozas .tetproba-header-row  { background:rgba(255,20,147,.07); border-bottom-color:rgba(255,20,147,.14); }
+.theme-bimbozas .tp-header-clickable:hover { background:rgba(255,20,147,.12); }
+.theme-bimbozas .tetproba-active      { border-color:rgba(255,20,147,.55); box-shadow:0 0 0 1px rgba(255,20,147,.15),0 6px 28px rgba(255,20,147,.18); }
+.theme-bimbozas .tp-slot-filled       { background:#ff1493; box-shadow:0 0 6px rgba(255,20,147,.75); }
+.theme-bimbozas .tp-slot-empty        { border-color:rgba(255,20,147,.3); }
+.theme-bimbozas .tp-chevron           { color:rgba(255,20,147,.7); }
+.theme-bimbozas .tetproba-phase-label { color:#ff1493; border-bottom-color:rgba(255,20,147,.2); }
+.theme-bimbozas .tp-helper-chip,.theme-bimbozas .btn-tp-helper,.theme-bimbozas .tp-hint-box { background:rgba(255,20,147,.08); border-color:rgba(255,20,147,.2); color:#ff1493; }
+.theme-bimbozas .btn-start-tetproba,.theme-bimbozas .btn-tp-confirm { background:linear-gradient(135deg,#85000d,#ff1493); color:#fff; box-shadow:0 4px 16px rgba(133,0,13,.45); }
+.theme-bimbozas .tetproba-question    { background:rgba(255,20,147,.06); border-left-color:rgba(255,20,147,.5); }
+.theme-bimbozas .btn-tp-option:active { background:rgba(255,20,147,.18); border-color:#ff1493; }
+.theme-bimbozas .tp-toast             { background:rgba(133,0,13,.96); box-shadow:0 4px 18px rgba(133,0,13,.5); }
+
+/* ── Kiskunhalálos ── */
+.theme-kiskunhalalos .tetproba-card        { border-color:rgba(0,180,216,.22); background:linear-gradient(160deg,#001a28 0%,var(--bg-card) 100%); }
+.theme-kiskunhalalos .tetproba-header-row  { background:rgba(0,180,216,.07); border-bottom-color:rgba(0,180,216,.14); }
+.theme-kiskunhalalos .tp-header-clickable:hover { background:rgba(0,180,216,.12); }
+.theme-kiskunhalalos .tetproba-active      { border-color:rgba(0,180,216,.55); box-shadow:0 0 0 1px rgba(0,180,216,.15),0 6px 28px rgba(0,180,216,.18); }
+.theme-kiskunhalalos .tp-slot-filled       { background:#00b4d8; box-shadow:0 0 6px rgba(0,180,216,.75); }
+.theme-kiskunhalalos .tp-slot-empty        { border-color:rgba(0,180,216,.3); }
+.theme-kiskunhalalos .tp-chevron           { color:rgba(0,180,216,.7); }
+.theme-kiskunhalalos .tetproba-phase-label { color:#00b4d8; border-bottom-color:rgba(0,180,216,.2); }
+.theme-kiskunhalalos .tp-helper-chip,.theme-kiskunhalalos .btn-tp-helper,.theme-kiskunhalalos .tp-hint-box { background:rgba(0,180,216,.08); border-color:rgba(0,180,216,.2); color:#00b4d8; }
+.theme-kiskunhalalos .btn-start-tetproba,.theme-kiskunhalalos .btn-tp-confirm { background:linear-gradient(135deg,#023e8a,#00b4d8); color:#fff; box-shadow:0 4px 16px rgba(2,62,138,.5); }
+.theme-kiskunhalalos .tetproba-question    { background:rgba(0,180,216,.06); border-left-color:rgba(0,180,216,.5); }
+.theme-kiskunhalalos .btn-tp-option:active { background:rgba(0,180,216,.18); border-color:#00b4d8; }
+.theme-kiskunhalalos .tp-toast             { background:rgba(2,62,138,.96); box-shadow:0 4px 18px rgba(2,62,138,.5); }
+
+/* ── Méhtelep ── */
+.theme-mehtelep .tetproba-card        { border-color:rgba(136,144,168,.22); background:linear-gradient(160deg,#0e1018 0%,var(--bg-card) 100%); }
+.theme-mehtelep .tetproba-header-row  { background:rgba(136,144,168,.07); border-bottom-color:rgba(136,144,168,.14); }
+.theme-mehtelep .tp-header-clickable:hover { background:rgba(136,144,168,.12); }
+.theme-mehtelep .tetproba-active      { border-color:rgba(136,144,168,.55); box-shadow:0 0 0 1px rgba(136,144,168,.15),0 6px 28px rgba(136,144,168,.18); }
+.theme-mehtelep .tp-slot-filled       { background:#8890a8; box-shadow:0 0 6px rgba(136,144,168,.75); }
+.theme-mehtelep .tp-slot-empty        { border-color:rgba(136,144,168,.3); }
+.theme-mehtelep .tp-chevron           { color:rgba(136,144,168,.7); }
+.theme-mehtelep .tetproba-phase-label { color:#8890a8; border-bottom-color:rgba(136,144,168,.2); }
+.theme-mehtelep .tp-helper-chip,.theme-mehtelep .btn-tp-helper,.theme-mehtelep .tp-hint-box { background:rgba(136,144,168,.08); border-color:rgba(136,144,168,.2); color:#8890a8; }
+.theme-mehtelep .btn-start-tetproba,.theme-mehtelep .btn-tp-confirm { background:linear-gradient(135deg,#283040,#8890a8); color:#f0f0f0; box-shadow:0 4px 16px rgba(40,48,64,.5); }
+.theme-mehtelep .tetproba-question    { background:rgba(136,144,168,.06); border-left-color:rgba(136,144,168,.5); }
+.theme-mehtelep .btn-tp-option:active { background:rgba(136,144,168,.18); border-color:#8890a8; }
+.theme-mehtelep .tp-toast             { background:rgba(40,48,64,.97); box-shadow:0 4px 18px rgba(40,48,64,.5); }
+
+/* ── Utcalány ── */
+.theme-utcalany .tetproba-card        { border-color:rgba(255,45,138,.22); background:linear-gradient(160deg,#1a0018 0%,var(--bg-card) 100%); }
+.theme-utcalany .tetproba-header-row  { background:rgba(255,45,138,.07); border-bottom-color:rgba(255,45,138,.14); }
+.theme-utcalany .tp-header-clickable:hover { background:rgba(255,45,138,.12); }
+.theme-utcalany .tetproba-active      { border-color:rgba(255,45,138,.55); box-shadow:0 0 0 1px rgba(255,45,138,.15),0 6px 28px rgba(255,45,138,.18); }
+.theme-utcalany .tp-slot-filled       { background:#ff2d8a; box-shadow:0 0 6px rgba(255,45,138,.75); }
+.theme-utcalany .tp-slot-empty        { border-color:rgba(255,45,138,.3); }
+.theme-utcalany .tp-chevron           { color:rgba(255,45,138,.7); }
+.theme-utcalany .tetproba-phase-label { color:#ff2d8a; border-bottom-color:rgba(255,45,138,.2); }
+.theme-utcalany .tp-helper-chip,.theme-utcalany .btn-tp-helper,.theme-utcalany .tp-hint-box { background:rgba(255,45,138,.08); border-color:rgba(255,45,138,.2); color:#ff2d8a; }
+.theme-utcalany .btn-start-tetproba,.theme-utcalany .btn-tp-confirm { background:linear-gradient(135deg,#7a0040,#ff2d8a); color:#fff; box-shadow:0 4px 16px rgba(122,0,64,.45); }
+.theme-utcalany .tetproba-question    { background:rgba(255,45,138,.06); border-left-color:rgba(255,45,138,.5); }
+.theme-utcalany .btn-tp-option:active { background:rgba(255,45,138,.18); border-color:#ff2d8a; }
+.theme-utcalany .tp-toast             { background:rgba(122,0,64,.96); box-shadow:0 4px 18px rgba(122,0,64,.5); }
+
+/* ── Puniverzum ── */
+.theme-puniverzum .tetproba-card        { border-color:rgba(96,96,255,.22); background:linear-gradient(160deg,#04020e 0%,var(--bg-card) 100%); }
+.theme-puniverzum .tetproba-header-row  { background:rgba(96,96,255,.07); border-bottom-color:rgba(96,96,255,.14); }
+.theme-puniverzum .tp-header-clickable:hover { background:rgba(96,96,255,.12); }
+.theme-puniverzum .tetproba-active      { border-color:rgba(96,96,255,.55); box-shadow:0 0 0 1px rgba(96,96,255,.15),0 6px 28px rgba(96,96,255,.18); }
+.theme-puniverzum .tp-slot-filled       { background:#6060ff; box-shadow:0 0 6px rgba(96,96,255,.75); }
+.theme-puniverzum .tp-slot-empty        { border-color:rgba(96,96,255,.3); }
+.theme-puniverzum .tp-chevron           { color:rgba(96,96,255,.7); }
+.theme-puniverzum .tetproba-phase-label { color:#6060ff; border-bottom-color:rgba(96,96,255,.2); }
+.theme-puniverzum .tp-helper-chip,.theme-puniverzum .btn-tp-helper,.theme-puniverzum .tp-hint-box { background:rgba(96,96,255,.08); border-color:rgba(96,96,255,.2); color:#6060ff; }
+.theme-puniverzum .btn-start-tetproba,.theme-puniverzum .btn-tp-confirm { background:linear-gradient(135deg,#1a0848,#6060ff); color:#fff; box-shadow:0 4px 16px rgba(26,8,72,.5); }
+.theme-puniverzum .tetproba-question    { background:rgba(96,96,255,.06); border-left-color:rgba(96,96,255,.5); }
+.theme-puniverzum .btn-tp-option:active { background:rgba(96,96,255,.18); border-color:#6060ff; }
+.theme-puniverzum .tp-toast             { background:rgba(26,8,72,.97); box-shadow:0 4px 18px rgba(26,8,72,.5); }
+
+/* ── Neonbéka ── */
+.theme-neonbeka .tetproba-card        { border-color:rgba(57,255,20,.22); background:linear-gradient(160deg,#001a06 0%,var(--bg-card) 100%); }
+.theme-neonbeka .tetproba-header-row  { background:rgba(57,255,20,.07); border-bottom-color:rgba(57,255,20,.14); }
+.theme-neonbeka .tp-header-clickable:hover { background:rgba(57,255,20,.12); }
+.theme-neonbeka .tetproba-active      { border-color:rgba(57,255,20,.55); box-shadow:0 0 0 1px rgba(57,255,20,.15),0 6px 28px rgba(57,255,20,.18); }
+.theme-neonbeka .tp-slot-filled       { background:#39ff14; box-shadow:0 0 8px rgba(57,255,20,.8); }
+.theme-neonbeka .tp-slot-empty        { border-color:rgba(57,255,20,.3); }
+.theme-neonbeka .tp-chevron           { color:rgba(57,255,20,.7); }
+.theme-neonbeka .tetproba-phase-label { color:#39ff14; border-bottom-color:rgba(57,255,20,.2); }
+.theme-neonbeka .tp-helper-chip,.theme-neonbeka .btn-tp-helper,.theme-neonbeka .tp-hint-box { background:rgba(57,255,20,.08); border-color:rgba(57,255,20,.2); color:#39ff14; }
+.theme-neonbeka .btn-start-tetproba,.theme-neonbeka .btn-tp-confirm { background:linear-gradient(135deg,#0a3010,#39ff14); color:#020904; box-shadow:0 4px 16px rgba(57,255,20,.3); }
+.theme-neonbeka .tetproba-question    { background:rgba(57,255,20,.06); border-left-color:rgba(57,255,20,.5); }
+.theme-neonbeka .btn-tp-option:active { background:rgba(57,255,20,.18); border-color:#39ff14; }
+.theme-neonbeka .tp-toast             { background:rgba(10,48,16,.97); box-shadow:0 4px 18px rgba(57,255,20,.3); }
+
+/* ── Fidesz ── */
+.theme-fidesz .tetproba-card        { border-color:rgba(245,124,0,.22); background:linear-gradient(160deg,#1a0c00 0%,var(--bg-card) 100%); }
+.theme-fidesz .tetproba-header-row  { background:rgba(245,124,0,.07); border-bottom-color:rgba(245,124,0,.14); }
+.theme-fidesz .tp-header-clickable:hover { background:rgba(245,124,0,.12); }
+.theme-fidesz .tetproba-active      { border-color:rgba(245,124,0,.55); box-shadow:0 0 0 1px rgba(245,124,0,.15),0 6px 28px rgba(245,124,0,.18); }
+.theme-fidesz .tp-slot-filled       { background:#f57c00; box-shadow:0 0 6px rgba(245,124,0,.75); }
+.theme-fidesz .tp-slot-empty        { border-color:rgba(245,124,0,.3); }
+.theme-fidesz .tp-chevron           { color:rgba(245,124,0,.7); }
+.theme-fidesz .tetproba-phase-label { color:#f57c00; border-bottom-color:rgba(245,124,0,.2); }
+.theme-fidesz .tp-helper-chip,.theme-fidesz .btn-tp-helper,.theme-fidesz .tp-hint-box { background:rgba(245,124,0,.08); border-color:rgba(245,124,0,.2); color:#f57c00; }
+.theme-fidesz .btn-start-tetproba,.theme-fidesz .btn-tp-confirm { background:linear-gradient(135deg,#8b3000,#f57c00); color:#fff; box-shadow:0 4px 16px rgba(139,48,0,.5); }
+.theme-fidesz .tetproba-question    { background:rgba(245,124,0,.06); border-left-color:rgba(245,124,0,.5); }
+.theme-fidesz .btn-tp-option:active { background:rgba(245,124,0,.18); border-color:#f57c00; }
+.theme-fidesz .tp-toast             { background:rgba(139,48,0,.96); box-shadow:0 4px 18px rgba(139,48,0,.5); }
+
+/* ── Faszbook ── */
+.theme-faszbook .tetproba-card        { border-color:rgba(24,119,242,.22); background:linear-gradient(160deg,#000c28 0%,var(--bg-card) 100%); }
+.theme-faszbook .tetproba-header-row  { background:rgba(24,119,242,.07); border-bottom-color:rgba(24,119,242,.14); }
+.theme-faszbook .tp-header-clickable:hover { background:rgba(24,119,242,.12); }
+.theme-faszbook .tetproba-active      { border-color:rgba(24,119,242,.55); box-shadow:0 0 0 1px rgba(24,119,242,.15),0 6px 28px rgba(24,119,242,.18); }
+.theme-faszbook .tp-slot-filled       { background:#1877f2; box-shadow:0 0 6px rgba(24,119,242,.75); }
+.theme-faszbook .tp-slot-empty        { border-color:rgba(24,119,242,.3); }
+.theme-faszbook .tp-chevron           { color:rgba(24,119,242,.7); }
+.theme-faszbook .tetproba-phase-label { color:#1877f2; border-bottom-color:rgba(24,119,242,.2); }
+.theme-faszbook .tp-helper-chip,.theme-faszbook .btn-tp-helper,.theme-faszbook .tp-hint-box { background:rgba(24,119,242,.08); border-color:rgba(24,119,242,.2); color:#1877f2; }
+.theme-faszbook .btn-start-tetproba,.theme-faszbook .btn-tp-confirm { background:linear-gradient(135deg,#0e3580,#1877f2); color:#fff; box-shadow:0 4px 16px rgba(14,53,128,.5); }
+.theme-faszbook .tetproba-question    { background:rgba(24,119,242,.06); border-left-color:rgba(24,119,242,.5); }
+.theme-faszbook .btn-tp-option:active { background:rgba(24,119,242,.18); border-color:#1877f2; }
+.theme-faszbook .tp-toast             { background:rgba(14,53,128,.97); box-shadow:0 4px 18px rgba(14,53,128,.5); }
+
+/* ── Biliárd ── */
+.theme-biliard .tetproba-card        { border-color:rgba(45,106,79,.22); background:linear-gradient(160deg,#041408 0%,var(--bg-card) 100%); }
+.theme-biliard .tetproba-header-row  { background:rgba(45,106,79,.07); border-bottom-color:rgba(45,106,79,.14); }
+.theme-biliard .tp-header-clickable:hover { background:rgba(45,106,79,.12); }
+.theme-biliard .tetproba-active      { border-color:rgba(45,106,79,.55); box-shadow:0 0 0 1px rgba(45,106,79,.15),0 6px 28px rgba(45,106,79,.18); }
+.theme-biliard .tp-slot-filled       { background:#2d6a4f; box-shadow:0 0 6px rgba(45,106,79,.75); }
+.theme-biliard .tp-slot-empty        { border-color:rgba(45,106,79,.3); }
+.theme-biliard .tp-chevron           { color:rgba(45,106,79,.7); }
+.theme-biliard .tetproba-phase-label { color:#52b788; border-bottom-color:rgba(45,106,79,.2); }
+.theme-biliard .tp-helper-chip,.theme-biliard .btn-tp-helper,.theme-biliard .tp-hint-box { background:rgba(45,106,79,.08); border-color:rgba(45,106,79,.2); color:#52b788; }
+.theme-biliard .btn-start-tetproba,.theme-biliard .btn-tp-confirm { background:linear-gradient(135deg,#1a3a28,#2d6a4f); color:#ddf0d8; box-shadow:0 4px 16px rgba(26,58,40,.5); }
+.theme-biliard .tetproba-question    { background:rgba(45,106,79,.06); border-left-color:rgba(45,106,79,.5); }
+.theme-biliard .btn-tp-option:active { background:rgba(45,106,79,.18); border-color:#2d6a4f; }
+.theme-biliard .tp-toast             { background:rgba(26,58,40,.97); box-shadow:0 4px 18px rgba(26,58,40,.5); }
+
+/* ═══════════════════════════════════════════════════════════════
+   TÉMÁNKÉNTI VIZUÁLIS HATÁSOK – JAVÍTÁSOK + ÚJAK
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Krokodildó – Gyors gombszéle villanyás + barnás fény alulról ── */
+@keyframes krokodildoBorderFlash {
+  0%,49%   { outline:2px solid #000; outline-offset:-1px; }
+  50%,100% { outline:2px solid #14532d; outline-offset:-1px; }
+}
+.theme-krokodildo .draw-btn,
+.theme-krokodildo .btn-use-ability,
+.theme-krokodildo .btn-start-tetproba,
+.theme-krokodildo .btn-tp-confirm,
+.theme-krokodildo .camp-filter-btn,
+.theme-krokodildo .char-subtab-btn { animation:krokodildoBorderFlash .45s linear infinite !important; }
+body.theme-krokodildo::before {
+  content:""; position:fixed;
+  bottom:0; left:0; right:0; height:220px;
+  background:radial-gradient(ellipse 90% 100% at 50% 100%,rgba(100,48,12,.22) 0%,transparent 70%);
+  pointer-events:none; z-index:0;
+}
+
+/* ── Endzsó – Seamless loop fejléc + sáv a nav felett + háttér fény ── */
+.theme-endzso .app-header {
+  background: repeating-linear-gradient(90deg,#7c3aed 0%,#ec4899 20%,#f59e0b 40%,#10b981 60%,#06b6d4 80%,#7c3aed 100%) !important;
+  background-size: 200% 100% !important;
+  animation: endzsoHeaderLoop 5s linear infinite !important;
+}
+@keyframes endzsoHeaderLoop {
+  from { background-position: 0% 0%; }
+  to   { background-position: 50% 0%; }
+}
+.theme-endzso .app-nav { position: relative; overflow: visible; }
+.theme-endzso .app-nav::before {
+  content:"";
+  position:absolute; top:-3px; left:0; right:0; height:3px;
+  background: repeating-linear-gradient(90deg,#7c3aed 0%,#ec4899 20%,#f59e0b 40%,#10b981 60%,#06b6d4 80%,#7c3aed 100%);
+  background-size: 200% 100%;
+  animation: endzsoHeaderLoop 5s linear infinite;
+}
+body.theme-endzso::before {
+  content:""; position:fixed; inset:0;
+  pointer-events:none; z-index:9999;
+  mix-blend-mode:screen;
+  background:
+    radial-gradient(ellipse 80% 45% at 50% 0%,rgba(124,58,237,.15) 0%,transparent 70%),
+    radial-gradient(ellipse 45% 30% at 85% 85%,rgba(16,185,129,.1) 0%,transparent 70%),
+    radial-gradient(ellipse 35% 25% at 15% 70%,rgba(236,72,153,.09) 0%,transparent 70%);
+  animation:endzsoGlowPulse 3.5s ease-in-out infinite;
+}
+@keyframes endzsoGlowPulse {
+  0%,100% { opacity:.5; }
+  50%     { opacity:1; }
+}
+
+/* ── Stickletti – Aktív gombok piros villogás ── */
+.theme-stickletti .btn-use-ability,
+.theme-stickletti .btn-start-tetproba,
+.theme-stickletti .btn-tp-confirm { animation:sticklettiRedPulse 1.8s ease-in-out infinite !important; }
+.theme-stickletti .camp-filter-btn.active { animation:sticklettiRedPulse 1.8s ease-in-out infinite; background:#7f1d1d !important; color:#fff !important; }
+@keyframes sticklettiRedPulse {
+  0%,100% { filter:brightness(.85); box-shadow:0 2px 8px rgba(220,38,38,.3); }
+  50%     { filter:brightness(1.25); box-shadow:0 4px 20px rgba(220,38,38,.75); }
+}
+
+/* ── Zákánycsákány – Logo + cím CSS csere ── */
+.theme-zakanycsakany .app-logo { font-size:0 !important; }
+.theme-zakanycsakany .app-logo::after { content:"🧑‍🦲"; font-size:1.6rem; }
+.theme-zakanycsakany .app-title { font-size:0 !important; }
+.theme-zakanycsakany .app-title::after {
+  content:"Sampon vadászat";
+  font-size:1.2rem; font-weight:800; letter-spacing:-.02em;
+  color:var(--header-text-color);
+}
+
+/* ── Bimbózás – Token shimmer + nav pulzálás ── */
+.theme-bimbozas #headerTokens {
+  background: linear-gradient(90deg,#fff 0%,#ff80b4 40%,#fff 70%) !important;
+  background-size: 200% 100% !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: bimbozasTokenShimmer 2.5s linear infinite !important;
+}
+@keyframes bimbozasTokenShimmer {
+  0%   { background-position:200% 0%; }
+  100% { background-position:-200% 0%; }
+}
+.theme-bimbozas .app-nav { animation:bimbozasNavPulse 2.8s ease-in-out infinite; }
+@keyframes bimbozasNavPulse {
+  0%,100% { background:#ffe0ee; }
+  50%     { background:#ffb3d1; }
+}
+
+/* ── Puniverzum – Üstökös effekt ── */
+body.theme-puniverzum::after {
+  content:""; position:fixed;
+  width:95px; height:1.5px;
+  left:-105px; top:18%;
+  background:linear-gradient(90deg,transparent 0%,rgba(200,180,255,.35) 25%,rgba(255,255,255,.82) 62%,rgba(255,255,220,.38) 85%,transparent 100%);
+  pointer-events:none; z-index:9999;
+  mix-blend-mode:screen;
+  transform:rotate(-14deg);
+  animation:puniverzumComet 22s linear infinite;
+}
+@keyframes puniverzumComet {
+  0%,13%  { transform:rotate(-14deg) translateX(0); opacity:0; }
+  14%     { opacity:1; }
+  26%     { transform:rotate(-14deg) translateX(calc(100vw + 210px)); opacity:0; }
+  26.1%   { transform:rotate(-14deg) translateX(0); opacity:0; }
+  100%    { transform:rotate(-14deg) translateX(0); opacity:0; }
+}
+
+/* ── Fidesz – Token-hero valódi érték fel-le fad ── */
+.theme-fidesz .token-hero-num {
+  font-size: 3rem !important;
+  animation: fideszTokenReveal 7s ease-in-out infinite !important;
+}
+.theme-fidesz .token-hero-num::after { display:none !important; }
+@keyframes fideszTokenReveal {
+  0%,12%,88%,100% { opacity:0; }
+  25%,75%         { opacity:1; }
+}
+
+/* ── Körbányai – Kék-barna gradiens cím + fehér vonal + sárga fény alulról ── */
+.theme-korbanyai .app-title {
+  background: linear-gradient(90deg,#2563eb 0%,#60a5fa 30%,#92400e 65%,#c07040 100%) !important;
+  background-size: 200% 100% !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: korbanyaiTitleGrad 5s linear infinite !important;
+}
+@keyframes korbanyaiTitleGrad {
+  0%   { background-position:0% 0%; }
+  100% { background-position:100% 0%; }
+}
+.theme-korbanyai .app-title { position:relative !important; }
+.theme-korbanyai .app-title::after {
+  content:""; position:absolute;
+  bottom:-3px; left:0; right:0;
+  height:1.5px; background:#ffffff; opacity:.72;
+}
+body.theme-korbanyai::before {
+  content:""; position:fixed;
+  bottom:0; left:0; right:0; height:300px;
+  background:radial-gradient(ellipse 80% 100% at 50% 100%,rgba(200,165,20,.13) 0%,transparent 70%);
+  pointer-events:none; z-index:0;
+  animation:korbanyaiYellowLight 9s ease-in-out infinite;
+}
+@keyframes korbanyaiYellowLight {
+  0%,100% { opacity:0; }
+  30%,70% { opacity:1; }
+}
+
+/* ── Faszbook – Húzó gombok emoji felülírás ── */
+.theme-faszbook .draw-mission .draw-btn-icon  { font-size:0 !important; display:inline-block; }
+.theme-faszbook .draw-mission .draw-btn-icon::after  { content:"👍"; font-size:2.3rem; }
+.theme-faszbook .draw-curse .draw-btn-icon    { font-size:0 !important; display:inline-block; }
+.theme-faszbook .draw-curse .draw-btn-icon::after    { content:"👎"; font-size:2.3rem; }
+.theme-faszbook .draw-treasure .draw-btn-icon { font-size:0 !important; display:inline-block; }
+.theme-faszbook .draw-treasure .draw-btn-icon::after { content:"❤️"; font-size:2.3rem; }
+.theme-faszbook .draw-photo .draw-btn-icon    { font-size:0 !important; display:inline-block; }
+.theme-faszbook .draw-photo .draw-btn-icon::after    { content:"😂"; font-size:2.3rem; }
+
+/* ── Camp filter gombok – téma aktív szín override ── */
+/* Night / default: accentek CSS variable-ból jönnek, nincs override szükséges */
+.theme-krokodildo #filter-curses.active, .theme-krokodildo #filter-missions.active,
+.theme-krokodildo #filter-treasures.active, .theme-krokodildo #filter-photos.active { color:#4ade80 !important; background:rgba(74,222,128,.1) !important; border-top-color:#4ade80 !important; }
+.theme-endzso #filter-curses.active,.theme-endzso #filter-missions.active,
+.theme-endzso #filter-treasures.active,.theme-endzso #filter-photos.active { color:#7c3aed !important; background:rgba(124,58,237,.1) !important; }
+.theme-stickletti #filter-curses.active,.theme-stickletti #filter-missions.active,
+.theme-stickletti #filter-treasures.active,.theme-stickletti #filter-photos.active { border-top-color:#dc2626 !important; }
+.theme-bimbozas #filter-curses.active,.theme-bimbozas #filter-missions.active,
+.theme-bimbozas #filter-treasures.active,.theme-bimbozas #filter-photos.active { color:#ff1493 !important; background:rgba(255,20,147,.1) !important; }
+.theme-puniverzum #filter-curses.active,.theme-puniverzum #filter-missions.active,
+.theme-puniverzum #filter-treasures.active,.theme-puniverzum #filter-photos.active { color:#6060ff !important; background:rgba(96,96,255,.1) !important; }
+.theme-fidesz #filter-curses.active,.theme-fidesz #filter-missions.active,
+.theme-fidesz #filter-treasures.active,.theme-fidesz #filter-photos.active { color:#f57c00 !important; background:rgba(245,124,0,.1) !important; }
+.theme-faszbook #filter-curses.active,.theme-faszbook #filter-missions.active,
+.theme-faszbook #filter-treasures.active,.theme-faszbook #filter-photos.active { color:#1877f2 !important; background:rgba(24,119,242,.1) !important; }

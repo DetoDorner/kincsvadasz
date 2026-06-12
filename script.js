@@ -281,9 +281,16 @@ function renderAll() {
 // ── SZŰRŐ ────────────────────────────────────────────────────
 
 function setFilter(filter) {
-  currentFilter = filter;
-  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-  document.getElementById("filter-" + filter)?.classList.add("active");
+  // Toggle: clicking the active filter deactivates it → show all
+  if (currentFilter === filter) {
+    currentFilter = "all";
+  } else {
+    currentFilter = filter;
+  }
+  document.querySelectorAll(".camp-filter-btn").forEach(b => b.classList.remove("active"));
+  if (currentFilter !== "all") {
+    document.getElementById("filter-" + currentFilter)?.classList.add("active");
+  }
   renderHatizsak();
 }
 
@@ -1911,8 +1918,7 @@ function resetGame() {
   if (tri) tri.value = "";
   kedvencFilter = false;
   currentFilter = "all";
-  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-  document.getElementById("filter-all")?.classList.add("active");
+  document.querySelectorAll(".camp-filter-btn").forEach(b => b.classList.remove("active"));
   renderAll();
   switchTab("collect");
 }
