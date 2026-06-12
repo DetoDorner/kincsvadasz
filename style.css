@@ -2670,44 +2670,89 @@ body.theme-biliard::before {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   HÁTIZSÁK SZŰRŐ – 2×2 RÁCS
+   HÁTIZSÁK SZŰRŐ – 2×2 RÁCS  (dizájnosabb, mint a draw-btns)
    ═══════════════════════════════════════════════════════════════ */
 
 .camp-filter-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 9px;
-  margin-bottom: 18px;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 .camp-filter-btn {
+  position: relative; overflow: hidden;
   display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 5px;
-  padding: 14px 8px 11px;
+  align-items: center; justify-content: center; gap: 6px;
+  padding: 18px 10px 14px;
   background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-top-width: 3px;
-  border-radius: 14px;
-  cursor: pointer; transition: all 0.2s;
+  border: 1.5px solid var(--border-color);
+  border-top: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: transform .18s, box-shadow .18s, background .18s, color .18s;
   color: var(--text-secondary);
   font-family: inherit;
+  /* Accent top-bar via ::before */
 }
-#filter-missions  { border-top-color: var(--accent-mission); }
-#filter-curses    { border-top-color: var(--accent-curse); }
-#filter-treasures { border-top-color: var(--accent-treasure); }
-#filter-photos    { border-top-color: var(--accent-photo); }
-.camp-filter-btn:not(.active):hover { background: var(--bg-card-hover); }
+/* Vastag színes top-bar pseudo-element */
+.camp-filter-btn::before {
+  content: "";
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 4px; border-radius: 16px 16px 0 0;
+  transition: height .18s, opacity .18s;
+  opacity: .75;
+}
+#filter-missions::before  { background: var(--accent-mission); }
+#filter-curses::before    { background: var(--accent-curse); }
+#filter-treasures::before { background: var(--accent-treasure); }
+#filter-photos::before    { background: var(--accent-photo); }
+
+.camp-filter-btn:not(.active):hover {
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0,0,0,.18);
+}
+.camp-filter-btn:not(.active):hover::before { opacity: 1; }
+
+/* Aktív állapot – gradient fill + glow */
 .camp-filter-btn.active {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  box-shadow: inset 0 1px 7px rgba(0,0,0,0.22), var(--shadow-card);
-  transform: translateY(1px);
+  border-color: transparent;
+  transform: translateY(0);
 }
-#filter-missions.active  { color: var(--accent-mission); }
-#filter-curses.active    { color: var(--accent-curse); }
-#filter-treasures.active { color: var(--accent-treasure); }
-#filter-photos.active    { color: var(--accent-photo); }
-.camp-filter-icon  { font-size: 1.6rem; line-height: 1; }
-.camp-filter-label { font-size: 0.73rem; font-weight: 700; letter-spacing: 0.1px; white-space: nowrap; }
+.camp-filter-btn.active::before { height: 100%; border-radius: 14px; opacity: .12; }
+
+#filter-missions.active  {
+  background: linear-gradient(160deg, rgba(59,130,246,.13) 0%, var(--bg-card) 100%);
+  box-shadow: 0 0 0 1.5px var(--accent-mission), 0 6px 22px rgba(59,130,246,.22);
+  color: var(--accent-mission);
+}
+#filter-curses.active    {
+  background: linear-gradient(160deg, rgba(239,68,68,.13) 0%, var(--bg-card) 100%);
+  box-shadow: 0 0 0 1.5px var(--accent-curse), 0 6px 22px rgba(239,68,68,.22);
+  color: var(--accent-curse);
+}
+#filter-treasures.active {
+  background: linear-gradient(160deg, rgba(251,191,36,.13) 0%, var(--bg-card) 100%);
+  box-shadow: 0 0 0 1.5px var(--accent-treasure), 0 6px 22px rgba(251,191,36,.22);
+  color: var(--accent-treasure);
+}
+#filter-photos.active    {
+  background: linear-gradient(160deg, rgba(168,85,247,.13) 0%, var(--bg-card) 100%);
+  box-shadow: 0 0 0 1.5px var(--accent-photo), 0 6px 22px rgba(168,85,247,.22);
+  color: var(--accent-photo);
+}
+
+.camp-filter-icon  {
+  font-size: 1.8rem; line-height: 1;
+  transition: transform .18s;
+  display: block;
+}
+.camp-filter-btn.active .camp-filter-icon  { transform: scale(1.12); }
+.camp-filter-label {
+  font-size: 0.75rem; font-weight: 800;
+  letter-spacing: .3px; white-space: nowrap;
+  text-transform: uppercase;
+}
 
 /* ═══════════════════════════════════════════════════════════════
    TÉTPRÓBA PANEL – ÚJ TÉMÁK
