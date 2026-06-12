@@ -227,6 +227,7 @@ function renderAll() {
   updateReturnModeArea();
   updateSipDisplay();
   renderTetprobaSection();
+  renderKarakter();
 }
 
 // ── SZŰRŐ ────────────────────────────────────────────────────
@@ -902,6 +903,18 @@ function renderKarakter() {
   const used = [state.character.ability1Used, state.character.ability2Used];
   const canEdit = !state.impostorName || state.impostorChangePurchased;
 
+  // Képesség-feloldási követelmények
+  const completedMissions = state.missions.filter(m => m.status === "completed").length;
+  const totalPhotos        = Object.keys(state.photos).length;
+  const abilityReqs = [
+    { current: completedMissions, max: 5,  goal: "Teljesíts 5 küldetést!",   unit: "teljesített küldetés" },
+    { current: totalPhotos,       max: 20, goal: "Gyűjts össze 20 képet!",   unit: "összegyűjtött kép"    }
+  ];
+  const unlocked = [
+    completedMissions >= 5,
+    totalPhotos       >= 20
+  ];
+
   container.innerHTML = `
     <div class="active-role-header">
       <div class="active-role-name">${role.name}</div>
@@ -909,25 +922,76 @@ function renderKarakter() {
     </div>
 
     <div class="abilities-list">
-      ${role.abilities.map((ab, i) => `
-        <div class="ability-card${used[i] ? " ability-used" : ""}">
-          <div class="ability-card-top">
-            <div class="ability-num-badge">${i + 1}. képesség</div>
-            ${used[i] ? '<div class="ability-used-badge">✅ Felhasználva</div>' : ""}
-          </div>
-          <div class="ability-body">
-            <div class="ability-icon-col">⚡</div>
-            <div class="ability-text-col">
-              <div class="ability-name">${ab.name}</div>
-              <div class="ability-desc">${ab.description}</div>
+      ${role.abilities.map((ab, i) => {
+        const isUsed     = used[i];
+        const isUnlocked = unlocked[i];
+        const req        = abilityReqs[i];
+        const pct        = Math.min(100, Math.round(req.current / req.max * 100));
+
+        if (isUsed) {
+          return `
+            <div class="ability-card ability-used">
+              <div class="ability-card-top">
+                <div class="ability-num-badge">${i + 1}. képesség</div>
+                <div class="ability-used-badge">✅ Felhasználva</div>
+              </div>
+              <div class="ability-body">
+                <div class="ability-icon-col">⚡</div>
+                <div class="ability-text-col">
+                  <div class="ability-name">${ab.name}</div>
+                  <div class="ability-desc">${ab.description}</div>
+                </div>
+              </div>
+            </div>`;
+        }
+
+        if (!isUnlocked) {
+          return `
+            <div class="ability-card ability-locked">
+              <div class="ability-card-top">
+                <div class="ability-num-badge">${i + 1}. képesség</div>
+                <div class="ability-lock-badge">🔒 Zárolt</div>
+              </div>
+              <div class="ability-body">
+                <div class="ability-icon-col ability-icon-locked">⚡</div>
+                <div class="ability-text-col">
+                  <div class="ability-name ability-name-locked">${ab.name}</div>
+                  <div class="ability-desc">${ab.description}</div>
+                </div>
+              </div>
+              <div class="ability-unlock-goal">🎯 ${req.goal}</div>
+              <div class="ability-progress-wrap">
+                <div class="ability-progress-bar-track">
+                  <div class="ability-progress-bar-fill" style="width:${pct}%"></div>
+                </div>
+                <div class="ability-progress-label">${req.current} / ${req.max} ${req.unit}</div>
+              </div>
+            </div>`;
+        }
+
+        // Feloldva, még nem használt
+        return `
+          <div class="ability-card ability-ready">
+            <div class="ability-card-top">
+              <div class="ability-num-badge">${i + 1}. képesség</div>
+              <div class="ability-ready-badge">✨ Feloldva!</div>
             </div>
-          </div>
-          ${used[i]
-            ? ""
-            : `<button class="btn-use-ability" onclick="useAbility(${i})">⚡ Képesség aktiválása</button>`
-          }
-        </div>
-      `).join("")}
+            <div class="ability-body">
+              <div class="ability-icon-col">⚡</div>
+              <div class="ability-text-col">
+                <div class="ability-name">${ab.name}</div>
+                <div class="ability-desc">${ab.description}</div>
+              </div>
+            </div>
+            <div class="ability-progress-wrap">
+              <div class="ability-progress-bar-track">
+                <div class="ability-progress-bar-fill ability-progress-full" style="width:100%"></div>
+              </div>
+              <div class="ability-progress-label ability-progress-done-label">✅ ${req.max} / ${req.max} ${req.unit}</div>
+            </div>
+            <button class="btn-use-ability" onclick="useAbility(${i})">⚡ Képesség aktiválása</button>
+          </div>`;
+      }).join("")}
     </div>
 
     <div class="impostor-section">
@@ -959,6 +1023,14 @@ function selectRole(roleId) {
 
 function useAbility(i) {
   if (!state.character) return;
+  // Ellenőrzés: fel van-e oldva
+  const completedMissions = state.missions.filter(m => m.status === "completed").length;
+  const totalPhotos        = Object.keys(state.photos).length;
+  const unlocked = [completedMissions >= 5, totalPhotos >= 20];
+  if (!unlocked[i]) {
+    alert("Ez a képesség még nincs feloldva!");
+    return;
+  }
   const role = characters.find(r => r.id === state.character.roleId);
   const name = role?.abilities[i]?.name || "képesség";
   if (!confirm("Biztosan felhasználod?\n\n⚡ " + name + "\n\nEz visszavonhatatlan!")) return;

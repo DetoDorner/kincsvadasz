@@ -685,6 +685,110 @@ body.lightbox-open { overflow: hidden; }
 .ability-desc {
   font-size: 0.82rem; color: var(--text-secondary); line-height: 1.55;
 }
+/* ── Zárolt képesség ─────────────────────────────────────── */
+.ability-card.ability-locked {
+  background: var(--bg-card);
+  border-color: var(--border-color);
+  box-shadow: none;
+  opacity: 0.75;
+}
+.ability-card.ability-locked::before { display: none; }
+.ability-lock-badge {
+  font-size: 0.7rem; font-weight: 700; color: var(--text-muted);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  padding: 3px 10px; border-radius: 20px;
+}
+.ability-icon-locked { filter: grayscale(1) opacity(0.4) !important; }
+.ability-name-locked { color: var(--text-secondary) !important; }
+
+.ability-unlock-goal {
+  font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border-radius: 8px; padding: 6px 10px;
+  border: 1px dashed var(--border-color);
+}
+
+/* ── Feloldott (kész) képesség ───────────────────────────── */
+.ability-card.ability-ready {
+  animation: abilityReadyPulse 2.5s ease-in-out infinite;
+}
+@keyframes abilityReadyPulse {
+  0%, 100% { box-shadow: 0 4px 18px rgba(168,85,247,0.18); }
+  50%       { box-shadow: 0 4px 28px rgba(168,85,247,0.42); }
+}
+.ability-ready-badge {
+  font-size: 0.7rem; font-weight: 800; color: #c084fc;
+  background: rgba(168,85,247,0.18);
+  border: 1px solid rgba(168,85,247,0.35);
+  padding: 3px 10px; border-radius: 20px;
+  animation: readyBadgeFade 1.8s ease-in-out infinite;
+}
+@keyframes readyBadgeFade {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
+}
+
+/* ── Haladássáv ──────────────────────────────────────────── */
+.ability-progress-wrap {
+  display: flex; flex-direction: column; gap: 5px;
+}
+.ability-progress-bar-track {
+  height: 7px; background: var(--bg-secondary);
+  border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+.ability-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6d28d9, #a855f7);
+  border-radius: 10px;
+  transition: width 0.4s ease;
+}
+.ability-progress-full {
+  background: linear-gradient(90deg, #4ade80, #22c55e);
+}
+.ability-progress-label {
+  font-size: 0.72rem; color: var(--text-muted);
+  font-weight: 600; text-align: right;
+}
+.ability-progress-done-label {
+  color: #4ade80;
+}
+
+/* Krokodildó téma – haladássáv és ready state */
+.theme-krokodildo .ability-card.ability-ready {
+  animation: abilityReadyPulseGreen 2.5s ease-in-out infinite;
+}
+@keyframes abilityReadyPulseGreen {
+  0%, 100% { box-shadow: 0 4px 18px rgba(74,222,128,0.15); }
+  50%       { box-shadow: 0 4px 28px rgba(74,222,128,0.38); }
+}
+.theme-krokodildo .ability-ready-badge {
+  color: #4ade80;
+  background: rgba(74,222,128,0.15);
+  border-color: rgba(74,222,128,0.35);
+}
+.theme-krokodildo .ability-progress-bar-fill {
+  background: linear-gradient(90deg, #15803d, #4ade80);
+}
+
+/* Felsőszank téma – haladássáv és ready state */
+.theme-felsoszank .ability-card.ability-ready {
+  animation: abilityReadyPulseGold 2.5s ease-in-out infinite;
+}
+@keyframes abilityReadyPulseGold {
+  0%, 100% { box-shadow: 0 4px 18px rgba(201,162,39,0.15); }
+  50%       { box-shadow: 0 4px 28px rgba(201,162,39,0.38); }
+}
+.theme-felsoszank .ability-ready-badge {
+  color: #fbbf24;
+  background: rgba(251,191,36,0.15);
+  border-color: rgba(251,191,36,0.35);
+}
+.theme-felsoszank .ability-progress-bar-fill {
+  background: linear-gradient(90deg, #92400e, #fbbf24);
+}
+
 .btn-use-ability {
   width: 100%; padding: 11px; border: none; border-radius: 12px;
   background: linear-gradient(135deg, #6d28d9 0%, #a855f7 100%);
