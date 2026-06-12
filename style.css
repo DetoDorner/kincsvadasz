@@ -1773,3 +1773,477 @@ body.lightbox-open { overflow: hidden; }
 .theme-felsoszank .btn-tp-option:active  { background: rgba(251,191,36,0.18); border-color: #fbbf24; }
 .theme-felsoszank .tp-toast              { background: rgba(146,64,14,0.96); box-shadow: 0 4px 18px rgba(146,64,14,0.5); }
 
+/* ── Témaláda / Beállítások – téma szekció ── */
+.theme-chest-count {
+  font-size: 0.75rem; background: rgba(168,85,247,0.15);
+  color: var(--accent-legendary); border-radius: 10px;
+  padding: 2px 8px; margin-left: 8px; font-weight: 700;
+}
+.all-themes-inner { padding: 4px 0 4px; }
+.all-themes-hint  { font-size: 0.83rem; color: var(--text-muted); margin: 0 0 10px; }
+.secret-code-row  { display: flex; gap: 8px; margin-bottom: 10px; }
+.secret-code-input {
+  flex: 1; background: var(--bg-secondary); border: 1px solid var(--border-color);
+  border-radius: 8px; padding: 8px 12px; font-size: 0.88rem; color: var(--text-primary);
+  outline: none;
+}
+.secret-code-input:focus { border-color: var(--border-accent); }
+.btn-check-code {
+  background: var(--accent-legendary); color: #fff; border: none;
+  border-radius: 8px; padding: 8px 14px; font-size: 0.88rem; font-weight: 700; cursor: pointer;
+}
+.btn-check-code:active { opacity: 0.8; }
+.all-themes-unlocked-msg { font-size: 0.83rem; color: #4ade80; margin: 0 0 10px; }
+.btn-remove-themes {
+  background: rgba(239,68,68,0.1); color: #f87171;
+  border: 1px solid rgba(239,68,68,0.25); border-radius: 8px;
+  padding: 8px 14px; font-size: 0.85rem; font-weight: 700; cursor: pointer; width: 100%;
+}
+.btn-remove-themes:active { background: rgba(239,68,68,0.2); }
+
+/* ═══════════════════════════════════════════════
+   ŰJ TÉMÁK – CSS változók
+   ═══════════════════════════════════════════════ */
+
+/* ── Kincsvadászat I. ── */
+.theme-kincsvadaszat1 {
+  --bg-primary:    #060606; --bg-secondary: #0e0e0e;
+  --bg-card:       #141414; --bg-card-hover:#1c1c1c;
+  --bg-nav:        #090909; --bg-header:    #090909;
+  --text-primary:   #eeeeee; --text-secondary:#aaaaaa; --text-muted:#666;
+  --accent-mission:  #e8d000; --accent-curse:#ff4500;
+  --accent-treasure: #facc15; --accent-photo:#d4af37; --accent-legendary:#fff176;
+  --border-color:   rgba(232,208,0,0.12); --border-accent:rgba(232,208,0,0.3);
+  --shadow:0 4px 20px rgba(0,0,0,0.7); --shadow-card:0 2px 12px rgba(0,0,0,0.6);
+  --completed-bg:#1a1800; --completed-text:#e8d000;
+  --deactivated-bg:#1a0800; --deactivated-text:#ff7043;
+  --btn-primary-bg:#2a2400; --btn-primary-text:#e8d000;
+  --common-color:#888; --rare-color:#e8d000; --legendary-color:#fff176;
+  --badge-bg:#2a2400; --badge-text:#e8d000;
+}
+.theme-kincsvadaszat1 .app-header {
+  background: linear-gradient(135deg,#000 0%,#1a1500 100%);
+  border-bottom: 2px solid #e8d000;
+  box-shadow: 0 0 20px rgba(232,208,0,0.2);
+}
+.theme-kincsvadaszat1 .app-title { color:#e8d000; text-shadow:0 0 12px rgba(232,208,0,0.6); }
+.theme-kincsvadaszat1 .token-display { background:#0e0e0e; border-color:rgba(232,208,0,0.3); color:#e8d000; }
+
+/* ── Endzsó ── */
+.theme-endzso {
+  --bg-primary:    #050510; --bg-secondary: #0a0a1a;
+  --bg-card:       #0f0f22; --bg-card-hover:#161630;
+  --bg-nav:        #07071a; --bg-header:    #07071a;
+  --text-primary:   #f0f0ff; --text-secondary:#b0b0d8; --text-muted:#6060a0;
+  --accent-mission:  #7c3aed; --accent-curse:#dc2626;
+  --accent-treasure: #f59e0b; --accent-photo:#10b981; --accent-legendary:#f472b6;
+  --border-color:   rgba(124,58,237,0.18); --border-accent:rgba(124,58,237,0.38);
+  --shadow:0 4px 20px rgba(0,0,0,0.7); --shadow-card:0 2px 12px rgba(0,0,0,0.6);
+  --completed-bg:rgba(16,185,129,0.08); --completed-text:#34d399;
+  --deactivated-bg:rgba(220,38,38,0.06); --deactivated-text:#f87171;
+  --btn-primary-bg:#3b0764; --btn-primary-text:#f0f0ff;
+  --common-color:#6060a0; --rare-color:#7c3aed; --legendary-color:#f472b6;
+  --badge-bg:#1a0030; --badge-text:#c084fc;
+}
+.theme-endzso .app-header {
+  background: linear-gradient(90deg,#7c3aed,#ec4899,#f59e0b,#10b981,#06b6d4,#7c3aed);
+  background-size: 300% 100%;
+  animation: endzsoHeader 5s linear infinite;
+}
+@keyframes endzsoHeader {
+  0%   { background-position:0% 50%; }
+  100% { background-position:100% 50%; }
+}
+.theme-endzso .app-title { color:#fff; font-weight:900; }
+.theme-endzso .token-display { background:rgba(124,58,237,0.2); border-color:rgba(124,58,237,0.4); color:#c084fc; }
+
+/* ── Körbányai ── */
+.theme-korbanyai {
+  --bg-primary:    #120800; --bg-secondary: #1c1000;
+  --bg-card:       #201400; --bg-card-hover:#2a1c00;
+  --bg-nav:        #0e0600; --bg-header:    #0e0600;
+  --text-primary:   #e8c97a; --text-secondary:#b08a40; --text-muted:#6a5020;
+  --accent-mission:  #c8900a; --accent-curse:#b22222;
+  --accent-treasure: #d4af37; --accent-photo:#8b6914; --accent-legendary:#ffd700;
+  --border-color:   rgba(200,144,10,0.15); --border-accent:rgba(200,144,10,0.35);
+  --shadow:0 4px 20px rgba(0,0,0,0.7); --shadow-card:0 2px 12px rgba(200,144,10,0.15);
+  --completed-bg:#1a1200; --completed-text:#d4af37;
+  --deactivated-bg:#1a0500; --deactivated-text:#cd5c5c;
+  --btn-primary-bg:#3d2800; --btn-primary-text:#e8c97a;
+  --common-color:#7a5a20; --rare-color:#c8900a; --legendary-color:#ffd700;
+  --badge-bg:#2a1800; --badge-text:#c8900a;
+}
+.theme-korbanyai .app-header {
+  background: linear-gradient(90deg,#120800 0%,#4a2800 40%,#c8900a 60%,#4a2800 80%,#120800 100%);
+  border-bottom: 2px solid rgba(200,144,10,0.5);
+}
+.theme-korbanyai .app-title { color:#e8c97a; }
+.theme-korbanyai .token-display { background:rgba(0,0,0,0.3); border-color:rgba(200,144,10,0.4); color:#d4af37; }
+
+/* ── Stickletti ── */
+.theme-stickletti {
+  --bg-primary:    #1a0000; --bg-secondary: #240500;
+  --bg-card:       #1e0a0a; --bg-card-hover:#2a1010;
+  --bg-nav:        #140000; --bg-header:    #140000;
+  --text-primary:   #f5d0c0; --text-secondary:#c08060; --text-muted:#7a4030;
+  --accent-mission:  #dc2626; --accent-curse:#991b1b;
+  --accent-treasure: #f59e0b; --accent-photo:#b45309; --accent-legendary:#fbbf24;
+  --border-color:   rgba(220,38,38,0.15); --border-accent:rgba(220,38,38,0.35);
+  --shadow:0 4px 20px rgba(0,0,0,0.7); --shadow-card:0 2px 12px rgba(0,0,0,0.5);
+  --completed-bg:rgba(220,38,38,0.08); --completed-text:#fca5a5;
+  --deactivated-bg:rgba(120,53,15,0.15); --deactivated-text:#fdba74;
+  --btn-primary-bg:#7f1d1d; --btn-primary-text:#f5d0c0;
+  --common-color:#92400e; --rare-color:#dc2626; --legendary-color:#fbbf24;
+  --badge-bg:#450a0a; --badge-text:#fca5a5;
+}
+.theme-stickletti .app-header {
+  background: linear-gradient(135deg,#1a0000,#7f1d1d,#dc2626,#7f1d1d,#1a0000);
+  border-bottom: 2px solid rgba(220,38,38,0.5);
+}
+.theme-stickletti .app-title { color:#fca5a5; }
+.theme-stickletti .token-display { background:rgba(0,0,0,0.3); border-color:rgba(220,38,38,0.4); color:#f5d0c0; }
+
+/* ── Máguskula ── */
+.theme-maguskula {
+  --bg-primary:    #0a0418; --bg-secondary: #110728;
+  --bg-card:       #160a30; --bg-card-hover:#1e1040;
+  --bg-nav:        #080318; --bg-header:    #080318;
+  --text-primary:   #e8d8ff; --text-secondary:#b090e8; --text-muted:#6a48a0;
+  --accent-mission:  #c026d3; --accent-curse:#e11d48;
+  --accent-treasure: #f59e0b; --accent-photo:#7c3aed; --accent-legendary:#f0abfc;
+  --border-color:   rgba(192,38,211,0.18); --border-accent:rgba(192,38,211,0.38);
+  --shadow:0 4px 20px rgba(0,0,0,0.7); --shadow-card:0 2px 12px rgba(192,38,211,0.2);
+  --completed-bg:rgba(124,58,237,0.1); --completed-text:#c084fc;
+  --deactivated-bg:rgba(225,29,72,0.07); --deactivated-text:#fda4af;
+  --btn-primary-bg:#4a0070; --btn-primary-text:#e8d8ff;
+  --common-color:#6a48a0; --rare-color:#c026d3; --legendary-color:#f0abfc;
+  --badge-bg:#2d0050; --badge-text:#e879f9;
+}
+.theme-maguskula .app-header {
+  background: linear-gradient(135deg,#0a0418,#4a0070,#c026d3,#7c3aed,#0a0418);
+  border-bottom: 2px solid rgba(192,38,211,0.5);
+  box-shadow: 0 2px 20px rgba(192,38,211,0.3);
+}
+.theme-maguskula .app-title { color:#f0abfc; text-shadow:0 0 10px rgba(192,38,211,0.5); }
+.theme-maguskula .token-display { background:rgba(192,38,211,0.15); border-color:rgba(192,38,211,0.35); color:#f0abfc; }
+
+/* ── Zákánycsákány ── */
+.theme-zakanycsakany {
+  --bg-primary:    #f5e6d0; --bg-secondary: #eeddc0;
+  --bg-card:       #faf0e0; --bg-card-hover:#fff5e8;
+  --bg-nav:        #f0dfc0; --bg-header:    #e8d0a8;
+  --text-primary:   #3a2010; --text-secondary:#7a4830; --text-muted:#aa8060;
+  --accent-mission:  #c07040; --accent-curse:#b03020;
+  --accent-treasure: #d09020; --accent-photo:#808040; --accent-legendary:#c84830;
+  --border-color:   rgba(160,100,60,0.25); --border-accent:rgba(160,100,60,0.45);
+  --shadow:0 4px 20px rgba(0,0,0,0.15); --shadow-card:0 2px 12px rgba(0,0,0,0.1);
+  --completed-bg:rgba(100,120,50,0.15); --completed-text:#507030;
+  --deactivated-bg:rgba(140,50,30,0.12); --deactivated-text:#b03020;
+  --btn-primary-bg:#d0a060; --btn-primary-text:#3a2010;
+  --common-color:#a07848; --rare-color:#c07040; --legendary-color:#c84830;
+  --badge-bg:#e8cfa0; --badge-text:#7a4030;
+}
+.theme-zakanycsakany .app-header {
+  background: linear-gradient(135deg,#d0a870,#e8c890,#c8a060);
+  border-bottom: 2px solid rgba(160,100,60,0.4);
+}
+.theme-zakanycsakany .app-title { color:#3a2010; }
+.theme-zakanycsakany .token-display { background:rgba(200,160,100,0.3); border-color:rgba(160,100,60,0.4); color:#3a2010; }
+
+/* ── Pinás Colada ── */
+.theme-pinascolada {
+  --bg-primary:    #fffde0; --bg-secondary: #fff8c0;
+  --bg-card:       #ffffff; --bg-card-hover:#fffce8;
+  --bg-nav:        #fff8c0; --bg-header:    #f9e000;
+  --text-primary:   #2a2000; --text-secondary:#6a5800; --text-muted:#aa9800;
+  --accent-mission:  #f9a800; --accent-curse:#e85000;
+  --accent-treasure: #f9e000; --accent-photo:#60a800; --accent-legendary:#ff6090;
+  --border-color:   rgba(200,170,0,0.25); --border-accent:rgba(200,170,0,0.5);
+  --shadow:0 4px 20px rgba(0,0,0,0.1); --shadow-card:0 2px 12px rgba(200,170,0,0.15);
+  --completed-bg:rgba(100,170,0,0.1); --completed-text:#507000;
+  --deactivated-bg:rgba(230,80,0,0.07); --deactivated-text:#e85000;
+  --btn-primary-bg:#f9e000; --btn-primary-text:#2a2000;
+  --common-color:#a09800; --rare-color:#f9a800; --legendary-color:#ff6090;
+  --badge-bg:#fffaaa; --badge-text:#a09800;
+}
+.theme-pinascolada .app-header {
+  background: linear-gradient(135deg,#f9e000,#fff280,#f9e000);
+  border-bottom: 2px solid #f9a800;
+}
+.theme-pinascolada .app-title { color:#2a2000; font-weight:900; }
+.theme-pinascolada .token-display { background:rgba(200,170,0,0.2); border-color:rgba(200,170,0,0.4); color:#2a2000; }
+
+/* ── Spermium ── */
+.theme-spermium {
+  --bg-primary:    #f8f8f8; --bg-secondary: #f0f0f0;
+  --bg-card:       #ffffff; --bg-card-hover:#f8f8f8;
+  --bg-nav:        #f0f0f0; --bg-header:    #e8e8e8;
+  --text-primary:   #111111; --text-secondary:#555555; --text-muted:#999999;
+  --accent-mission:  #222222; --accent-curse:#8b4513;
+  --accent-treasure: #555555; --accent-photo:#444444; --accent-legendary:#000000;
+  --border-color:   rgba(0,0,0,0.12); --border-accent:rgba(0,0,0,0.25);
+  --shadow:0 4px 20px rgba(0,0,0,0.08); --shadow-card:0 2px 12px rgba(0,0,0,0.06);
+  --completed-bg:rgba(0,0,0,0.05); --completed-text:#222;
+  --deactivated-bg:rgba(139,69,19,0.08); --deactivated-text:#8b4513;
+  --btn-primary-bg:#222222; --btn-primary-text:#ffffff;
+  --common-color:#888; --rare-color:#444; --legendary-color:#000;
+  --badge-bg:#e8e8e8; --badge-text:#333;
+}
+.theme-spermium .app-header {
+  background: linear-gradient(135deg,#e8e8e8,#ffffff,#e8e8e8);
+  border-bottom: 2px solid #cccccc;
+}
+.theme-spermium .app-title { color:#111111; }
+.theme-spermium .token-display { background:rgba(0,0,0,0.08); border-color:rgba(0,0,0,0.2); color:#111; }
+
+/* ── Pride ── */
+.theme-pride {
+  --bg-primary:    #0a0a0a; --bg-secondary: #121212;
+  --bg-card:       #181818; --bg-card-hover:#202020;
+  --bg-nav:        #0a0a0a; --bg-header:    #0a0a0a;
+  --text-primary:   #ffffff; --text-secondary:#cccccc; --text-muted:#888;
+  --accent-mission:  #3b82f6; --accent-curse:#ef4444;
+  --accent-treasure: #f59e0b; --accent-photo:#22c55e; --accent-legendary:#a855f7;
+  --border-color:   rgba(255,255,255,0.1); --border-accent:rgba(255,255,255,0.2);
+  --shadow:0 4px 20px rgba(0,0,0,0.5); --shadow-card:0 2px 12px rgba(0,0,0,0.4);
+  --completed-bg:rgba(34,197,94,0.08); --completed-text:#4ade80;
+  --deactivated-bg:rgba(239,68,68,0.07); --deactivated-text:#f87171;
+  --btn-primary-bg:#222; --btn-primary-text:#fff;
+  --common-color:#888; --rare-color:#3b82f6; --legendary-color:#a855f7;
+  --badge-bg:#222; --badge-text:#ccc;
+}
+.theme-pride .app-header {
+  background: linear-gradient(90deg,#e40303,#ff8c00,#ffed00,#008026,#004dff,#750787,#e40303);
+  background-size: 200% 100%;
+  animation: prideHeader 6s linear infinite;
+}
+@keyframes prideHeader {
+  0%   { background-position:0% 0%; }
+  100% { background-position:200% 0%; }
+}
+.theme-pride .app-title { color:#fff; text-shadow:0 1px 4px rgba(0,0,0,0.5); }
+.theme-pride .token-display { background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.2); color:#fff; }
+
+/* ── Bimbózás ── */
+.theme-bimbozas {
+  --bg-primary:    #fff0f5; --bg-secondary: #ffe0ee;
+  --bg-card:       #ffffff; --bg-card-hover:#fff5fa;
+  --bg-nav:        #ffe0ee; --bg-header:    #ff69b4;
+  --text-primary:   #4a0028; --text-secondary:#c0407a; --text-muted:#d080b0;
+  --accent-mission:  #ff1493; --accent-curse:#c71585;
+  --accent-treasure: #ff69b4; --accent-photo:#db7093; --accent-legendary:#ff007f;
+  --border-color:   rgba(255,20,147,0.2); --border-accent:rgba(255,20,147,0.4);
+  --shadow:0 4px 20px rgba(255,20,147,0.1); --shadow-card:0 2px 12px rgba(255,20,147,0.08);
+  --completed-bg:rgba(255,105,180,0.1); --completed-text:#c71585;
+  --deactivated-bg:rgba(199,21,133,0.07); --deactivated-text:#a0004a;
+  --btn-primary-bg:#ff69b4; --btn-primary-text:#ffffff;
+  --common-color:#db7093; --rare-color:#ff1493; --legendary-color:#ff007f;
+  --badge-bg:#ffe0ee; --badge-text:#c71585;
+}
+.theme-bimbozas .app-header {
+  background: linear-gradient(135deg,#ff1493,#ff69b4,#ffb6c1,#ff69b4,#ff1493);
+  border-bottom: 2px solid rgba(255,20,147,0.5);
+}
+.theme-bimbozas .app-title { color:#fff; font-weight:900; text-shadow:0 1px 3px rgba(200,0,100,0.5); }
+.theme-bimbozas .token-display { background:rgba(255,20,147,0.15); border-color:rgba(255,20,147,0.35); color:#c71585; }
+
+/* ── Kiskunhalálos ── */
+.theme-kiskunhalalos {
+  --bg-primary:    #060e1e; --bg-secondary: #0a1428;
+  --bg-card:       #0e1c32; --bg-card-hover:#142240;
+  --bg-nav:        #070c1a; --bg-header:    #070c1a;
+  --text-primary:   #cce8ff; --text-secondary:#7ab0d8; --text-muted:#3a6890;
+  --accent-mission:  #00b4d8; --accent-curse:#e63946;
+  --accent-treasure: #48cae4; --accent-photo:#0077b6; --accent-legendary:#90e0ef;
+  --border-color:   rgba(0,180,216,0.15); --border-accent:rgba(0,180,216,0.35);
+  --shadow:0 4px 20px rgba(0,0,0,0.7); --shadow-card:0 2px 12px rgba(0,100,180,0.2);
+  --completed-bg:rgba(0,180,216,0.08); --completed-text:#48cae4;
+  --deactivated-bg:rgba(230,57,70,0.07); --deactivated-text:#ff6b6b;
+  --btn-primary-bg:#023e8a; --btn-primary-text:#cce8ff;
+  --common-color:#3a6890; --rare-color:#00b4d8; --legendary-color:#90e0ef;
+  --badge-bg:#0a1c38; --badge-text:#48cae4;
+}
+.theme-kiskunhalalos .app-header {
+  background: linear-gradient(90deg,#03045e,#0077b6,#00b4d8,#0077b6,#03045e);
+  border-bottom: 2px solid rgba(0,180,216,0.5);
+}
+.theme-kiskunhalalos .app-title { color:#90e0ef; }
+.theme-kiskunhalalos .token-display { background:rgba(0,100,180,0.2); border-color:rgba(0,180,216,0.35); color:#48cae4; }
+
+/* ── Méhtelep ── */
+.theme-mehtelep {
+  --bg-primary:    #14151a; --bg-secondary: #1c1d24;
+  --bg-card:       #22232e; --bg-card-hover:#2a2c38;
+  --bg-nav:        #101118; --bg-header:    #101118;
+  --text-primary:   #d8d8e0; --text-secondary:#9090a8; --text-muted:#50506a;
+  --accent-mission:  #8890a8; --accent-curse:#c04040;
+  --accent-treasure: #a0a8b8; --accent-photo:#707898; --accent-legendary:#c0c8d8;
+  --border-color:   rgba(140,148,170,0.15); --border-accent:rgba(140,148,170,0.3);
+  --shadow:0 4px 20px rgba(0,0,0,0.5); --shadow-card:0 2px 12px rgba(0,0,0,0.4);
+  --completed-bg:rgba(120,140,160,0.1); --completed-text:#a0b0c0;
+  --deactivated-bg:rgba(180,60,60,0.08); --deactivated-text:#e08080;
+  --btn-primary-bg:#383a48; --btn-primary-text:#d8d8e0;
+  --common-color:#505060; --rare-color:#8890a8; --legendary-color:#c0c8d8;
+  --badge-bg:#28293a; --badge-text:#9090a8;
+}
+.theme-mehtelep .app-header {
+  background: linear-gradient(135deg,#1c1d24,#3a3c4a,#1c1d24);
+  border-bottom: 2px solid rgba(140,148,170,0.3);
+}
+.theme-mehtelep .app-title { color:#c0c8d8; }
+.theme-mehtelep .token-display { background:rgba(140,148,170,0.12); border-color:rgba(140,148,170,0.25); color:#c0c8d8; }
+
+/* ── Utcalány ── */
+.theme-utcalany {
+  --bg-primary:    #0f040e; --bg-secondary: #180814;
+  --bg-card:       #200b1c; --bg-card-hover:#2a1024;
+  --bg-nav:        #0c0410; --bg-header:    #0c0410;
+  --text-primary:   #f0d0e8; --text-secondary:#c070a0; --text-muted:#7a3060;
+  --accent-mission:  #ff2d8a; --accent-curse:#cc0050;
+  --accent-treasure: #ff80b4; --accent-photo:#d02070; --accent-legendary:#ff70c0;
+  --border-color:   rgba(255,45,138,0.15); --border-accent:rgba(255,45,138,0.35);
+  --shadow:0 4px 20px rgba(0,0,0,0.7); --shadow-card:0 2px 12px rgba(255,45,138,0.15);
+  --completed-bg:rgba(255,45,138,0.08); --completed-text:#ff80b4;
+  --deactivated-bg:rgba(200,0,80,0.07); --deactivated-text:#ff80b4;
+  --btn-primary-bg:#7a0040; --btn-primary-text:#f0d0e8;
+  --common-color:#7a3060; --rare-color:#ff2d8a; --legendary-color:#ff70c0;
+  --badge-bg:#3a0a28; --badge-text:#ff80b4;
+}
+.theme-utcalany .app-header {
+  background: linear-gradient(135deg,#0c0410,#7a0040,#cc0050);
+  border-bottom: 2px solid rgba(255,45,138,0.5);
+  animation: utcalanyPulse 3s ease-in-out infinite;
+}
+@keyframes utcalanyPulse {
+  0%,100% { box-shadow:0 2px 20px rgba(255,45,138,0.2); }
+  50%      { box-shadow:0 2px 30px rgba(255,45,138,0.55); }
+}
+.theme-utcalany .app-title { color:#ff80b4; text-shadow:0 0 10px rgba(255,45,138,0.5); }
+.theme-utcalany .token-display { background:rgba(255,45,138,0.12); border-color:rgba(255,45,138,0.3); color:#ff80b4; }
+
+/* ── Puniverzum ── */
+.theme-puniverzum {
+  --bg-primary:    #030210; --bg-secondary: #06041a;
+  --bg-card:       #0a0820; --bg-card-hover:#100c28;
+  --bg-nav:        #04020e; --bg-header:    #04020e;
+  --text-primary:   #e0d8ff; --text-secondary:#9080d8; --text-muted:#4a3890;
+  --accent-mission:  #6060ff; --accent-curse:#cc2060;
+  --accent-treasure: #40b8ff; --accent-photo:#6080d0; --accent-legendary:#c0a0ff;
+  --border-color:   rgba(96,96,255,0.15); --border-accent:rgba(96,96,255,0.3);
+  --shadow:0 4px 20px rgba(0,0,0,0.8); --shadow-card:0 2px 12px rgba(30,20,100,0.4);
+  --completed-bg:rgba(64,184,255,0.08); --completed-text:#80c8ff;
+  --deactivated-bg:rgba(200,32,96,0.07); --deactivated-text:#f080b0;
+  --btn-primary-bg:#200850; --btn-primary-text:#e0d8ff;
+  --common-color:#4a3890; --rare-color:#6060ff; --legendary-color:#c0a0ff;
+  --badge-bg:#140830; --badge-text:#9080d8;
+}
+.theme-puniverzum .app-header {
+  background: linear-gradient(90deg,#030210,#200850,#6060ff,#200850,#030210);
+  background-size: 300% 100%;
+  animation: puniverzumHeader 12s ease-in-out infinite;
+  border-bottom: 2px solid rgba(96,96,255,0.4);
+  box-shadow: 0 2px 20px rgba(50,0,150,0.4);
+}
+@keyframes puniverzumHeader {
+  0%   { background-position:0% 50%; }
+  50%  { background-position:100% 50%; }
+  100% { background-position:0% 50%; }
+}
+.theme-puniverzum .app-title { color:#c0a0ff; text-shadow:0 0 12px rgba(150,100,255,0.6); }
+.theme-puniverzum .token-display { background:rgba(80,60,180,0.2); border-color:rgba(96,96,255,0.35); color:#c0a0ff; }
+
+/* ── Neonbéka ── */
+.theme-neonbeka {
+  --bg-primary:    #020904; --bg-secondary: #041208;
+  --bg-card:       #071a0c; --bg-card-hover:#0c2414;
+  --bg-nav:        #020804; --bg-header:    #020804;
+  --text-primary:   #c8ffcc; --text-secondary:#60c870; --text-muted:#206030;
+  --accent-mission:  #39ff14; --accent-curse:#ff4400;
+  --accent-treasure: #80ff40; --accent-photo:#00cc44; --accent-legendary:#c0ff60;
+  --border-color:   rgba(57,255,20,0.12); --border-accent:rgba(57,255,20,0.3);
+  --shadow:0 4px 20px rgba(0,0,0,0.7); --shadow-card:0 2px 12px rgba(57,255,20,0.1);
+  --completed-bg:rgba(57,255,20,0.07); --completed-text:#80ff40;
+  --deactivated-bg:rgba(255,68,0,0.07); --deactivated-text:#ff8060;
+  --btn-primary-bg:#103a18; --btn-primary-text:#c8ffcc;
+  --common-color:#206030; --rare-color:#39ff14; --legendary-color:#c0ff60;
+  --badge-bg:#0a2010; --badge-text:#60c870;
+}
+.theme-neonbeka .app-header {
+  background: linear-gradient(135deg,#020904,#103a18);
+  border-bottom: 2px solid rgba(57,255,20,0.5);
+  animation: neonbekaGlow 2.5s ease-in-out infinite;
+}
+@keyframes neonbekaGlow {
+  0%,100% { box-shadow:0 2px 15px rgba(57,255,20,0.2); border-bottom-color:rgba(57,255,20,0.3); }
+  50%      { box-shadow:0 2px 25px rgba(57,255,20,0.55); border-bottom-color:rgba(57,255,20,0.8); }
+}
+.theme-neonbeka .app-title { color:#39ff14; text-shadow:0 0 10px rgba(57,255,20,0.6); }
+.theme-neonbeka .token-display { background:rgba(57,255,20,0.08); border-color:rgba(57,255,20,0.3); color:#39ff14; }
+
+/* ── Fidesz ── */
+.theme-fidesz {
+  --bg-primary:    #fff8f0; --bg-secondary: #fff0e0;
+  --bg-card:       #ffffff; --bg-card-hover:#fff8f0;
+  --bg-nav:        #fff0e0; --bg-header:    #f57c00;
+  --text-primary:   #1a0a00; --text-secondary:#8b4000; --text-muted:#c07030;
+  --accent-mission:  #f57c00; --accent-curse:#b03000;
+  --accent-treasure: #f9a825; --accent-photo:#ff9800; --accent-legendary:#e65100;
+  --border-color:   rgba(245,124,0,0.2); --border-accent:rgba(245,124,0,0.45);
+  --shadow:0 4px 20px rgba(0,0,0,0.1); --shadow-card:0 2px 12px rgba(245,124,0,0.1);
+  --completed-bg:rgba(245,124,0,0.08); --completed-text:#e65100;
+  --deactivated-bg:rgba(180,48,0,0.08); --deactivated-text:#b03000;
+  --btn-primary-bg:#f57c00; --btn-primary-text:#ffffff;
+  --common-color:#c07030; --rare-color:#f57c00; --legendary-color:#e65100;
+  --badge-bg:#ffe0b2; --badge-text:#bf5e00;
+}
+.theme-fidesz .app-header {
+  background: linear-gradient(135deg,#e65100,#f57c00,#ff9800,#f57c00,#e65100);
+  border-bottom: 2px solid rgba(245,124,0,0.6);
+}
+.theme-fidesz .app-title { color:#ffffff; font-weight:900; text-shadow:0 1px 2px rgba(0,0,0,0.3); }
+.theme-fidesz .token-display { background:rgba(245,124,0,0.15); border-color:rgba(245,124,0,0.4); color:#1a0a00; }
+
+/* ── Faszbook ── */
+.theme-faszbook {
+  --bg-primary:    #e7f0fd; --bg-secondary: #d8e8fc;
+  --bg-card:       #ffffff; --bg-card-hover:#f0f6ff;
+  --bg-nav:        #d8e8fc; --bg-header:    #1877f2;
+  --text-primary:   #050505; --text-secondary:#65676b; --text-muted:#8a8d91;
+  --accent-mission:  #1877f2; --accent-curse:#e41c1c;
+  --accent-treasure: #f59e0b; --accent-photo:#18a557; --accent-legendary:#7c3aed;
+  --border-color:   rgba(24,119,242,0.2); --border-accent:rgba(24,119,242,0.45);
+  --shadow:0 4px 20px rgba(0,0,0,0.12); --shadow-card:0 2px 8px rgba(0,0,0,0.08);
+  --completed-bg:rgba(24,165,87,0.1); --completed-text:#18a557;
+  --deactivated-bg:rgba(228,28,28,0.07); --deactivated-text:#e41c1c;
+  --btn-primary-bg:#1877f2; --btn-primary-text:#ffffff;
+  --common-color:#8a8d91; --rare-color:#1877f2; --legendary-color:#7c3aed;
+  --badge-bg:#e7f3ff; --badge-text:#1877f2;
+}
+.theme-faszbook .app-header { background:#1877f2; border-bottom:2px solid #0e5fc0; }
+.theme-faszbook .app-title  { color:#ffffff; font-weight:900; }
+.theme-faszbook .token-display { background:rgba(255,255,255,0.2); border-color:rgba(255,255,255,0.4); color:#ffffff; }
+
+/* ── Biliárd ── */
+.theme-biliard {
+  --bg-primary:    #0a1e0e; --bg-secondary: #122414;
+  --bg-card:       #182c1c; --bg-card-hover:#1e3820;
+  --bg-nav:        #081808; --bg-header:    #081808;
+  --text-primary:   #ddf0d8; --text-secondary:#80b878; --text-muted:#3a6838;
+  --accent-mission:  #2d6a4f; --accent-curse:#b22222;
+  --accent-treasure: #d4af37; --accent-photo:#52796f; --accent-legendary:#fff176;
+  --border-color:   rgba(45,106,79,0.2); --border-accent:rgba(45,106,79,0.4);
+  --shadow:0 4px 20px rgba(0,0,0,0.6); --shadow-card:0 2px 12px rgba(0,0,0,0.4);
+  --completed-bg:rgba(45,106,79,0.1); --completed-text:#80c878;
+  --deactivated-bg:rgba(178,34,34,0.08); --deactivated-text:#e08080;
+  --btn-primary-bg:#1a4a28; --btn-primary-text:#ddf0d8;
+  --common-color:#3a6838; --rare-color:#2d6a4f; --legendary-color:#fff176;
+  --badge-bg:#0e2810; --badge-text:#80b878;
+}
+.theme-biliard .app-header {
+  background: linear-gradient(135deg,#081808,#1a4a28,#2d6a4f,#1a4a28,#081808);
+  border-bottom: 3px solid rgba(45,106,79,0.5);
+  box-shadow: 0 2px 12px rgba(0,80,40,0.3);
+}
+.theme-biliard .app-title { color:#ddf0d8; }
+.theme-biliard .token-display { background:rgba(45,106,79,0.2); border-color:rgba(45,106,79,0.4); color:#ddf0d8; }
+

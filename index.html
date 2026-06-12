@@ -202,25 +202,11 @@
       <!-- 1. Téma – mindig látható -->
       <div class="settings-group">
         <h2 class="settings-title">🎨 Téma</h2>
-        <div class="theme-buttons">
-          <button class="theme-btn active" id="themeNight" onclick="setTheme('night')">
-            <span class="theme-icon">🦆</span>
-            <span>Libabaszó</span>
-          </button>
-          <button class="theme-btn" id="themePunikornis" onclick="setTheme('punikornis')">
-            <span class="theme-icon">🦄</span>
-            <span>Punikornis</span>
-          </button>
-          <button class="theme-btn" id="themeKrokodildo" onclick="setTheme('krokodildo')">
-            <span class="theme-icon">🐊</span>
-            <span>Krokodildó</span>
-          </button>
-          <button class="theme-btn" id="themeFelsoszank" onclick="setTheme('felsoszank')">
-            <span class="theme-icon">👑</span>
-            <span>Felsőszank</span>
-          </button>
-        </div>
+        <div class="theme-buttons" id="themeButtonsContainer"></div>
       </div>
+
+      <!-- 1b. Összes téma (lenyitható, titkos kóddal) -->
+      <div id="allThemesSection"></div>
 
       <!-- 2. Összesítő – mindig látható -->
       <div class="settings-group">

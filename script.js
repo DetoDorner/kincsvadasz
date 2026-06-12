@@ -29,6 +29,7 @@ let state = {
   usedTreasuresTotal:   0,      // felhasznált kincsek számlálója (kumulatív)
   deactivatedCursesTotal: 0,    // deaktivált átkok számlálója (kumulatív)
   wonTetprobaTotal:     0,      // nyert tétpróbák számlálója (kumulatív)
+  unlockedThemes:       ["night", "punikornis"], // ládával szerzett témák + alapértelmezések
 };
 
 let currentFilter  = "all";
@@ -43,6 +44,36 @@ const shopItems = [
   { id: "impostor_change", name: "🕵️ Imposztorjelölés módosítása", desc: "Egyszer megváltoztathatod a gyanúsítottadat.",                       price: 650 },
   { id: "sejtés",          name: "🔍 Sejtés",                      desc: "Tétpróba megkezdése előtt felfedi a kérdés témáját.",                price: 1800 },
   { id: "tudasszomj",      name: "🍺 Tudásszomj",                  desc: "Tétpróba közben kizár 1 rossz választ. Kérdésenként max. 1×.",       price: 4100 },
+  { id: "tema_lada",       name: "🗃️ Témaláda",                   desc: "",                                                                   price: 3000 },
+];
+
+// ── TÉMÁK ────────────────────────────────────────────────────
+
+let allThemesOverride = false; // titkos kóddal aktivált "összes téma" nézet
+
+const allThemes = [
+  { id: "night",          name: "Libabaszó",       icon: "🦆", locked: false },
+  { id: "punikornis",     name: "Punikornis",       icon: "🦄", locked: false },
+  { id: "krokodildo",     name: "Krokodildó",       icon: "🐊", locked: true  },
+  { id: "felsoszank",     name: "Felsőszank",       icon: "👑", locked: true  },
+  { id: "kincsvadaszat1", name: "Kincsvadászat I.", icon: "⚡", locked: true  },
+  { id: "endzso",         name: "Endzsó",           icon: "🌈", locked: true  },
+  { id: "korbanyai",      name: "Körbányai",        icon: "🍺", locked: true  },
+  { id: "stickletti",     name: "Stickletti",       icon: "🎯", locked: true  },
+  { id: "maguskula",      name: "Máguskula",        icon: "✨", locked: true  },
+  { id: "zakanycsakany",  name: "Zákánycsákány",    icon: "🪓", locked: true  },
+  { id: "pinascolada",    name: "Pinás Colada",     icon: "🍹", locked: true  },
+  { id: "spermium",       name: "Spermium",         icon: "🔬", locked: true  },
+  { id: "pride",          name: "Pride",            icon: "🏳️‍🌈", locked: true  },
+  { id: "bimbozas",       name: "Bimbózás",         icon: "🌸", locked: true  },
+  { id: "kiskunhalalos",  name: "Kiskunhalálos",    icon: "💧", locked: true  },
+  { id: "mehtelep",       name: "Méhtelep",         icon: "🔩", locked: true  },
+  { id: "utcalany",       name: "Utcalány",         icon: "💃", locked: true  },
+  { id: "puniverzum",     name: "Puniverzum",       icon: "🌌", locked: true  },
+  { id: "neonbeka",       name: "Neonbéka",         icon: "🐸", locked: true  },
+  { id: "fidesz",         name: "Fidesz",           icon: "🍊", locked: true  },
+  { id: "faszbook",       name: "Faszbook",         icon: "👍", locked: true  },
+  { id: "biliard",        name: "Biliárd",          icon: "🎱", locked: true  },
 ];
 
 // ── INICIALIZÁLÁS ────────────────────────────────────────────
@@ -51,6 +82,7 @@ function init() {
   loadState();
   applyTheme(state.theme);
   renderAll();
+  renderThemeSection();
 }
 
 // ── MENTÉS / BETÖLTÉS ────────────────────────────────────────
@@ -90,6 +122,10 @@ function loadState() {
     state.usedTreasuresTotal      = p.usedTreasuresTotal      || 0;
     state.deactivatedCursesTotal  = p.deactivatedCursesTotal  || 0;
     state.wonTetprobaTotal        = p.wonTetprobaTotal        || 0;
+    state.unlockedThemes          = p.unlockedThemes          || ["night", "punikornis"];
+    // Backward compat: ha régi mentésből krokodildo/felsoszank volt aktív, adjuk hozzá
+    if (state.theme === "krokodildo" && !state.unlockedThemes.includes("krokodildo")) state.unlockedThemes.push("krokodildo");
+    if (state.theme === "felsoszank"  && !state.unlockedThemes.includes("felsoszank"))  state.unlockedThemes.push("felsoszank");
   } catch (e) {
     console.warn("Betöltési hiba:", e);
   }
@@ -938,6 +974,77 @@ function renderSettings() {
   if (statusEl) statusEl.textContent = state.returnMode ? "BE" : "KI";
   const btn = document.getElementById("btnReturnMode");
   if (btn) btn.classList.toggle("active", state.returnMode);
+  renderThemeSection();
+}
+
+function renderThemeSection() {
+  const container = document.getElementById("themeButtonsContainer");
+  if (container) {
+    const unlocked = state.unlockedThemes || ["night", "punikornis"];
+    const visible = allThemesOverride
+      ? allThemes
+      : allThemes.filter(t => !t.locked || unlocked.includes(t.id));
+    container.innerHTML = visible.map(t => `
+      <button class="theme-btn${state.theme === t.id ? " active" : ""}"
+              data-theme-id="${t.id}" onclick="setTheme('${t.id}')">
+        <span class="theme-icon">${t.icon}</span>
+        <span>${t.name}</span>
+      </button>
+    `).join("");
+  }
+
+  const allSection = document.getElementById("allThemesSection");
+  if (!allSection) return;
+
+  const unlocked2 = state.unlockedThemes || ["night", "punikornis"];
+  const lockedCount = allThemes.filter(t => t.locked).length;
+  const ownedChestCount = unlocked2.filter(id => allThemes.find(t => t.id === id && t.locked)).length;
+
+  allSection.innerHTML = `
+    <details class="settings-group settings-collapsible" id="allThemesDetails">
+      <summary class="settings-summary">🔐 Összes téma
+        <span class="theme-chest-count">${ownedChestCount}/${lockedCount}</span>
+      </summary>
+      <div class="all-themes-inner">
+        <p class="all-themes-hint">Add meg a titkos kódot az összes téma eléréséhez.</p>
+        <div class="secret-code-row">
+          <input type="text" id="secretCodeInput" class="secret-code-input"
+                 placeholder="Titkos kód..."
+                 onkeydown="if(event.key==='Enter')checkSecretCode()"
+                 autocomplete="off">
+          <button class="btn-check-code" onclick="checkSecretCode()">OK</button>
+        </div>
+        ${allThemesOverride ? `
+          <p class="all-themes-unlocked-msg">✅ Titkos kód aktiválva – minden téma elérhető!</p>
+          <button class="btn-remove-themes" onclick="removeExtraThemes()">🗑️ Témák eltüntetése</button>
+        ` : ""}
+      </div>
+    </details>
+  `;
+}
+
+function checkSecretCode() {
+  const input = document.getElementById("secretCodeInput");
+  if (!input) return;
+  if (input.value.trim() === "zakanycsakany69") {
+    allThemesOverride = true;
+    renderThemeSection();
+  } else {
+    alert("Helytelen kód! 🚫");
+  }
+}
+
+function removeExtraThemes() {
+  if (!confirm("Biztosan eltünteted az extra témákat?\n\nVisszaáll az alapértelmezett 2 témára.")) return;
+  state.unlockedThemes = ["night", "punikornis"];
+  if (!state.unlockedThemes.includes(state.theme)) {
+    state.theme = "night";
+    applyTheme("night");
+  }
+  allThemesOverride = false;
+  saveState();
+  renderThemeSection();
+  renderBolt();
 }
 
 // ── MEGBÍZÁSOK RENDSZER ───────────────────────────────────────
@@ -1384,18 +1491,35 @@ function renderBolt() {
     </div>
   ` : "";
 
+  const lockedThemeCount  = allThemes.filter(t => t.locked).length;
+  const ownedChestThemes  = (state.unlockedThemes || []).filter(id => allThemes.find(t => t.id === id && t.locked)).length;
+  const remainingThemes   = lockedThemeCount - ownedChestThemes;
+
   const buySection = `
     <div class="shop-section">
       <h2 class="shop-section-title">🛒 Vásárlás</h2>
-      ${shopItems.map(item => `
-        <div class="shop-buy-row">
-          <div class="shop-buy-info">
-            <div class="shop-buy-name">${item.name}</div>
-            <div class="shop-buy-desc">${item.desc}</div>
+      ${shopItems.map(item => {
+        let desc = item.desc;
+        let disabled = false;
+        if (item.id === "tema_lada") {
+          desc = remainingThemes === 0
+            ? `Már az összes ${lockedThemeCount} témát megszerezted! 🎉`
+            : `Random lezárt témát nyit meg. Megszerzett: ${ownedChestThemes}/${lockedThemeCount}.`;
+          disabled = remainingThemes === 0;
+        }
+        return `
+          <div class="shop-buy-row">
+            <div class="shop-buy-info">
+              <div class="shop-buy-name">${item.name}</div>
+              <div class="shop-buy-desc">${desc}</div>
+            </div>
+            <button class="btn-buy" onclick="buyItem('${item.id}')"
+              ${disabled ? 'disabled style="opacity:0.45;cursor:default"' : ''}>
+              ${formatNum(item.price)} 🪙
+            </button>
           </div>
-          <button class="btn-buy" onclick="buyItem('${item.id}')">${formatNum(item.price)} 🪙</button>
-        </div>
-      `).join("")}
+        `;
+      }).join("")}
     </div>
   `;
 
@@ -1479,6 +1603,19 @@ function buyItem(itemId) {
     state.sejtesCount = (state.sejtesCount || 0) + 1;
   } else if (itemId === "tudasszomj") {
     state.tudasszomjCount = (state.tudasszomjCount || 0) + 1;
+  } else if (itemId === "tema_lada") {
+    const lockedThemes = allThemes.filter(t => t.locked);
+    const unlocked = state.unlockedThemes || ["night", "punikornis"];
+    const available = lockedThemes.filter(t => !unlocked.includes(t.id));
+    if (available.length === 0) {
+      alert("Már az összes témát megszerezted! 🎉 Zsetonod visszakerül.");
+      state.tokens += item.price;
+    } else {
+      const pick = available[Math.floor(Math.random() * available.length)];
+      state.unlockedThemes = [...unlocked, pick.id];
+      alert(`🎁 Új téma kinyílt!\n\n${pick.icon} ${pick.name}\n\nA Beállítások fülön aktiválhatod.`);
+      renderThemeSection();
+    }
   }
 
   saveState();
@@ -1571,11 +1708,9 @@ function updateReturnModeArea() {
 
 function applyTheme(theme) {
   document.body.className = "theme-" + theme;
-  ["themeNight","themePunikornis","themeKrokodildo","themeFelsoszank"].forEach(id => {
-    document.getElementById(id)?.classList.remove("active");
+  document.querySelectorAll(".theme-btn[data-theme-id]").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.themeId === theme);
   });
-  const map = { night:"themeNight", punikornis:"themePunikornis", krokodildo:"themeKrokodildo", felsoszank:"themeFelsoszank" };
-  document.getElementById(map[theme])?.classList.add("active");
 }
 
 function setTheme(theme) {
