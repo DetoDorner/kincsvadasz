@@ -733,7 +733,9 @@ body.lightbox-open { overflow: hidden; }
 .ability-progress-wrap {
   display: flex; flex-direction: column; gap: 5px;
   margin-top: 10px;
-  margin-bottom: 12px;
+  margin-bottom: 0;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
 }
 .ability-progress-bar-track {
   height: 7px; background: var(--bg-secondary);
@@ -793,7 +795,7 @@ body.lightbox-open { overflow: hidden; }
 
 .btn-use-ability {
   width: 100%; padding: 11px; border: none; border-radius: 12px;
-  margin-top: 2px;
+  margin-top: 14px;
   background: linear-gradient(135deg, #6d28d9 0%, #a855f7 100%);
   color: #fff; font-size: 0.88rem; font-weight: 800; letter-spacing: 0.2px;
   cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
