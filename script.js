@@ -21,6 +21,9 @@ let state = {
   favoritePhotos:       {},     // { photoId: true }
   notes:                [],     // [{ id, title, text, createdAt, modified? }]
   sips:                 0,
+  tetprobas:            0,      // elérhető Tétpróbák száma (max 5)
+  sejtesCount:          0,      // Sejtés segédeszköz darabszám
+  tudasszomjCount:      0,      // Tudásszomj segédeszköz darabszám
 };
 
 let currentFilter  = "all";
@@ -29,10 +32,12 @@ let kedvencFilter  = false;   // kedvencek-először nézet
 // ── BOLT TERMÉKEK ────────────────────────────────────────────
 
 const shopItems = [
-  { id: "extra_life",      name: "❤️ +1 Élet",                    desc: "Egy extra élettel rendelkezel a játékban.",         price: 25000 },
-  { id: "remove_curse",    name: "🔓 Átok levétele",               desc: "Egy aktív átkod azonnal deaktiválódik.",            price: 18500 },
-  { id: "extra_photo",     name: "📸 +1 Fotó húzása",              desc: "Egy extra képet húzhatsz a galériádba.",            price: 320 },
-  { id: "impostor_change", name: "🕵️ Imposztorjelölés módosítása", desc: "Egyszer megváltoztathatod a gyanúsítottadat.",      price: 650 },
+  { id: "extra_life",      name: "❤️ +1 Élet",                    desc: "Egy extra élettel rendelkezel a játékban.",                          price: 25000 },
+  { id: "remove_curse",    name: "🔓 Átok levétele",               desc: "Egy aktív átkod azonnal deaktiválódik.",                             price: 18500 },
+  { id: "extra_photo",     name: "📸 +1 Fotó húzása",              desc: "Egy extra képet húzhatsz a galériádba.",                             price: 320 },
+  { id: "impostor_change", name: "🕵️ Imposztorjelölés módosítása", desc: "Egyszer megváltoztathatod a gyanúsítottadat.",                       price: 650 },
+  { id: "sejtés",          name: "🔍 Sejtés",                      desc: "Tétpróba megkezdése előtt felfedi a kérdés témáját.",                price: 500 },
+  { id: "tudasszomj",      name: "💡 Tudásszomj",                  desc: "Tétpróba közben kizár 1 rossz választ. Kérdésenként max. 2×.",       price: 800 },
 ];
 
 // ── INICIALIZÁLÁS ────────────────────────────────────────────
@@ -72,6 +77,9 @@ function loadState() {
     state.favoritePhotos        = p.favoritePhotos        || {};
     state.notes                 = p.notes                 || [];
     state.sips                  = p.sips                  || 0;
+    state.tetprobas             = p.tetprobas             || 0;
+    state.sejtesCount           = p.sejtesCount           || 0;
+    state.tudasszomjCount       = p.tudasszomjCount       || 0;
   } catch (e) {
     console.warn("Betöltési hiba:", e);
   }
@@ -218,6 +226,7 @@ function renderAll() {
   updateTokenDisplay();
   updateReturnModeArea();
   updateSipDisplay();
+  renderTetprobaSection();
 }
 
 // ── SZŰRŐ ────────────────────────────────────────────────────
@@ -605,7 +614,22 @@ function updateStats() {
 }
 
 function adjustSips(delta) {
-  state.sips = Math.max(0, (state.sips || 0) + delta);
+  const oldSips = state.sips || 0;
+  state.sips = Math.max(0, oldSips + delta);
+
+  // 10 kortyonként 1 Tétpróba (csak növelésnél, max 5)
+  if (delta > 0) {
+    const oldTens = Math.floor(oldSips / 10);
+    const newTens = Math.floor(state.sips / 10);
+    const earned  = newTens - oldTens;
+    if (earned > 0 && state.tetprobas < 5) {
+      const prev = state.tetprobas;
+      state.tetprobas = Math.min(5, state.tetprobas + earned);
+      const gained = state.tetprobas - prev;
+      showTpToast("🎲 +" + gained + " Tétpróba!");
+    }
+  }
+
   saveState();
   const el = document.getElementById("sipCount");
   if (el) el.textContent = state.sips;
@@ -616,11 +640,213 @@ function adjustSips(delta) {
     void wrap.offsetWidth; // reflow
     wrap.classList.add("sip-pop");
   }
+  renderTetprobaSection();
 }
 
 function updateSipDisplay() {
   const el = document.getElementById("sipCount");
   if (el) el.textContent = state.sips || 0;
+}
+
+// ── TÉTPRÓBA RENDSZER ────────────────────────────────────
+
+let tpPhase          = null;   // null | "bet" | "question" | "result"
+let tpBet            = 0;
+let tpQuestion       = null;   // aktuális kérdés objektum
+let tpHintShown      = false;
+let tpEliminated     = [];     // kizárt opcióindexek
+let tpEliminationsUsed = 0;
+let tpWon            = null;   // true | false | null
+
+function showTpToast(msg) {
+  const t = document.getElementById("tpToast");
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.remove("tp-toast-hidden");
+  t.classList.add("tp-toast-show");
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => {
+    t.classList.remove("tp-toast-show");
+    t.classList.add("tp-toast-hidden");
+  }, 2200);
+}
+
+function renderTetprobaSection() {
+  const el = document.getElementById("tetprobaSection");
+  if (!el) return;
+
+  const tp   = state.tetprobas   || 0;
+  const sej  = state.sejtesCount || 0;
+  const tud  = state.tudasszomjCount || 0;
+  const sips = state.sips || 0;
+  const nextIn = tp < 5 ? (10 - (sips % 10)) : 0;
+
+  if (tpPhase === null) {
+    // ── Alap nézet ──
+    const canStart = tp > 0 && state.tokens > 0;
+    el.innerHTML = `
+      <div class="tetproba-card">
+        <div class="tetproba-header-row">
+          <span class="tetproba-title">🎲 Tétpróba</span>
+          <span class="tetproba-badge ${tp > 0 ? "tp-badge-active" : ""}">${tp} / 5</span>
+        </div>
+        <div class="tetproba-helpers-row">
+          <span class="tp-helper-chip">🔍 Sejtés: <b>${sej}</b></span>
+          <span class="tp-helper-chip">💡 Tudásszomj: <b>${tud}</b></span>
+        </div>
+        <p class="tetproba-info">Minden 10. kortyért 1 Tétpróbát kapsz.</p>
+        ${tp < 5 ? `<p class="tetproba-next">Következő: még <b>${nextIn}</b> korty</p>` : `<p class="tetproba-next tp-full">Tele van a Tétpróba-készleted!</p>`}
+        ${canStart
+          ? `<button class="btn-start-tetproba" onclick="startTetproba()">🎲 Tétpróba indítása</button>`
+          : tp === 0
+            ? `<p class="tetproba-warn">Nincs Tétpróbád – igyál többet! 🍺</p>`
+            : `<p class="tetproba-warn">Nincs zsetonod – nem tehetsz tétet.</p>`
+        }
+      </div>`;
+
+  } else if (tpPhase === "bet") {
+    // ── Tét-megadás fázis ──
+    el.innerHTML = `
+      <div class="tetproba-card tetproba-active">
+        <div class="tetproba-phase-label">💰 Tét megadása</div>
+        <p class="tp-token-info">Egyenleged: <b>${formatNum(state.tokens)} 🪙</b></p>
+        <input type="number" id="tpBetInput" class="tetproba-input"
+               min="1" max="${state.tokens}" placeholder="Tét összege (max ${formatNum(state.tokens)})">
+        ${sej > 0 && !tpHintShown
+          ? `<button class="btn-tp-helper" onclick="useSejtesHint()">🔍 Sejtés használata (<b>${sej}</b> db)</button>`
+          : ""
+        }
+        ${tpHintShown
+          ? `<div class="tp-hint-box">💡 Téma: <strong>${tpQuestion ? tpQuestion.topic : ""}</strong></div>`
+          : ""
+        }
+        <div class="tp-action-row">
+          <button class="btn-tp-confirm" onclick="confirmBet()">Tovább →</button>
+          <button class="btn-tp-cancel"  onclick="closeTetproba()">Mégsem</button>
+        </div>
+      </div>`;
+
+  } else if (tpPhase === "question") {
+    // ── Kérdés fázis ──
+    const opts = tpQuestion.options.map((opt, i) => {
+      const elim = tpEliminated.includes(i);
+      return `<button class="btn-tp-option ${elim ? "tp-option-elim" : ""}"
+                onclick="${elim ? "" : "answerTetproba(" + i + ")"}"
+                ${elim ? "disabled" : ""}>${opt}</button>`;
+    }).join("");
+
+    const canTudasszomj = tud > 0 && tpEliminationsUsed < 2 &&
+      (tpQuestion.options.length - tpEliminated.length) > 2;
+
+    el.innerHTML = `
+      <div class="tetproba-card tetproba-active">
+        <div class="tetproba-phase-label">❓ Kérdés</div>
+        <p class="tp-bet-info">Tét: <b>${formatNum(tpBet)} 🪙</b></p>
+        <p class="tetproba-question">${tpQuestion.question}</p>
+        <div class="tp-options-grid">${opts}</div>
+        ${canTudasszomj
+          ? `<button class="btn-tp-helper" onclick="useTudasszomj()">💡 Tudásszomj – rossz válasz kizárása (<b>${tud}</b> db, ${2 - tpEliminationsUsed} maradt)</button>`
+          : ""
+        }
+      </div>`;
+
+  } else if (tpPhase === "result") {
+    // ── Eredmény fázis ──
+    const bonus = Math.floor(tpBet * 0.5);
+    const winnings = tpBet + bonus;
+    el.innerHTML = `
+      <div class="tetproba-card tetproba-result ${tpWon ? "tp-result-win" : "tp-result-lose"}">
+        <div class="tp-result-icon">${tpWon ? "✅" : "❌"}</div>
+        <p class="tp-result-title">${tpWon ? "Helyes válasz!" : "Helytelen válasz!"}</p>
+        <p class="tp-result-detail">${tpWon
+          ? `<b>+${formatNum(winnings)} 🪙</b> (tét vissza + 50% bónusz)`
+          : `<b>−${formatNum(tpBet)} 🪙</b> és igyál egyet! 🍺`
+        }</p>
+        <p class="tp-result-correct">Helyes válasz: <b>${tpQuestion.options[tpQuestion.correct]}</b></p>
+        <button class="btn-start-tetproba" onclick="closeTetproba()">Bezárás</button>
+      </div>`;
+  }
+}
+
+function startTetproba() {
+  if ((state.tetprobas || 0) < 1) { alert("Nincs Tétpróbád!"); return; }
+  if (state.tokens < 1) { alert("Nincs zsetonod!"); return; }
+  // Véletlenszerű kérdés kiválasztása
+  tpQuestion       = tetprobaKerdesek[Math.floor(Math.random() * tetprobaKerdesek.length)];
+  tpPhase          = "bet";
+  tpBet            = 0;
+  tpHintShown      = false;
+  tpEliminated     = [];
+  tpEliminationsUsed = 0;
+  tpWon            = null;
+  renderTetprobaSection();
+  // Görgetés a kártyára
+  setTimeout(() => {
+    document.getElementById("tetprobaSection")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 50);
+}
+
+function useSejtesHint() {
+  if ((state.sejtesCount || 0) < 1) return;
+  state.sejtesCount--;
+  tpHintShown = true;
+  saveState();
+  renderTetprobaSection();
+}
+
+function confirmBet() {
+  const input = document.getElementById("tpBetInput");
+  if (!input) return;
+  const val = parseInt(input.value);
+  if (isNaN(val) || val < 1) { alert("Adj meg érvényes tétösszeget (legalább 1 zseton)!"); return; }
+  if (val > state.tokens) { alert("A tét nem haladhatja meg a zseton-egyenlegedet!"); return; }
+  tpBet   = val;
+  tpPhase = "question";
+  renderTetprobaSection();
+}
+
+function useTudasszomj() {
+  if ((state.tudasszomjCount || 0) < 1) return;
+  if (tpEliminationsUsed >= 2) return;
+  // Egy véletlenszerű, ki nem zárott helytelen opcióindex törlése
+  const wrongIndices = tpQuestion.options
+    .map((_, i) => i)
+    .filter(i => i !== tpQuestion.correct && !tpEliminated.includes(i));
+  if (wrongIndices.length === 0) return;
+  const pick = wrongIndices[Math.floor(Math.random() * wrongIndices.length)];
+  tpEliminated.push(pick);
+  tpEliminationsUsed++;
+  state.tudasszomjCount--;
+  saveState();
+  renderTetprobaSection();
+}
+
+function answerTetproba(idx) {
+  if (tpEliminated.includes(idx)) return;
+  tpWon = (idx === tpQuestion.correct);
+  // Tétpróba elfogyasztása
+  state.tetprobas = Math.max(0, (state.tetprobas || 0) - 1);
+  if (tpWon) {
+    const bonus = Math.floor(tpBet * 0.5);
+    state.tokens += tpBet + bonus;
+  } else {
+    state.tokens = Math.max(0, state.tokens - tpBet);
+  }
+  tpPhase = "result";
+  saveState();
+  updateTokenDisplay();
+  renderTetprobaSection();
+}
+
+function closeTetproba() {
+  tpPhase          = null;
+  tpBet            = 0;
+  tpQuestion       = null;
+  tpHintShown      = false;
+  tpEliminated     = [];
+  tpEliminationsUsed = 0;
+  tpWon            = null;
+  renderTetprobaSection();
 }
 
 function updateTokenDisplay() {
@@ -907,11 +1133,16 @@ function buyItem(itemId) {
     drawPhoto();
   } else if (itemId === "impostor_change") {
     state.impostorChangePurchased = true;
+  } else if (itemId === "sejtés") {
+    state.sejtesCount = (state.sejtesCount || 0) + 1;
+  } else if (itemId === "tudasszomj") {
+    state.tudasszomjCount = (state.tudasszomjCount || 0) + 1;
   }
 
   saveState();
   updateTokenDisplay();
   renderBolt();
+  renderTetprobaSection();
 }
 
 // ── IMPOSZTOR KIÉRTÉKELÉS ────────────────────────────────────
@@ -1163,7 +1394,11 @@ function resetGame() {
     lastMissionId: null, lastCurseId: null,
     tokens: 0, character: null, impostorName: "", impostorChangePurchased: false,
     returnMode: false, lives: 3, favoritePhotos: {}, notes: [], sips: 0,
+    tetprobas: 0, sejtesCount: 0, tudasszomjCount: 0,
   });
+  // Tétpróba UI visszaállítása
+  tpPhase = null; tpBet = 0; tpQuestion = null;
+  tpHintShown = false; tpEliminated = []; tpEliminationsUsed = 0; tpWon = null;
   localStorage.removeItem(SAVE_KEY);
   document.getElementById("resultCard").classList.add("hidden");
   const endSummary = document.getElementById("endSummary");

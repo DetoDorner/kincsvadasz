@@ -512,3 +512,159 @@ const photos = [
     description: "Agancsain csillagok égnek."
   }
 ];
+
+// ─── TÉTPRÓBA KÉRDÉSEK ───────────────────────────────────
+// Minden kérdésnél: correct az index (0-tól számozva) a helyes válaszra.
+
+const tetprobaKerdesek = [
+  {
+    id: "tq_001", topic: "állatok",
+    question: "Hány szíve van egy polipnak?",
+    options: ["1", "2", "3", "4"],
+    correct: 2
+  },
+  {
+    id: "tq_002", topic: "alkohol",
+    question: "Melyik alkohol alapanyaga a cukornád?",
+    options: ["Vodka", "Rum", "Tequila", "Whiskey"],
+    correct: 1
+  },
+  {
+    id: "tq_003", topic: "földrajz",
+    question: "Mi a Föld legnagyobb szigete?",
+    options: ["Izland", "Borneó", "Grönland", "Ausztrália"],
+    correct: 2
+  },
+  {
+    id: "tq_004", topic: "film / zene",
+    question: "Melyik zenekar adta ki a 'Bohemian Rhapsody' dalt?",
+    options: ["Led Zeppelin", "The Beatles", "Queen", "David Bowie"],
+    correct: 2
+  },
+  {
+    id: "tq_005", topic: "logika",
+    question: "Ha 1 tojás sütéséhez 3 perc kell, mennyi kell 3 tojáshoz egyszerre?",
+    options: ["1 perc", "3 perc", "9 perc", "6 perc"],
+    correct: 1
+  },
+  {
+    id: "tq_006", topic: "állatok",
+    question: "Melyik az egyetlen emlős, amely képes aktívan repülni?",
+    options: ["Repülő mókus", "Denevér", "Repülő lemur", "Erszényes cukor-sikló"],
+    correct: 1
+  },
+  {
+    id: "tq_007", topic: "alkohol",
+    question: "Melyik italhoz használnak agávé növényt?",
+    options: ["Vodka", "Gin", "Tequila", "Rum"],
+    correct: 2
+  },
+  {
+    id: "tq_008", topic: "logika",
+    question: "Melyik szám hiányzik? 2, 4, 8, 16, __, 64",
+    options: ["24", "32", "18", "28"],
+    correct: 1
+  },
+  {
+    id: "tq_009", topic: "film / zene",
+    question: "Melyik filmben éneklik a 'Hakuna Matata' dalt?",
+    options: ["Dzsungel könyve", "Tarzan", "Az Oroszlánkirály", "Aladdin"],
+    correct: 2
+  },
+  {
+    id: "tq_010", topic: "földrajz",
+    question: "Melyik ország fővárosa Canberra?",
+    options: ["Új-Zéland", "Kanada", "Dél-Afrika", "Ausztrália"],
+    correct: 3
+  },
+  {
+    id: "tq_011", topic: "állatok",
+    question: "Hány lába van egy póknak?",
+    options: ["6", "8", "10", "12"],
+    correct: 1
+  },
+  {
+    id: "tq_012", topic: "alkohol",
+    question: "Hagyományosan melyik ország a whisky eredeti hazája?",
+    options: ["Amerika", "Skócia / Írország", "Japán", "Kanada"],
+    correct: 1
+  },
+  {
+    id: "tq_013", topic: "logika",
+    question: "Egy vonat 60 km/h sebességgel halad 30 percig. Mekkora utat tesz meg?",
+    options: ["15 km", "20 km", "30 km", "60 km"],
+    correct: 2
+  },
+  {
+    id: "tq_014", topic: "film / zene",
+    question: "Melyik zenekar énekelte a 'Smells Like Teen Spirit' dalt?",
+    options: ["Pearl Jam", "Soundgarden", "Alice in Chains", "Nirvana"],
+    correct: 3
+  },
+  {
+    id: "tq_015", topic: "földrajz",
+    question: "Melyik folyó a világ leghosszabbja?",
+    options: ["Amazonas", "Nílus", "Jangce", "Mississippi"],
+    correct: 1
+  },
+  {
+    id: "tq_016", topic: "állatok",
+    question: "Hogyan kommunikálnak a méhek egymással a táplálékforrásról?",
+    options: ["Hangadással", "Szaganyagokkal", "Tánccal", "Érintéssel"],
+    correct: 2
+  },
+  {
+    id: "tq_017", topic: "film / zene",
+    question: "Hány Oscar-díjat nyert a Titanic (1997) film?",
+    options: ["9", "11", "13", "14"],
+    correct: 1
+  },
+  {
+    id: "tq_018", topic: "alkohol",
+    question: "Mi a sangria (spanyol koktél) alapitala?",
+    options: ["Fehér bor", "Rozé bor", "Vörös bor", "Champagne"],
+    correct: 2
+  },
+  {
+    id: "tq_019", topic: "kincsvadászat",
+    question: "A Kincsvadászatban mi a legritkább fotókategória neve?",
+    options: ["Rare", "Ultra rare", "Legendary", "Epic"],
+    correct: 2
+  },
+  {
+    id: "tq_020", topic: "állatok",
+    question: "Melyik állatnak van a leghosszabb várandóssági ideje (~22 hónap)?",
+    options: ["Zsiráf", "Oroszlán", "Elefánt", "Bálna"],
+    correct: 2
+  },
+  {
+    id: "tq_021", topic: "földrajz",
+    question: "Melyik ország rendelkezik a legtöbb természetes tóval?",
+    options: ["Oroszország", "Kanada", "Finnország", "Brazília"],
+    correct: 1
+  },
+  {
+    id: "tq_022", topic: "logika",
+    question: "Egy orvosnak van egy testvére, de a testvérnek nincs fivére. Hogyan lehetséges?",
+    options: ["Az orvos fogadott gyerek", "Az orvos nő – ő a testvér nővére", "Az orvos egypetéjű iker", "Ez lehetetlen"],
+    correct: 1
+  },
+  {
+    id: "tq_023", topic: "film / zene",
+    question: "Melyik filmben szerepel Darth Vader?",
+    options: ["Star Trek", "Csillagok háborúja", "Dűne", "A Hobbit"],
+    correct: 1
+  },
+  {
+    id: "tq_024", topic: "alkohol",
+    question: "A gin ízét hagyományosan melyik bogyó adja?",
+    options: ["Fekete ribizli", "Borókabogyó", "Áfonya", "Bodza"],
+    correct: 1
+  },
+  {
+    id: "tq_025", topic: "kincsvadászat",
+    question: "A Kincsvadászatban melyik húzásból lehet átok?",
+    options: ["Csak küldetéshúzásból", "Csak átok-húzásból", "Bármelyik húzásból", "Kizárólag visszaúti húzásból"],
+    correct: 1
+  }
+];
