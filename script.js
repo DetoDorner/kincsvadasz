@@ -56,17 +56,17 @@ const allThemes = [
   { id: "punikornis",     name: "Punikornis",       icon: "🦄", locked: false },
   { id: "krokodildo",     name: "Krokodildó",       icon: "🐊", locked: true  },
   { id: "felsoszank",     name: "Felsőszank",       icon: "👑", locked: true  },
-  { id: "kincsvadaszat1", name: "Kincsvadászat I.", icon: "⚡", locked: true  },
-  { id: "endzso",         name: "Endzsó",           icon: "🌈", locked: true  },
+  { id: "kincsvadaszat1", name: "Kincsvadászat I.", icon: "🔦", locked: true  },
+  { id: "endzso",         name: "Endzsó",           icon: "⚡", locked: true  },
   { id: "korbanyai",      name: "Körbányai",        icon: "🍺", locked: true  },
-  { id: "stickletti",     name: "Stickletti",       icon: "🎯", locked: true  },
-  { id: "maguskula",      name: "Máguskula",        icon: "✨", locked: true  },
-  { id: "zakanycsakany",  name: "Zákánycsákány",    icon: "🪓", locked: true  },
+  { id: "stickletti",     name: "Stickletti",       icon: "🥨", locked: true  },
+  { id: "maguskula",      name: "Máguskula",        icon: "💩", locked: true  },
+  { id: "zakanycsakany",  name: "Zákánycsákány",    icon: "🥚", locked: true  },
   { id: "pinascolada",    name: "Pinás Colada",     icon: "🍹", locked: true  },
   { id: "spermium",       name: "Spermium",         icon: "🔬", locked: true  },
   { id: "pride",          name: "Pride",            icon: "🏳️‍🌈", locked: true  },
   { id: "bimbozas",       name: "Bimbózás",         icon: "🌸", locked: true  },
-  { id: "kiskunhalalos",  name: "Kiskunhalálos",    icon: "💧", locked: true  },
+  { id: "kiskunhalalos",  name: "Kiskunhalálos",    icon: "💀", locked: true  },
   { id: "mehtelep",       name: "Méhtelep",         icon: "🔩", locked: true  },
   { id: "utcalany",       name: "Utcalány",         icon: "💃", locked: true  },
   { id: "puniverzum",     name: "Puniverzum",       icon: "🌌", locked: true  },
@@ -1000,33 +1000,58 @@ function renderThemeSection() {
   const lockedCount = allThemes.filter(t => t.locked).length;
   const ownedChestCount = unlocked2.filter(id => allThemes.find(t => t.id === id && t.locked)).length;
 
+  const progressPct = lockedCount > 0 ? Math.round(ownedChestCount / lockedCount * 100) : 0;
   allSection.innerHTML = `
-    <details class="settings-group settings-collapsible" id="allThemesDetails">
-      <summary class="settings-summary">🔐 Összes téma
-        <span class="theme-chest-count">${ownedChestCount}/${lockedCount}</span>
-      </summary>
-      <div class="all-themes-inner">
-        <p class="all-themes-hint">Add meg a titkos kódot az összes téma eléréséhez.</p>
-        <div class="secret-code-row">
-          <input type="text" id="secretCodeInput" class="secret-code-input"
-                 placeholder="Titkos kód..."
-                 onkeydown="if(event.key==='Enter')checkSecretCode()"
-                 autocomplete="off">
-          <button class="btn-check-code" onclick="checkSecretCode()">OK</button>
+    <div class="all-themes-card">
+      <details class="all-themes-details">
+        <summary class="all-themes-summary">
+          <div class="all-themes-summary-left">
+            <span class="all-themes-lock-icon">${allThemesOverride ? "🔓" : "🔐"}</span>
+            <div>
+              <div class="all-themes-title">Összes téma</div>
+              <div class="all-themes-sub">Zárt témák – Témaládával szerezhető</div>
+            </div>
+          </div>
+          <div class="all-themes-badge-wrap">
+            <span class="all-themes-badge">${ownedChestCount}<span class="all-themes-badge-sep">/</span>${lockedCount}</span>
+          </div>
+        </summary>
+        <div class="all-themes-body">
+          <div class="all-themes-progress-bar-wrap">
+            <div class="all-themes-progress-bar" style="width:${progressPct}%"></div>
+          </div>
+          ${allThemesOverride ? `
+            <div class="all-themes-unlocked-row">
+              <span class="all-themes-unlocked-icon">🎉</span>
+              <div>
+                <div class="all-themes-unlocked-title">Titkos kód aktiválva!</div>
+                <div class="all-themes-unlocked-sub">Minden téma látható a beállításokban.</div>
+              </div>
+            </div>
+            <button class="btn-remove-themes" onclick="removeExtraThemes()">
+              <span>🗑️</span> Témák eltüntetése
+            </button>
+          ` : `
+            <p class="all-themes-hint">Add meg a titkos kódot, és mind a ${lockedCount} zárt téma láthatóvá válik.</p>
+            <div class="code-input-group">
+              <span class="code-key-icon">🔑</span>
+              <input type="text" id="secretCodeInput" class="secret-code-input"
+                     placeholder="Titkos kód…"
+                     onkeydown="if(event.key==='Enter')checkSecretCode()"
+                     autocomplete="off" autocorrect="off" spellcheck="false">
+              <button class="btn-check-code" onclick="checkSecretCode()">✓</button>
+            </div>
+          `}
         </div>
-        ${allThemesOverride ? `
-          <p class="all-themes-unlocked-msg">✅ Titkos kód aktiválva – minden téma elérhető!</p>
-          <button class="btn-remove-themes" onclick="removeExtraThemes()">🗑️ Témák eltüntetése</button>
-        ` : ""}
-      </div>
-    </details>
+      </details>
+    </div>
   `;
 }
 
 function checkSecretCode() {
   const input = document.getElementById("secretCodeInput");
   if (!input) return;
-  if (input.value.trim() === "zakanycsakany69") {
+  if (input.value.trim() === "benkuki") {
     allThemesOverride = true;
     renderThemeSection();
   } else {
